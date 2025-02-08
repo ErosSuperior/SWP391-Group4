@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import model.Service;
+import model.Blog;
 /**
  *
  * @author thang
@@ -20,12 +21,17 @@ public class maintest {
         
         Service sv = new Service();
         ServiceDAO svd = new ServiceDAO();
-        
-//        List<Service> av = svd.getActiveService(0, 2, "a", 1, "s.service_title", "ASC");
-//        for(int i = 0 ; i<av.size() ;i++){
-//            System.out.println(av.get(i).getServiceImage());
-//
-//        }
+        Blog bg = new Blog();
+        BlogDAO bgd = new BlogDAO();
+            
+//        int abc = bgd.countBlog("", 2, -1);
+//        System.out.println(abc);
+        List<Blog> av = bgd.getBlog(0, 10, "",-1 , -1, "b.blog_id", "ASC");
+        for(int i = 0 ; i<av.size() ;i++){
+            System.out.println(av.get(i).getBlogId());
+            System.out.println(av.get(i).getBlogDetail());
+            System.out.println(av.get(i).getBlogStatus());
+        }
 //        int serviceaaa = svd.countActiveService("a");
 //        System.out.println(serviceaaa);
 //          List<String> serviceImage = svd.getAllServiceImages(1);
@@ -46,12 +52,8 @@ public class maintest {
 //              System.out.println(av.get(i).getServiceImage());
 //              System.out.println(av.get(i).getServicePrice());
 //          }
-          List<Service> av = svd.findBestService();
-          for(int i = 0;i<av.size();i++){
-              System.out.println(av.get(i).getServiceId());
-              System.out.println(av.get(i).getServiceRateStar());
-              System.out.println(av.get(i).getServiceVote());
-          }
+          
+//            bgd.updateStatus(1, 0);
           
           
           
