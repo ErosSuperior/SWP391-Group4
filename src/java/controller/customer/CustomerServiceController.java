@@ -82,8 +82,10 @@ public class CustomerServiceController extends HttpServlet {
         }
         SearchResponse<Service> searchResponse = serviceInit.getActiveService(pageNo, pageSize, nameOrId, categoryId);
         List<Service> allCategory = serviceDAO.getActiveCategory();
-
+        List<Service> bestService = serviceDAO.findBestService();
+        
         request.setAttribute("category", allCategory);
+        request.setAttribute("bestservice", bestService);
         request.setAttribute("allservices", searchResponse.getContent());
         request.setAttribute("totalElements", searchResponse.getTotalElements());
         request.setAttribute("pageNo", pageNo);

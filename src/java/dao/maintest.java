@@ -4,6 +4,7 @@
  */
 package dao;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import model.Service;
 /**
@@ -20,11 +21,11 @@ public class maintest {
         Service sv = new Service();
         ServiceDAO svd = new ServiceDAO();
         
-        List<Service> av = svd.getActiveService(0, 2, "a", 1, "s.service_title", "ASC");
-        for(int i = 0 ; i<av.size() ;i++){
-            System.out.println(av.get(i).getServiceImage());
-
-        }
+//        List<Service> av = svd.getActiveService(0, 2, "a", 1, "s.service_title", "ASC");
+//        for(int i = 0 ; i<av.size() ;i++){
+//            System.out.println(av.get(i).getServiceImage());
+//
+//        }
 //        int serviceaaa = svd.countActiveService("a");
 //        System.out.println(serviceaaa);
 //          List<String> serviceImage = svd.getAllServiceImages(1);
@@ -45,11 +46,11 @@ public class maintest {
 //              System.out.println(av.get(i).getServiceImage());
 //              System.out.println(av.get(i).getServicePrice());
 //          }
-          List<Service> svc = svd.getActiveCategory();
-          for(int i = 0;i<svc.size();i++){
-              System.out.println(svc.get(i).getCategoryTitle());
-              System.out.println(svc.get(i).getCategoryIcon());
-              System.out.println(svc.get(i).getCategoryId());
+          List<Service> av = svd.findBestService();
+          for(int i = 0;i<av.size();i++){
+              System.out.println(av.get(i).getServiceId());
+              System.out.println(av.get(i).getServiceRateStar());
+              System.out.println(av.get(i).getServiceVote());
           }
           
           
