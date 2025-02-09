@@ -152,11 +152,6 @@
                                             <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}">
                                                 <img src="${pageContext.request.contextPath}/${service.serviceImage}" class="img-fluid" alt="${service.serviceTitle}">
                                             </a>
-                                            <div class="qty-icons">
-                                                <button class="btn btn-pills btn-icon btn-primary minus">-</button>
-                                                <input type="number" class="btn btn-pills btn-icon btn-primary qty-btn quantity" value="1">
-                                                <button class="btn btn-pills btn-icon btn-primary plus">+</button>
-                                            </div>
                                         </div>
                                         <div class="card-body content pt-4 p-2">
                                             <a href="ServiceDetail.jsp?serviceId=${service.serviceId}" class="text-dark product-name h6">
