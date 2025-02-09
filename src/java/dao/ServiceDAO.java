@@ -1,4 +1,3 @@
-
 package dao;
 
 import java.sql.Connection;
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Service;
 import context.DBContext;
+
 /**
  *
  * @author thang
@@ -50,7 +50,7 @@ public class ServiceDAO extends DBContext {
             System.err.println("Database connection is not available.");
             return services; // Return empty list if connection failed
         }
-        
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
             int index = 1;
             if (nameOrId != null && !nameOrId.isEmpty()) {
@@ -107,7 +107,7 @@ public class ServiceDAO extends DBContext {
             System.err.println("Database connection is not available.");
             return 0; // Return empty list if connection failed
         }
-        
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
             int index = 1;
             if (nameOrId != null && !nameOrId.isEmpty()) {
@@ -130,12 +130,12 @@ public class ServiceDAO extends DBContext {
     public List<Service> getActiveCategory() {
         List<Service> services = new ArrayList<>();
         String query = "SELECT * FROM category WHERE 1=1 ORDER BY category_id DESC";
-        
+
         if (connection == null) {
             System.err.println("Database connection is not available.");
             return services; // Return empty list if connection failed
         }
-        
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             ResultSet rs = preparedStatement.executeQuery();
@@ -173,7 +173,6 @@ public class ServiceDAO extends DBContext {
         }
         return imageLinks;
     }
-
 
     public List<Service> getAllServicebyCategory(int categoryId) {
         List<Service> services = new ArrayList<>();
@@ -267,4 +266,84 @@ public class ServiceDAO extends DBContext {
         return categoryId;
     }
 
+    public List<Service> getAllBestServiceInfo() {
+        List<Service> services = new ArrayList<>();
+        String query = "SELECT s.*, si.image_link AS serviceImage, ss.service_status AS serviceStatus "
+                + "FROM service s "
+                + "LEFT JOIN service_image si ON s.service_id = si.service_id "
+                + "LEFT JOIN service_status ss ON s.service_id = ss.service_id "
+                + "WHERE 1=1 "
+                + "AND ss.service_status = 1 "
+                + " AND si.type = 0";
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return services; // Return empty list if connection failed
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Service s = new Service();
+                s.setServiceId(rs.getInt("service_id"));
+                s.setServiceTitle(rs.getString("service_title"));
+                s.setServiceBi(rs.getString("service_bi"));
+                s.setCategoryId(rs.getInt("category_id"));
+                s.setServicePrice(rs.getDouble("service_price"));
+                s.setServiceDiscount(rs.getDouble("service_discount"));
+                s.setServiceDetail(rs.getString("service_detail"));
+                s.setServiceRateStar(rs.getDouble("service_rateStar"));
+                s.setServiceVote(rs.getInt("service_vote"));
+                s.setServiceImage(rs.getString("serviceImage"));
+                services.add(s);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return services;
+    }
+
+    public int[] findBestNumber(List<Service> t) {
+        // Sort the services by score (ServiceVote * ServiceRateStar) / 5 in descending order
+        t.sort((a, b) -> {
+            double scoreA = (double) (a.getServiceVote() * a.getServiceRateStar()) / 5;
+            double scoreB = (double) (b.getServiceVote() * b.getServiceRateStar()) / 5;
+            return Double.compare(scoreB, scoreA); // Sort descending
+        });
+
+        // Take the top 4 service IDs
+        int topSize = Math.min(4, t.size()); // Handle case where < 4 services exist
+        int[] bestIds = new int[topSize];
+
+        for (int i = 0; i < topSize; i++) {
+            bestIds[i] = t.get(i).getServiceId();
+        }
+
+        return bestIds;
+    }
+
+    public List<Service> findBestService() {
+        // Step 1: Get all services with status = 1
+        List<Service> allServices = getAllBestServiceInfo();
+
+        // Step 2: Find the top 4 service IDs based on rating formula
+        int[] bestServiceIds = findBestNumber(allServices);
+
+        // Step 3: Retrieve details of the best services from allServices
+        List<Service> bestServices = new ArrayList<>();
+        for (Service service : allServices) {
+            for (int id : bestServiceIds) {
+                if (service.getServiceId() == id) {
+                    bestServices.add(service);
+                    break; // Move to the next service
+                }
+            }
+        }
+
+        return bestServices;
+    }
+
+    //manager start form here
+    public List<Service> getAllService(int offset, int limit, String nameOrId, int categoryId, int status, String sortBy, String sortDir) {
+        List<Service> services = new ArrayList<>();
+        return services;
+    }
 }

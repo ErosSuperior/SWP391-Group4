@@ -81,7 +81,7 @@
                             <a href="#">Your Cart</a><span class="sub-menu-item"></span>
                         </li>
         
-                        <li><a href="DashBoard.jsp" class="sub-menu-item" target="_blank">Admin</a></li>
+                        <li><a href="DashBoard.jsp" class="sub-menu-item"">Admin</a></li>
                     </ul><!--end navigation menu-->
                 </div><!--end navigation-->
             </div><!--end container-->

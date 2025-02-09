@@ -257,40 +257,52 @@
                 </div><!--end row-->
 
                 <div class="row">
-                    <div class="col-lg-3 col-md-6 col-12 mt-4 pt-2">
-                        <div class="card shop-list border-0">
-                            <ul class="label list-unstyled mb-0">
-                                <li><a href="javascript:void(0)" class="badge badge-pill badge-success">Featured</a></li>
-                            </ul>
-                            <div class="shop-image position-relative overflow-hidden rounded shadow">
-                                <a href="pharmacy-product-detail.html"><img src="<%= request.getContextPath() %>/assets/images/pharmacy/shop/masks.jpg" class="img-fluid" alt=""></a>
-                                <ul class="list-unstyled shop-icons">
-                                    <li><a href="#" class="btn btn-icon btn-pills btn-soft-danger"><i data-feather="heart" class="icons"></i></a></li>
-                                    <li class="mt-2"><a href="#" class="btn btn-icon btn-pills btn-soft-primary"><i data-feather="eye" class="icons"></i></a></li>
-                                    <li class="mt-2"><a href="#" class="btn btn-icon btn-pills btn-soft-warning"><i data-feather="shopping-cart" class="icons"></i></a></li>
-                                </ul>                                
-
-                                <div class="qty-icons">
-                                    <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="btn btn-pills btn-icon btn-primary minus">-</button>
-                                    <input min="0" name="quantity" value="0" type="number" class="btn btn-pills btn-icon btn-primary qty-btn quantity">
-                                    <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="btn btn-pills btn-icon btn-primary plus">+</button>
-                                </div>
-                            </div>
-                            <div class="card-body content pt-4 p-2">
-                                <a href="pharmacy-product-detail.html" class="text-dark product-name h6">Face masks</a>
-                                <div class="d-flex justify-content-between mt-1">
-                                    <h6 class="text-muted small font-italic mb-0 mt-1">$16.00 </h6>
-                                    <ul class="list-unstyled text-warning mb-0">
-                                        <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
-                                        <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
-                                        <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
-                                        <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
-                                        <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
+                    <c:forEach var="service" items="${bestservice}">
+                        <div class="col-lg-3 col-md-6 col-12 mt-4 pt-2">
+                            <div class="card shop-list border-0">
+                                <ul class="label list-unstyled mb-0">
+                                    <li><a href="javascript:void(0)" class="badge badge-pill badge-success">Popular</a></li>
+                                </ul>
+                                <div class="shop-image position-relative overflow-hidden rounded shadow">
+                                    <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}">
+                                        <img src="<c:out value='${pageContext.request.contextPath}/${service.serviceImage}'/>" class="img-fluid" alt="">
+                                    </a>
+                                    <ul class="list-unstyled shop-icons">
+                                        <li><a href="#" class="btn btn-icon btn-pills btn-soft-danger"><i data-feather="heart" class="icons"></i></a></li>
+                                        <li class="mt-2">
+                                            <a href="javascript:void(0)" class="btn btn-icon btn-pills btn-soft-primary" 
+                                               data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                               data-detail="${service.serviceDetail}">
+                                                <i data-feather="eye" class="icons"></i>
+                                            </a>
+                                        </li>
+                                        <li class="mt-2"><a href="#" class="btn btn-icon btn-pills btn-soft-warning"><i data-feather="shopping-cart" class="icons"></i></a></li>
                                     </ul>
                                 </div>
+                                <div class="card-body content pt-4 p-2">
+                                    <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}" class="text-dark product-name h6">
+                                        <c:out value="${service.serviceTitle}" />
+                                    </a>
+                                    <div class="d-flex justify-content-between mt-1">
+                                        <h6 class="text-muted small font-italic mb-0 mt-1">
+                                            <s class="text-danger">$<c:out value="${service.servicePrice}" /></s> <!-- Original Price with Strike -->
+                                            <span class="text-success">
+                                                $<c:out value="${service.servicePrice - service.serviceDiscount}" />
+                                            </span> <!-- Final Price After Discount -->
+                                        </h6>
+
+                                        <ul class="list-unstyled text-warning mb-0">
+                                            <c:forEach var="i" begin="1" end="5">
+                                                <li class="list-inline-item">
+                                                    <i class="mdi mdi-star <c:if test='${i > service.serviceRateStar}'>mdi-star-outline</c:if>'"></i>
+                                                    </li>
+                                            </c:forEach>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div><!--end col-->
+                        </div><!--end col-->
+                    </c:forEach>
                 </div><!--end row-->
             </div><!--end container-->
         </section><!--end section-->

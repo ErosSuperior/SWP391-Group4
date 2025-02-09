@@ -120,7 +120,7 @@
                                         <i class="mdi ${i <= highlightedService.serviceRateStar ? 'mdi-star' : 'mdi-star-outline'}"></i>
                                     </li>
                                 </c:forEach>
-                                <li class="list-inline-item me-2 h6 text-muted">(${highlightedService.serviceVote} Ratings)</li>
+                                <li class="list-inline-item me-2 h6 text-muted">${highlightedService.serviceRateStar}(${highlightedService.serviceVote} Ratings)</li>
                             </ul>
 
                             <h5 class="mt-4 py-2">Overview:</h5>
@@ -154,7 +154,7 @@
                                             </a>
                                         </div>
                                         <div class="card-body content pt-4 p-2">
-                                            <a href="ServiceDetail.jsp?serviceId=${service.serviceId}" class="text-dark product-name h6">
+                                            <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}" class="text-dark product-name h6">
                                                 ${service.serviceTitle}
                                             </a>
                                             <div class="d-flex justify-content-between mt-1">
