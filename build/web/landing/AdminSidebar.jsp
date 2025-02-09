@@ -32,7 +32,7 @@
                 <a href="javascript:void(0)"><i class="uil uil-apps me-2 d-inline-block"></i>Apps</a>
                 <div class="sidebar-submenu">
                     <ul>
-                        <li><a href="chat.html">Chat</a></li>
+                        <li><a href="chat.html">Service List</a></li>
                     </ul>
                 </div>
             </li>
