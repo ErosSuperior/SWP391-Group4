@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+<<<<<<< HEAD
+            <file>file:/D:/prj/abc/SWP391-Group4/web/landing/AdminNavbar.jsp</file>
+            <file>file:/D:/prj/abc/SWP391-Group4/web/landing/customerservice/ServiceList.jsp</file>
+            <file>file:/D:/prj/abc/SWP391-Group4/web/landing/CustomerNavbar.jsp</file>
+            <file>file:/D:/prj/abc/SWP391-Group4/web/landing/AdminSidebar.jsp</file>
+            <file>file:/D:/prj/abc/SWP391-Group4/web/landing/customerservice/ServiceDetail.jsp</file>
+=======
+            <file>file:/D:/dumb/SWP391-Group4/web/landing/customerservice/ServiceDetail.jsp</file>
+            <file>file:/D:/dumb/SWP391-Group4/web/landing/manager/PostManager.jsp</file>
+            <file>file:/D:/dumb/SWP391-Group4/web/landing/AdminSidebar.jsp</file>
+            <file>file:/D:/dumb/SWP391-Group4/src/java/controller/manager/ManagerBlogController.java</file>
+            <file>file:/D:/dumb/SWP391-Group4/web/landing/manager/SliderManager.jsp</file>
+            <file>file:/D:/dumb/SWP391-Group4/src/java/dao/BlogDAO.java</file>
+>>>>>>> 6910b01fc712b69ecbe3514d00752ddd64e3c111
+        </group>
+    </open-files>
+</project-private>
