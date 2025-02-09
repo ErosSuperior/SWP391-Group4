@@ -8,65 +8,22 @@
 <nav id="sidebar" class="sidebar-wrapper">
     <div class="sidebar-content" data-simplebar style="height: calc(100% - 60px);">
         <div class="sidebar-brand">
-            <a href="index.html">
-                <img src="<%= request.getContextPath() %>/assets/images/logo-dark.png" height="24" class="logo-light-mode" alt="">
-                <img src="<%= request.getContextPath() %>/assets/images/logo-light.png" height="24" class="logo-dark-mode" alt="">
+            <a href="${pageContext.request.contextPath}/nav/dashboard">
+                <img src="<%= request.getContextPath() %>/assets/images/logo-dark.png?v=<%= System.currentTimeMillis() %>" height="70" class="logo-light-mode" alt="">
+                <img src="<%= request.getContextPath() %>/assets/images/logo-light.png?v=<%= System.currentTimeMillis() %>" height="70" class="logo-dark-mode" alt="">
             </a>
         </div>
 
         <ul class="sidebar-menu pt-3">
-            <li><a href="index.html"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
+            <li><a href="${pageContext.request.contextPath}/nav/dashboard"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
            
             <li><a href="${pageContext.request.contextPath}/manager/managerlistBlog"><i class="uil uil-apps me-2 d-inline-block"></i>Post Management</a></li>
 
-            <li class="sidebar-dropdown">
-                <a href="javascript:void(0)"><i class="uil uil-wheelchair me-2 d-inline-block"></i>Patients</a>
-                <div class="sidebar-submenu">
-                    <ul>
-                        <li><a href="patients.html">All Patients</a></li>
-                    </ul>
-                </div>
-            </li>
+            <li><a href="#"><i class="uil uil-apps me-2 d-inline-block"></i>Slider Management</a></li>
 
-            <li class="sidebar-dropdown">
-                <a href="javascript:void(0)"><i class="uil uil-apps me-2 d-inline-block"></i>Apps</a>
-                <div class="sidebar-submenu">
-                    <ul>
-                        <li><a href="chat.html">Service List</a></li>
-                    </ul>
-                </div>
-            </li>
+            <li><a href="#"><i class="uil uil-apps me-2 d-inline-block"></i>Service Management</a></li>
 
-            <li class="sidebar-dropdown">
-                <a href="javascript:void(0)"><i class="uil uil-shopping-cart me-2 d-inline-block"></i>Pharmacy</a>
-                <div class="sidebar-submenu">
-                    <ul>
-                        <li><a href="shop.html">Shop</a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="sidebar-dropdown">
-                <a href="javascript:void(0)"><i class="uil uil-flip-h me-2 d-inline-block"></i>Blogs</a>
-                <div class="sidebar-submenu">
-                    <ul>
-                        <li><a href="blogs.html">Blogs</a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="sidebar-dropdown">
-                <a href="javascript:void(0)"><i class="uil uil-file me-2 d-inline-block"></i>Pages</a>
-                <div class="sidebar-submenu">
-                    <ul>
-                        <li><a href="faqs.html">FAQs</a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <li><a href="components.html"><i class="uil uil-cube me-2 d-inline-block"></i>Components</a></li>
-
-            <li><a href="../landing/index-two.html" target="_blank"><i class="uil uil-window me-2 d-inline-block"></i>Landing page</a></li>
+            <li><a href="${pageContext.request.contextPath}/nav/homepage"><i class="uil uil-window me-2 d-inline-block"></i>Home page</a></li>
         </ul>
         <!-- sidebar-menu  -->
     </div>

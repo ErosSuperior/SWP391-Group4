@@ -64,13 +64,13 @@
                     <div class="col-12">
                         <div class="section-title text-center">
                             <h3 class="sub-title mb-4">${highlightedService.serviceTitle}</h3>
-                            <p class="para-desc mx-auto text-muted">Great doctor if you need your family member to get effective immediate assistance, emergency treatment or a simple consultation.</p>
+                            <p class="para-desc mx-auto text-muted">We provide great service for baby and ensure their quality to the best</p>
 
                             <nav aria-label="breadcrumb" class="d-inline-block mt-3">
                                 <ul class="breadcrumb bg-light rounded mb-0 bg-transparent">
-                                    <li class="breadcrumb-item"><a href="index.html">Doctris</a></li>
-                                    <li class="breadcrumb-item"><a href="pharmacy.html">Pharmacy</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Product Detail</li>
+                                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="pharmacy.html">Service List</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Service Detail</li>
                                 </ul>
                             </nav>
                         </div>

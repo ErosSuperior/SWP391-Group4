@@ -5,7 +5,7 @@
  */
 package SendEmail;
 
-import utills.Constance;
+import Utills.Constance;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Authenticator;

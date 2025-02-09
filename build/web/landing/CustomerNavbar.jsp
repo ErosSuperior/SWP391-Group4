@@ -5,9 +5,9 @@
 <header id="topnav" class="defaultscroll sticky">
             <div class="container">
                 <!-- Logo container-->
-                <a class="logo" href="index.html">
-                    <img src="../assets/images/logo-dark.png" height="24" class="logo-light-mode" alt="">
-                    <img src="../assets/images/logo-light.png" height="24" class="logo-dark-mode" alt="">
+                <a class="logo" href="${pageContext.request.contextPath}/nav/homepage">
+                    <img src="../assets/images/logo-dark.png?v=<%= System.currentTimeMillis() %>" height="70" class="logo-light-mode" alt="">
+                    <img src="../assets/images/logo-light.png?v=<%= System.currentTimeMillis() %>" height="70" class="logo-dark-mode" alt="">
                 </a>                
                 <!-- Logo End -->
                 
@@ -66,7 +66,7 @@
                     <!-- Navigation Menu-->   
                     <ul class="navigation-menu nav-left">
                         <li class="has-submenu parent-menu-item">
-                            <a href="HomePage.jsp">Home</a><span class="sub-menu-item"></span>
+                            <a href="${pageContext.request.contextPath}/nav/homepage">Home</a><span class="sub-menu-item"></span>
                         </li>
 
                         <li class="has-submenu parent-menu-item">
@@ -81,7 +81,7 @@
                             <a href="#">Your Cart</a><span class="sub-menu-item"></span>
                         </li>
         
-                        <li><a href="DashBoard.jsp" class="sub-menu-item"">Admin</a></li>
+                        <li><a href="${pageContext.request.contextPath}/nav/dashboard" class="sub-menu-item"">Admin</a></li>
                     </ul><!--end navigation menu-->
                 </div><!--end navigation-->
             </div><!--end container-->
