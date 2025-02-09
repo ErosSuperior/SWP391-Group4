@@ -64,15 +64,6 @@
                 </div>
             </li>
 
-            <li class="sidebar-dropdown">
-                <a href="javascript:void(0)"><i class="uil uil-sign-in-alt me-2 d-inline-block"></i>Authentication</a>
-                <div class="sidebar-submenu">
-                    <ul>
-                        <li><a href="login.html">Login</a></li>
-                    </ul>
-                </div>
-            </li>
-
             <li><a href="components.html"><i class="uil uil-cube me-2 d-inline-block"></i>Components</a></li>
 
             <li><a href="../landing/index-two.html" target="_blank"><i class="uil uil-window me-2 d-inline-block"></i>Landing page</a></li>
