@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package SendEmail;
+package sendEmail;
 
-import Utills.Constance;
+import utills.Constance;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Authenticator;

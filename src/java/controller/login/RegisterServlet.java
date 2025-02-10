@@ -1,7 +1,7 @@
-package controller;
+package controller.login;
 
 import dao.UserDAO;
-import SendEmail.SendEmailRegister;
+import sendEmail.SendEmailRegister;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

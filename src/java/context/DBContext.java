@@ -1,6 +1,6 @@
 package context;
 
-import Utills.Constance;
+import utills.Constance;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.logging.Level;
