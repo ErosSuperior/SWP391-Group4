@@ -26,11 +26,11 @@ public class maintest {
             
 //        int abc = bgd.countBlog("", 2, -1);
 //        System.out.println(abc);
-        List<Blog> av = bgd.getBlog(0, 10, "",-1 , -1, "b.blog_id", "ASC");
+        List<Service> av = svd.getActiveService(0, 10, "",-1 , "s.service_id", "ASC", 101,160);
         for(int i = 0 ; i<av.size() ;i++){
-            System.out.println(av.get(i).getBlogId());
-            System.out.println(av.get(i).getBlogDetail());
-            System.out.println(av.get(i).getBlogStatus());
+            System.out.println(av.get(i).getServiceId());
+            System.out.println(av.get(i).getServicePrice());
+            System.out.println(av.get(i).getServiceTitle());
         }
 //        int serviceaaa = svd.countActiveService("a");
 //        System.out.println(serviceaaa);

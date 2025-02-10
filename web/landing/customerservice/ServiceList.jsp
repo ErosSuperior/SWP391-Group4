@@ -107,6 +107,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="mt-3">
+                            <label class="form-label">Find by Price (Original Price)</label>
+                            <div class="input-group">
+                                <input type="number" id="minPrice" name="minPrice" class="form-control" placeholder="Min Price" value="${param.minPrice}">
+                                <span class="input-group-text">to</span>
+                                <input type="number" id="maxPrice" name="maxPrice" class="form-control" placeholder="Max Price" value="${param.maxPrice}">
+                                <button class="btn btn-primary" type="submit">Apply</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <c:forEach var="service" items="${requestScope.allservices}">
                             <div class="col-lg-3 col-md-6 col-12 mt-4 pt-2">
@@ -210,6 +221,25 @@
                 </div>
             </div>
             <!--end popup modal-->
+
+            <!-- Popup Modal for Validation -->
+            <div class="modal fade" id="priceValidationModal" tabindex="-1" aria-labelledby="priceValidationLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom p-3">
+                            <h5 class="modal-title" id="priceValidationLabel">Validation Error</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="modalValidationMessage">Invalid input.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Popup Modal for Validation -->
 
             <div class="container mt-100 mt-60">
                 <div class="row">
@@ -339,6 +369,19 @@
                         document.getElementById("modalServiceDetail").innerText = detailText; // Set modal content
                     });
                 });
+            });
+        </script>
+        <script>
+            document.querySelector("form").addEventListener("submit", function (event) {
+                let minPrice = parseFloat(document.getElementById("minPrice").value);
+                let maxPrice = parseFloat(document.getElementById("maxPrice").value);
+
+                if (!isNaN(minPrice) && !isNaN(maxPrice) && minPrice > maxPrice) {
+                    event.preventDefault(); // Prevent form submission
+                    document.getElementById("modalValidationMessage").textContent = "Min Price must be less than or equal to Max Price.";
+                    var validationModal = new bootstrap.Modal(document.getElementById("priceValidationModal"));
+                    validationModal.show();
+                }
             });
         </script>
     </body>

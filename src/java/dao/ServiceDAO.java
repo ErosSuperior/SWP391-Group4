@@ -26,7 +26,7 @@ public class ServiceDAO extends DBContext {
         }
     }
 
-    public List<Service> getActiveService(int offset, int limit, String nameOrId, int categoryId, String sortBy, String sortDir) {
+    public List<Service> getActiveService(int offset, int limit, String nameOrId, int categoryId, String sortBy, String sortDir, int minPrice, int maxPrice) {
         List<Service> services = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT s.*, si.image_link AS serviceImage, ss.service_status AS serviceStatus "
                 + "FROM service s "
@@ -42,6 +42,10 @@ public class ServiceDAO extends DBContext {
 
         if (categoryId != -1) {
             query.append(" AND (s.category_id = ?)");
+        }
+
+        if (minPrice > -1 && maxPrice > -1) {
+            query.append(" AND s.service_price BETWEEN ? AND ?");
         }
         query.append(" ORDER BY ").append(sortBy).append(" ").append(sortDir.equalsIgnoreCase("ASC") ? "ASC" : "DESC");
         query.append(" LIMIT ? OFFSET ?");
@@ -60,6 +64,11 @@ public class ServiceDAO extends DBContext {
 
             if (categoryId != -1) {
                 preparedStatement.setInt(index++, categoryId);
+            }
+
+            if (minPrice > -1 && maxPrice > -1) {
+                preparedStatement.setInt(index++, minPrice);
+                preparedStatement.setInt(index++, maxPrice);
             }
 
             preparedStatement.setInt(index++, limit);
@@ -86,7 +95,7 @@ public class ServiceDAO extends DBContext {
         return services;
     }
 
-    public int countActiveService(String nameOrId, int categoryId) {
+    public int countActiveService(String nameOrId, int categoryId , int minPrice, int maxPrice) {
         int count = 0;
         StringBuilder query = new StringBuilder("SELECT COUNT(*) "
                 + "FROM service s "
@@ -102,7 +111,11 @@ public class ServiceDAO extends DBContext {
         if (categoryId != -1) {
             query.append(" AND (s.category_id = ?)");
         }
-
+        
+        if (minPrice > -1 && maxPrice > -1) {
+            query.append(" AND s.service_price BETWEEN ? AND ?");
+        }
+        
         if (connection == null) {
             System.err.println("Database connection is not available.");
             return 0; // Return empty list if connection failed
@@ -116,6 +129,10 @@ public class ServiceDAO extends DBContext {
             }
             if (categoryId != -1) {
                 preparedStatement.setInt(index++, categoryId);
+            }
+            if (minPrice > -1 && maxPrice > -1) {
+                preparedStatement.setInt(index++, minPrice);
+                preparedStatement.setInt(index++, maxPrice);
             }
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
