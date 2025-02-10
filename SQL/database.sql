@@ -131,6 +131,7 @@ CREATE TABLE slider (
                         slider_status BOOLEAN,
                         service_id INT,
                         notes VARCHAR(255),
+                        image text,
                         FOREIGN KEY (category_id) REFERENCES category(category_id),
                         FOREIGN KEY (service_id) REFERENCES service(service_id)
 );

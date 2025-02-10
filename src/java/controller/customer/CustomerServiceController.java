@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.customer;
 
 import java.io.IOException;
@@ -72,23 +68,15 @@ public class CustomerServiceController extends HttpServlet {
         int pageSize = 4;
         String nameOrId = request.getParameter("nameOrId");
         int categoryId = -1; // Default value
-        int minPrice = -1;
-        int maxPrice = -1;
         try {
             String categoryIdParam = request.getParameter("categoryId");
             if (categoryIdParam != null && !categoryIdParam.trim().isEmpty()) {
                 categoryId = Integer.parseInt(categoryIdParam);
             }
-            String minPriceParam = request.getParameter("minPrice");
-            String maxPriceParam = request.getParameter("maxPrice");
-            if ((minPriceParam != null && !minPriceParam.trim().isEmpty())&&(maxPriceParam != null && !maxPriceParam.trim().isEmpty())){
-                minPrice = Integer.parseInt(minPriceParam);
-                maxPrice = Integer.parseInt(maxPriceParam);
-            }
         } catch (NumberFormatException e) {
             System.err.println("Invalid categoryId: " + e.getMessage());
         }
-        SearchResponse<Service> searchResponse = serviceInit.getActiveService(pageNo, pageSize, nameOrId, categoryId, minPrice, maxPrice);
+        SearchResponse<Service> searchResponse = serviceInit.getActiveService(pageNo, pageSize, nameOrId, categoryId);
         List<Service> allCategory = serviceDAO.getActiveCategory();
         List<Service> bestService = serviceDAO.findBestService();
         

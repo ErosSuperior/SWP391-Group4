@@ -26,7 +26,7 @@ public class ServiceDAO extends DBContext {
         }
     }
 
-    public List<Service> getActiveService(int offset, int limit, String nameOrId, int categoryId, String sortBy, String sortDir, int minPrice, int maxPrice) {
+    public List<Service> getActiveService(int offset, int limit, String nameOrId, int categoryId, String sortBy, String sortDir) {
         List<Service> services = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT s.*, si.image_link AS serviceImage, ss.service_status AS serviceStatus "
                 + "FROM service s "
@@ -42,10 +42,6 @@ public class ServiceDAO extends DBContext {
 
         if (categoryId != -1) {
             query.append(" AND (s.category_id = ?)");
-        }
-
-        if (minPrice > -1 && maxPrice > -1) {
-            query.append(" AND s.service_price BETWEEN ? AND ?");
         }
         query.append(" ORDER BY ").append(sortBy).append(" ").append(sortDir.equalsIgnoreCase("ASC") ? "ASC" : "DESC");
         query.append(" LIMIT ? OFFSET ?");
@@ -64,11 +60,6 @@ public class ServiceDAO extends DBContext {
 
             if (categoryId != -1) {
                 preparedStatement.setInt(index++, categoryId);
-            }
-
-            if (minPrice > -1 && maxPrice > -1) {
-                preparedStatement.setInt(index++, minPrice);
-                preparedStatement.setInt(index++, maxPrice);
             }
 
             preparedStatement.setInt(index++, limit);
@@ -95,7 +86,7 @@ public class ServiceDAO extends DBContext {
         return services;
     }
 
-    public int countActiveService(String nameOrId, int categoryId , int minPrice, int maxPrice) {
+    public int countActiveService(String nameOrId, int categoryId) {
         int count = 0;
         StringBuilder query = new StringBuilder("SELECT COUNT(*) "
                 + "FROM service s "
@@ -111,11 +102,7 @@ public class ServiceDAO extends DBContext {
         if (categoryId != -1) {
             query.append(" AND (s.category_id = ?)");
         }
-        
-        if (minPrice > -1 && maxPrice > -1) {
-            query.append(" AND s.service_price BETWEEN ? AND ?");
-        }
-        
+
         if (connection == null) {
             System.err.println("Database connection is not available.");
             return 0; // Return empty list if connection failed
@@ -129,10 +116,6 @@ public class ServiceDAO extends DBContext {
             }
             if (categoryId != -1) {
                 preparedStatement.setInt(index++, categoryId);
-            }
-            if (minPrice > -1 && maxPrice > -1) {
-                preparedStatement.setInt(index++, minPrice);
-                preparedStatement.setInt(index++, maxPrice);
             }
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
@@ -361,6 +344,38 @@ public class ServiceDAO extends DBContext {
     //manager start form here
     public List<Service> getAllService(int offset, int limit, String nameOrId, int categoryId, int status, String sortBy, String sortDir) {
         List<Service> services = new ArrayList<>();
+        return services;
+    }
+
+    public List<Service> getTopRatedServices() {
+        List<Service> services = new ArrayList<>();
+
+        String query = "SELECT s.*, "
+                + "       (SELECT si.image_link FROM service_image si WHERE si.service_id = s.service_id LIMIT 1) AS serviceImage "
+                + "FROM service s "
+                + "ORDER BY s.service_rateStar DESC "
+                + "LIMIT 3";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Service service = new Service();
+                service.setServiceId(rs.getInt("service_id"));
+                service.setServiceTitle(rs.getString("service_title"));
+                service.setServiceBi(rs.getString("service_bi"));
+                service.setServiceCreatedDate(rs.getDate("service_created_date"));
+                service.setServicePrice(rs.getDouble("service_price"));
+                service.setServiceDiscount(rs.getDouble("service_discount"));
+                service.setServiceDetail(rs.getString("service_detail"));
+                service.setServiceRateStar(rs.getDouble("service_rateStar"));
+                service.setServiceVote(rs.getInt("service_vote"));
+                service.setServiceImage(rs.getString("serviceImage"));
+
+                services.add(service);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return services;
     }
 }
