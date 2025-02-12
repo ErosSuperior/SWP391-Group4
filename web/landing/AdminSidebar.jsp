@@ -19,11 +19,11 @@
            
             <li><a href="${pageContext.request.contextPath}/manager/managerlistBlog"><i class="uil uil-apps me-2 d-inline-block"></i>Post Management</a></li>
 
-            <li><a href="#"><i class="uil uil-apps me-2 d-inline-block"></i>Slider Management</a></li>
+            <li><a href="${pageContext.request.contextPath}/manager/sliders"><i class="uil uil-apps me-2 d-inline-block"></i>Slider Management</a></li>
 
             <li><a href="#"><i class="uil uil-apps me-2 d-inline-block"></i>Service Management</a></li>
 
-            <li><a href="${pageContext.request.contextPath}/nav/homepage"><i class="uil uil-window me-2 d-inline-block"></i>Home page</a></li>
+            <li><a href="${pageContext.request.contextPath}/home"><i class="uil uil-window me-2 d-inline-block"></i>Home page</a></li>
         </ul>
         <!-- sidebar-menu  -->
     </div>
