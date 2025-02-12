@@ -45,13 +45,14 @@ public class ServiceListController extends HttpServlet {
         int limit = 3; // Số bản ghi mỗi trang
         int offset = (page - 1) * limit;
 
-        // Giá trị mặc định cho sắp xếp
-        if (sortBy == null || sortBy.isEmpty()) {
-            sortBy = "service_id";
-        }
-        if (sortDir == null || sortDir.isEmpty()) {
-            sortDir = "ASC";
-        }
+        
+// Nếu không có giá trị, mặc định sắp xếp theo title, ascending
+if (sortBy == null || sortBy.isEmpty()) {
+    sortBy = "title";
+}
+if (sortDir == null || sortDir.isEmpty()) {
+    sortDir = "asc";
+}
 
         // Gọi DAO để lấy danh sách dịch vụ
         List<Service> services = serviceDAO.getAllService(offset, limit, nameOrId, -1, status, sortBy, sortDir);

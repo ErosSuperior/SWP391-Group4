@@ -9,10 +9,6 @@ import java.util.List;
 import model.Service;
 import context.DBContext;
 
-/**
- *
- * @author thang
- */
 public class ServiceDAO extends DBContext {
 
     private Connection connection;
@@ -414,7 +410,7 @@ public class ServiceDAO extends DBContext {
         }
 
         return services;
-    }
+    }   
 
     public List<Service> getTopRatedServices() {
         List<Service> services = new ArrayList<>();

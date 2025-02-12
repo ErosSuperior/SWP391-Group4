@@ -44,8 +44,8 @@
                         </div>
                         <div class="row">
                             <form action="#" method="GET" class="row">
-                                <div class="col-md-3">
-                                    <div class="mt-3">
+                                <div class="col-md-2">
+                                    <div class="mt-2">
                                         <label class="form-label">Status</label>
                                         <select name="status" class="form-control">
                                             <option value="-1">All Status</option>
@@ -54,8 +54,30 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-2">
+                                    <div class="mt-2">
+                                        <label class="form-label">Sort By</label>
+                                        <select name="sortBy" class="form-control">
+                                            <option value="title" ${sortBy == 'title' ? 'selected' : ''}>Title</option>
+                                            <option value="category" ${sortBy == 'category' ? 'selected' : ''}>Category</option>
+                                            <option value="listPrice" ${sortBy == 'listPrice' ? 'selected' : ''}>List Price</option>
+                                            <option value="salePrice" ${sortBy == 'salePrice' ? 'selected' : ''}>Sale Price</option>
+                                            <option value="featured" ${sortBy == 'featured' ? 'selected' : ''}>Featured</option>
+                                            <option value="status" ${sortBy == 'status' ? 'selected' : ''}>Status</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="mt-2">
+                                        <label class="form-label">Order</label>
+                                        <select name="sortDir" class="form-control">
+                                            <option value="asc" ${sortDir == 'asc' ? 'selected' : ''}>Ascending</option>
+                                            <option value="desc" ${sortDir == 'desc' ? 'selected' : ''}>Descending</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-md-4">
-                                    <div class="mt-3">
+                                    <div class="mt-2">
                                         <label class="form-label">Search</label>
                                         <div class="input-group">
                                             <input type="text" name="nameOrId" class="form-control" placeholder="Search by name or ID">
@@ -64,14 +86,16 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-2 d-flex align-items-end justify-content-end" style="margin-left: 275px">
+                                <div class="col-md-auto d-flex align-items-end">
                                     <button class="btn btn-primary btn-md" type="button">
                                         <i class="uil uil-plus"></i>
                                     </button>
                                 </div>
-                                <div class="col-12 mt-4">
-                                    <div class="table-responsive shadow rounded">
-                                        <table class="table table-center bg-white mb-0">
+
+                                <div class="col-12 mt-3">
+    <div class="table-responsive shadow rounded">
+        <table class="table table-sm fs-sm table-center bg-white mb-0 p-1">
+
                                             <thead>
                                                 <tr>
                                                     <th class="border-bottom p-3 text-center">Services Id</th>
@@ -119,26 +143,23 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="d-md-flex align-items-center text-center justify-content-between" style="margin-top: 25px">
-                                    <span class="text-muted me-3">Showing X - Y out of Z</span>
-                                    <ul class="pagination justify-content-center mb-0 mt-3 mt-sm-0">
-                                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                            <a class="page-link" href="?page=1&nameOrId=${nameOrId}&status=${status}&sortBy=${sortBy}&sortDir=${sortDir}">First</a>
-                                        </li>
-                                        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                                            <a class="page-link" href="?page=${currentPage - 1}&nameOrId=${nameOrId}&status=${status}&sortBy=${sortBy}&sortDir=${sortDir}">Prev</a>
-                                        </li>
-                                        <li class="page-item active">
-                                            <span class="page-link">${currentPage}</span>
-                                        </li>
-                                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                            <a class="page-link" href="?page=${currentPage + 1}&nameOrId=${nameOrId}&status=${status}&sortBy=${sortBy}&sortDir=${sortDir}">Next</a>
-                                        </li>
-                                        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
-                                            <a class="page-link" href="?page=${totalPages}&nameOrId=${nameOrId}&status=${status}&sortBy=${sortBy}&sortDir=${sortDir}">Last</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <ul class="pagination justify-content-center mb-0 mt-3 mt-sm-0">
+                                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                        <a class="page-link" href="?page=1&nameOrId=${nameOrId}&status=${status}&sortBy=${sortBy}&sortDir=${sortDir}">First</a>
+                                    </li>
+                                    <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+                                        <a class="page-link" href="?page=${currentPage - 1}&nameOrId=${nameOrId}&status=${status}&sortBy=${sortBy}&sortDir=${sortDir}">Prev</a>
+                                    </li>
+                                    <li class="page-item active">
+                                        <span class="page-link">${currentPage}</span>
+                                    </li>
+                                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                        <a class="page-link" href="?page=${currentPage + 1}&nameOrId=${nameOrId}&status=${status}&sortBy=${sortBy}&sortDir=${sortDir}">Next</a>
+                                    </li>
+                                    <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                        <a class="page-link" hr ef="?page=${totalPages}&nameOrId=${nameOrId}&status=${status}&sortBy=${sortBy}&sortDir=${sortDir}">Last</a>
+                                    </li>
+                                </ul>
                             </form>
                         </div>
                     </div>
