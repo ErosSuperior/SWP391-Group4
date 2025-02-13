@@ -21,7 +21,7 @@
 
             <li><a href="${pageContext.request.contextPath}/manager/sliders"><i class="uil uil-apps me-2 d-inline-block"></i>Slider Management</a></li>
 
-            <li><a href="#"><i class="uil uil-apps me-2 d-inline-block"></i>Service Management</a></li>
+            <li><a href="${pageContext.request.contextPath}/manager/ServicesList"><i class="uil uil-apps me-2 d-inline-block"></i>Service Management</a></li>
 
             <li><a href="${pageContext.request.contextPath}/home"><i class="uil uil-window me-2 d-inline-block"></i>Home page</a></li>
         </ul>
