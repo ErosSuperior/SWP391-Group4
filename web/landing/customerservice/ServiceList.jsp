@@ -124,7 +124,7 @@
                                 <div class="card shop-list border-0">
                                     <div class="shop-image position-relative overflow-hidden rounded shadow">
                                         <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}">
-                                            <img src="${pageContext.request.contextPath}/${service.serviceImage}" class="img-fluid" alt="${service.serviceTitle}">
+                                            <img src="${service.serviceImage}" class="img-fluid" alt="${service.serviceTitle}">
                                         </a>
                                         <ul class="list-unstyled shop-icons">
                                             <li class="mt-2"><a href="#" class="btn btn-icon btn-pills btn-soft-warning"><i data-feather="message-circle" class="icons"></i></a></li>
@@ -302,7 +302,7 @@
                                 </ul>
                                 <div class="shop-image position-relative overflow-hidden rounded shadow">
                                     <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}">
-                                        <img src="<c:out value='${pageContext.request.contextPath}/${service.serviceImage}'/>" class="img-fluid" alt="">
+                                        <img src="<c:out value='${service.serviceImage}'/>" class="img-fluid" alt="">
                                     </a>
                                     <ul class="list-unstyled shop-icons">
                                         <li><a href="#" class="btn btn-icon btn-pills btn-soft-danger"><i data-feather="heart" class="icons"></i></a></li>

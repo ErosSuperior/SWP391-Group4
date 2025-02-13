@@ -111,6 +111,7 @@ CREATE TABLE service_image (
                                image_id INT AUTO_INCREMENT PRIMARY KEY,
                                service_id INT,
                                image_link VARCHAR(255),
+                               type INT,
                                FOREIGN KEY (service_id) REFERENCES service(service_id)
 );
 

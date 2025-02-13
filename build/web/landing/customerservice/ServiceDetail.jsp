@@ -94,13 +94,13 @@
                     <div class="col-md-5">
                         <div class="slider slider-for">
                             <c:forEach var="image" items="${serviceImages}">
-                                <div><img src="${pageContext.request.contextPath}/${image}" class="img-fluid rounded" alt="Service Image"></div>
+                                <div><img src="${image}" class="img-fluid rounded" alt="Service Image"></div>
                             </c:forEach>
                         </div>
 
                         <div class="slider slider-nav">
                             <c:forEach var="image" items="${serviceImages}">
-                                <div><img src="${pageContext.request.contextPath}/${image}" class="img-fluid" alt="Service Thumbnail"></div>
+                                <div><img src="${image}" class="img-fluid" alt="Service Thumbnail"></div>
                             </c:forEach>
                         </div>
                     </div>
@@ -151,7 +151,7 @@
                                     <div class="card shop-list border-0">
                                         <div class="shop-image position-relative overflow-hidden">
                                             <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}">
-                                                <img src="${pageContext.request.contextPath}/${service.serviceImage}" class="img-fluid" alt="${service.serviceTitle}">
+                                                <img src="${service.serviceImage}" class="img-fluid" alt="${service.serviceTitle}">
                                             </a>
                                         </div>
                                         <div class="card-body content pt-4 p-2">
