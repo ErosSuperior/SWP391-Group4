@@ -378,7 +378,8 @@ public class ServiceDAO extends DBContext {
                 + "FROM service s "
                 + "LEFT JOIN service_image si ON s.service_id = si.service_id "
                 + "LEFT JOIN service_status ss ON s.service_id = ss.service_id "
-                + "WHERE 1=1 ");
+                + "WHERE 1=1 "
+                + " AND si.type = 0");
 
         if (nameOrId != null && !nameOrId.trim().isEmpty()) {
             query.append(" AND (s.service_title LIKE ? OR s.service_id = ?) ");
