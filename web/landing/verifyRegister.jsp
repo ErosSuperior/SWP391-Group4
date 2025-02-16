@@ -1,4 +1,5 @@
-<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,8 +26,9 @@
             </div>
         </div>
     </div>
-    <!-- Loader -->
+     <!-- Loader -->
 
+    <!-- Back to home -->
     <div class="back-to-home rounded d-none d-sm-block">
         <a href="<%= request.getContextPath() %>/index.jsp" class="btn btn-icon btn-primary">
             <i data-feather="home" class="icons"></i>
@@ -43,44 +45,54 @@
                          class="mx-auto d-block" alt="">
                     <div class="card login-page bg-white shadow mt-4 rounded border-0">
                         <div class="card-body">
-                            <h4 class="text-center">Verify email</h4>
+                            <h4 class="text-center">Verify Registration</h4>
                             
+                            <!-- Hiển thị lỗi nếu có (do VerifyRegisterController set request attribute "error") -->
+                            <%
+                                String error = (String) request.getAttribute("error");
+                                if (error != null) {
+                            %>
+                                <div class="alert alert-danger mt-3">
+                                    <%= error %>
+                                </div>
+                            <%
+                                }
+                            %>
                             
-                            <form action="verifyregister" method="post">
-            <div style="text-align: center; margin-top: 30px">
-                <input style="width: 400px;" type="text" name="authcode" > 
-                <input style="margin-left: 20px; background: blue" type="submit" value="verify">
-            </div>
-        </form>
-                     <form action="verifyregister" method="post">
-                   <div class="container height-100 d-flex justify-content-center align-items-center">
-                    <div class="position-relative">
-                        <div class="card p-2 text-center">
-                            <h6>Please enter the one time password <br> to verify your account</h6>
-                            <div> <span>A code has been sent to</span> <small>*******@gmail.com</small> </div>
-                            <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2"> 
-                                <input name="authcode1" class="m-2 text-center form-control rounded" type="text" id="first" maxlength="1" /> 
-                                <input name="authcode2" class="m-2 text-center form-control rounded" type="text" id="second" maxlength="1" /> 
-                                <input name="authcode3" class="m-2 text-center form-control rounded" type="text" id="third" maxlength="1" />
-                                <input name="authcode4" class="m-2 text-center form-control rounded" type="text" id="fourth" maxlength="1" /> 
-                                <input name="authcode5" class="m-2 text-center form-control rounded" type="text" id="fifth" maxlength="1" />
-                                <input name="authcode6" class="m-2 text-center form-control rounded" type="text" id="sixth" maxlength="1" /> 
+                            <!-- Form xác minh: gửi đến servlet verifyRegister -->
+                            <form action="<%= request.getContextPath() %>/verifyRegister" method="post" class="login-form mt-4">
+                                <!-- Hidden field để truyền formid (mã được tạo trong RegisterServlet) -->
+                                <input type="hidden" name="formid" value="<%= request.getAttribute("formid") != null ? request.getAttribute("formid") : "" %>" />
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Enter your 6-digit verification code <span class="text-danger">*</span></label>
+                                    <div class="d-flex">
+                                        <input type="text" name="authcode1" maxlength="1" class="form-control me-1" required/>
+                                        <input type="text" name="authcode2" maxlength="1" class="form-control me-1" required/>
+                                        <input type="text" name="authcode3" maxlength="1" class="form-control me-1" required/>
+                                        <input type="text" name="authcode4" maxlength="1" class="form-control me-1" required/>
+                                        <input type="text" name="authcode5" maxlength="1" class="form-control me-1" required/>
+                                        <input type="text" name="authcode6" maxlength="1" class="form-control" required/>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Verify</button>
+                                </div>
+                            </form>
+                            
+                            <div class="text-center mt-3">
+                                <small>Didn't receive a code? <a href="#">Resend</a></small>
                             </div>
-                            <input hidden="" type="text" name="formid" value="<%= request.getAttribute("formid").toString() %>">
-                            <div class="mt-4"> <button type="submit" value="verify" class="btn btn-danger px-4 validate">Validate</button> </div>
-                        </div>
-                    </div>
-                </div>
-                </form>
-                        </div>
+                        </div><!-- end card-body -->
                     </div><!-- end card -->
                 </div> <!-- end col -->
             </div><!-- end row -->
         </div> <!-- end container -->
     </section><!-- end section -->
-    <!-- Hero End -->
+    <!-- End Hero -->
 
-    <!-- javascript -->
+    <!-- Javascript -->
     <script src="<%= request.getContextPath() %>/assets/js/bootstrap.bundle.min.js"></script>
     <script src="<%= request.getContextPath() %>/assets/js/feather.min.js"></script>
     <script src="<%= request.getContextPath() %>/assets/js/app.js"></script>

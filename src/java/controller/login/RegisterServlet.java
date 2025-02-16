@@ -1,7 +1,7 @@
 package controller.login;
 
 import dao.UserDAO;
-import sendEmail.SendEmailRegister;
+import SendEmail.SendEmailRegister;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,7 +21,7 @@ public class RegisterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Hiển thị trang đăng ký
-        request.getRequestDispatcher("/signup.jsp").forward(request, response);
+        request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
     }
     
     @Override
@@ -52,23 +52,17 @@ public class RegisterServlet extends HttpServlet {
         session.setAttribute("password" + code, password);
         session.setAttribute("repeatpassword" + code, repeatpassword);
 
-        // Kiểm tra số điện thoại hợp lệ sử dụng regex
-        String regex = "^(0|\\+84)(\\s|\\.)?((3[2-9])|(5[689])|(7[06-9])|(8[1-689])|(9[0-46-9]))(\\d)(\\s|\\.)?(\\d{3})(\\s|\\.)?(\\d{3})$";
 
         UserDAO accountDao = new UserDAO();
         // Kiểm tra xem tài khoản (dựa theo email) đã tồn tại chưa
         User account = accountDao.checkAccountExit(useremail);
         if (account != null) {
             request.setAttribute("r", "Account already exists!");
-            request.getRequestDispatcher("/signup.jsp").forward(request, response);
-            return;
-        } else if (!phone.matches(regex)) {
-            request.setAttribute("r", "Invalid phone number!");
-            request.getRequestDispatcher("/signup.jsp").forward(request, response);
+            request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
             return;
         } else if (!password.equals(repeatpassword)) {
             request.setAttribute("r", "Password does not match repeat password!");
-            request.getRequestDispatcher("/signup.jsp").forward(request, response);
+            request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
             return;
         } else {
             // Tạo đối tượng UserRegister với tên, email và mã xác minh
@@ -83,7 +77,7 @@ public class RegisterServlet extends HttpServlet {
                 session.setAttribute("authcode" + code, userReg);
                 // Gửi mã formid (code) sang trang xác minh
                 request.setAttribute("formid", code);
-                request.getRequestDispatcher("verifyRegister.jsp").forward(request, response);
+                request.getRequestDispatcher("landing/verifyRegister.jsp").forward(request, response);
             } else {
                 try (PrintWriter out = response.getWriter()) {
                     out.println("Failed to send verification email!");

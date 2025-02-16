@@ -9,10 +9,9 @@ import context.DBContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.sql.SQLException;
 import model.User;
 
 /**
@@ -80,25 +79,42 @@ public class UserDAO {
     }
 
 
-public void register(String username, Boolean gender, String address, String password, String email, String phone) {
-    String sql = "INSERT INTO user (user_fullname, user_gender, user_address, user_password, user_email, user_phone, role_id, user_status, user_image) "
-            + "VALUES (?, ?, ?, ?, ?, ?, 4, 0, null)"; // Sửa bảng và cột theo cú pháp MySQL
+public void register(String fullname, boolean gender, String address, String password,
+                         String email, String phone, int roleId, boolean status, String image) {
 
-    try {
-        Connection conn = new DBContext().getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, username);
-        ps.setBoolean(2, gender);
-        ps.setString(3, address);
-        ps.setString(4, password);
-        ps.setString(5, email);
-        ps.setString(6, phone);
+        // Hash the password before saving
+        
+        String sql = "INSERT INTO users (user_fullname, user_gender, user_address, user_password, user_email, user_phone, role_id, user_status, user_image) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        ps.executeUpdate();
-    } catch (Exception e) {
-        e.printStackTrace(); // In lỗi nếu có
+        try (Connection connection = new DBContext().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, fullname);
+            preparedStatement.setBoolean(2, gender);
+            preparedStatement.setString(3, address);
+            preparedStatement.setString(4, password);
+            preparedStatement.setString(5, email);
+            preparedStatement.setString(6, phone);
+            preparedStatement.setInt(7, roleId);  // Ensure roleId is valid (e.g., 1 for regular users)
+            preparedStatement.setBoolean(8, status);
+            preparedStatement.setString(9, image);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                System.out.println("User registered successfully!");
+            } else {
+                System.out.println("Registration failed. Please try again.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-}
+
+
 
 
 public void changePassword(String user_email, String newpassword) {
