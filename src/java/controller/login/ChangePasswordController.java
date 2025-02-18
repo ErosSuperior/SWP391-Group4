@@ -1,7 +1,9 @@
 package controller.login;
 
+import SendEmail.SendEmail;
 import dao.UserDAO;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +16,7 @@ import model.User;
  *
  * @author win
  */
+@WebServlet(name = "ChangePasswordController", urlPatterns = {"/resetredirect", "/resetpassword"})
 public class ChangePasswordController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -58,17 +61,50 @@ public class ChangePasswordController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("changepassword.jsp").forward(request, response);
+        String url = request.getServletPath();
+        switch (url) {
+            case "/resetredirect":
+                request.getRequestDispatcher("landing/forgot-password.jsp").forward(request, response);
+                break;
+            case "/resetpassword":
+                String emailparam = request.getParameter("email");
+                UserDAO accountDao = new UserDAO();
+                User account = accountDao.checkAccountExit(emailparam);
+                if (account == null) {
+                    request.setAttribute("errorMessage", "Account doesn't exist");
+                    request.getRequestDispatcher("landing/forgot-password.jsp").forward(request, response);
+                }
+
+                SendEmail sendemail = new SendEmail();
+                // Generate a new password
+                String newPassword = sendemail.passGenerate();
+
+                // Update the password in the database
+                accountDao.changePassword(emailparam, newPassword);
+
+                // Send the new password via email
+                String emailContent = "Hello " + account.getUser_fullname() + ",\n\n"
+                        + "Your password has been reset. Your new password is:\n\n"
+                        + newPassword + "\n\n"
+                        + "Please log in and change your password immediately for security reasons.\n\n"
+                        + "Best regards,\nYour Support Team";
+
+                boolean emailSent = sendemail.sendEmail(account, emailContent);
+
+                if (emailSent) {
+                    request.getRequestDispatcher("landing/login.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("errorMessage", "Failed to send the email. Please try again.");
+                    request.getRequestDispatcher("landing/forgot-password.jsp").forward(request, response);
+                }
+                break;
+
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-    }
-
-    @Override
-    public String getServletInfo() {
-        return "Short description";
     }
 }

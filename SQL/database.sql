@@ -3,22 +3,21 @@ USE ChildrenCare;
 
 -- Bảng role
 CREATE TABLE role (
-                      role_id INT AUTO_INCREMENT PRIMARY KEY,
-                      role_name VARCHAR(255)
+                      role_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+                      role_name VARCHAR(255) DEFAULT NULL
 );
-
 -- Bảng user
 CREATE TABLE users (
-                       user_id INT AUTO_INCREMENT PRIMARY KEY,
-                       user_fullname VARCHAR(255),
-                       user_gender BOOLEAN,
-                       user_address VARCHAR(255),
-                       user_password VARCHAR(255),
-                       user_email VARCHAR(255),
-                       user_phone VARCHAR(255),
-                       role_id INT,
-                       user_status BOOLEAN,
-                       user_image VARCHAR(255),
+                       user_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+                       user_fullname VARCHAR(255) DEFAULT NULL,
+                       user_gender BOOLEAN DEFAULT NULL,
+                       user_address VARCHAR(255) DEFAULT NULL,
+                       user_password VARCHAR(255) DEFAULT NULL,
+                       user_email VARCHAR(255) DEFAULT NULL,
+                       user_phone VARCHAR(255) DEFAULT NULL,
+                       role_id INT DEFAULT NULL,
+                       user_status BOOLEAN DEFAULT NULL,
+                       user_image TEXT DEFAULT NULL,
                        FOREIGN KEY (role_id) REFERENCES role(role_id)
 );
 
@@ -26,7 +25,7 @@ CREATE TABLE users (
 CREATE TABLE category (
                           category_id INT AUTO_INCREMENT PRIMARY KEY,
                           category_name VARCHAR(255),
-                          icon VARCHAR(255)
+                          icon TEXT
 );
 
 -- Bảng blogs
@@ -38,7 +37,7 @@ CREATE TABLE blogs (
                        blog_created_date DATE,
                        category_id INT,
                        detail TEXT,
-                       blog_image VARCHAR(255),
+                       blog_image TEXT,
                        view_able BOOLEAN,
                        FOREIGN KEY (user_id) REFERENCES users(user_id),
                        FOREIGN KEY (category_id) REFERENCES category(category_id)
@@ -84,7 +83,7 @@ CREATE TABLE feedback (
                           gender BOOLEAN,
                           email VARCHAR(255),
                           mobile VARCHAR(255),
-                          feedback_image VARCHAR(255),
+                          feedback_image TEXT,
                           rate_Star INT,
                           status BOOLEAN,
                           FOREIGN KEY (user_id) REFERENCES users(user_id),
@@ -110,7 +109,7 @@ CREATE TABLE service (
 CREATE TABLE service_image (
                                image_id INT AUTO_INCREMENT PRIMARY KEY,
                                service_id INT,
-                               image_link VARCHAR(255),
+                               image_link TEXT,
                                type INT,
                                FOREIGN KEY (service_id) REFERENCES service(service_id)
 );
@@ -132,7 +131,7 @@ CREATE TABLE slider (
                         slider_status BOOLEAN,
                         service_id INT,
                         notes VARCHAR(255),
-                        [image] text,
+                        image TEXT,
                         FOREIGN KEY (category_id) REFERENCES category(category_id),
                         FOREIGN KEY (service_id) REFERENCES service(service_id)
 );
@@ -162,7 +161,7 @@ CREATE TABLE medicine_unit (
 CREATE TABLE medicine (
                           medicine_id INT AUTO_INCREMENT PRIMARY KEY,
                           medicine_name VARCHAR(255),
-                          medicine_image VARCHAR(255),
+                          medicine_image Text,
                           medicine_price DECIMAL(10, 2),
                           medicine_unit INT,
                           medicine_quantity INT,

@@ -40,7 +40,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-5 col-md-8">
-                    <img src="<%= request.getContextPath() %>/assets/images/logo-dark.png" height="24"
+                    <img src="<%= request.getContextPath() %>/assets/images/logo-dark.png" height="70"
                          class="mx-auto d-block" alt="">
                     <div class="card login-page bg-white shadow mt-4 rounded border-0">
                         <div class="card-body">
@@ -70,7 +70,7 @@
                                                     <label class="form-check-label" for="remember-check">Remember me</label>
                                                 </div>
                                             </div>
-                                            <a href="<%= request.getContextPath() %>/forgot-password.jsp" class="text-dark h6 mb-0">
+                                            <a href="<%= request.getContextPath() %>/resetredirect" class="text-dark h6 mb-0">
                                                 Forgot password ?
                                             </a>
                                         </div>
