@@ -1,12 +1,15 @@
-package controller;
+package controller.login;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+
+@WebServlet(name = "LogoutController", urlPatterns = {"/logout"})
 public class LogOutController extends HttpServlet {
 
     /**
@@ -37,7 +40,7 @@ public class LogOutController extends HttpServlet {
         }
 
         // Chuyển hướng về trang chủ hoặc trang login sau khi đăng xuất
-        response.sendRedirect("login.jsp"); // Thay đổi đường dẫn theo yêu cầu của bạn
+        response.sendRedirect(request.getContextPath() + "/loginnavigation"); // Thay đổi đường dẫn theo yêu cầu của bạn
     }
 
     /**

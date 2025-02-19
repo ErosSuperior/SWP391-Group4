@@ -94,7 +94,7 @@ public class CustomerServiceController extends HttpServlet {
         request.setAttribute("totalElements", searchResponse.getTotalElements());
         request.setAttribute("pageNo", pageNo);
         request.setAttribute("pageSize", pageSize);
-        request.getRequestDispatcher("/landing/customerservice/ServiceList.jsp").forward(request, response);
+        request.getRequestDispatcher("/landing/customer/ServiceList.jsp").forward(request, response);
     }
 
     private void handleServiceDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -121,7 +121,7 @@ public class CustomerServiceController extends HttpServlet {
         request.setAttribute("highlightedService", highlightedService);
         request.setAttribute("relatedServices", allServiceByCategory);
         request.setAttribute("serviceId", serviceId);
-        request.getRequestDispatcher("/landing/customerservice/ServiceDetail.jsp").forward(request, response);
+        request.getRequestDispatcher("/landing/customer/ServiceDetail.jsp").forward(request, response);
     }
 
     @Override

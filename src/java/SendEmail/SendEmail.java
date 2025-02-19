@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sendEmail;
+package SendEmail;
 
-import utills.Constance;
+import java.security.SecureRandom;
+import utl.Constance;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Authenticator;
@@ -101,5 +102,44 @@ public class SendEmail {
             e.printStackTrace();
         }
         return test;
+    }
+    
+    private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
+    private static final String DIGITS = "0123456789";
+    private static final String SPECIAL_CHARACTERS = "!@#$%^&*()-_=+<>?";
+    private static final String ALL_CHARACTERS = UPPERCASE + LOWERCASE + DIGITS + SPECIAL_CHARACTERS;
+
+    private static final int PASSWORD_LENGTH = 10;
+    
+    public String passGenerate() {
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
+
+        // Ensure at least one character from each category
+        password.append(UPPERCASE.charAt(random.nextInt(UPPERCASE.length())));
+        password.append(LOWERCASE.charAt(random.nextInt(LOWERCASE.length())));
+        password.append(DIGITS.charAt(random.nextInt(DIGITS.length())));
+        password.append(SPECIAL_CHARACTERS.charAt(random.nextInt(SPECIAL_CHARACTERS.length())));
+
+        // Fill the rest of the password length
+        for (int i = 4; i < PASSWORD_LENGTH; i++) {
+            password.append(ALL_CHARACTERS.charAt(random.nextInt(ALL_CHARACTERS.length())));
+        }
+
+        // Shuffle the characters for randomness
+        return shuffleString(password.toString());
+    }
+    
+    public String shuffleString(String input) {
+        char[] chars = input.toCharArray();
+        SecureRandom random = new SecureRandom();
+        for (int i = chars.length - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);
+            char temp = chars[i];
+            chars[i] = chars[j];
+            chars[j] = temp;
+        }
+        return new String(chars);
     }
 }

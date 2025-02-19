@@ -24,7 +24,7 @@ public class User {
     public User() {
     }
 
-    public User(int user_id, String user_fullname, boolean user_gender, String user_address, String user_password, String user_email, String user_phone, int user_role, boolean user_status, String user_image) {
+    public User(int user_id, String user_fullname, boolean user_gender, String user_address, String user_password, String user_email, String user_phone, int role_id, boolean user_status, String user_image) {
         this.user_id = user_id;
         this.user_fullname = user_fullname;
         this.user_gender = user_gender;
@@ -93,11 +93,11 @@ public class User {
         this.user_phone = user_phone;
     }
 
-    public int getUser_role() {
+    public int getRole_id() {
         return role_id;
     }
 
-    public void setUser_role(int role_id) {
+    public void setRole_id(int role_id) {
         this.role_id = role_id;
     }
 
@@ -119,6 +119,11 @@ public class User {
 
     @Override
     public String toString() {
-        return "user{" + "user_id=" + user_id + ", user_fullname=" + user_fullname + ", user_gender=" + user_gender + ", user_address=" + user_address + ", user_password=" + user_password + ", user_email=" + user_email + ", user_phone=" + user_phone + ", role_id=" + role_id + ", user_status=" + user_status + ", user_image=" + user_image + '}';
+        return "User{" + "user_id=" + user_id + ", user_fullname=" + user_fullname + ", user_gender=" + user_gender + ", user_address=" + user_address + ", user_password=" + user_password + ", user_email=" + user_email + ", user_phone=" + user_phone + ", role_id=" + role_id + ", user_status=" + user_status + ", user_image=" + user_image + '}';
     }
+
+  
+    
+
+    
 }

@@ -46,7 +46,10 @@ CREATE TABLE `blogs` (
 
 LOCK TABLES `blogs` WRITE;
 /*!40000 ALTER TABLE `blogs` DISABLE KEYS */;
-INSERT INTO `blogs` VALUES (1,1,'Chủ đề 1',NULL,'2024-08-13',NULL,'Đây là blog...','https://img.freepik.com/free-photo/online-blog_53876-123696.jpg?semt=ais_hybrid',1),(2,1,'Chủ đề 2',NULL,'2024-08-13',NULL,'Đây là blog...','https://img.freepik.com/free-photo/online-blog_53876-123696.jpg?semt=ais_hybrid',1),(3,2,'Chủ đề 3',NULL,'2024-08-13',NULL,'Đây là blog...','https://img.freepik.com/free-photo/online-blog_53876-123696.jpg?semt=ais_hybrid',1),(4,2,'Chủ đề 4',NULL,'2024-08-13',NULL,'Đây là blog...','https://img.freepik.com/free-photo/online-blog_53876-123696.jpg?semt=ais_hybrid',1);
+INSERT INTO `blogs` VALUES (1,1,'Chủ đề 1',NULL,'2024-08-13',NULL,'Đây là blog...','https://img.freepik.com/free-photo/online-blog_53876-123696.jpg?semt=ais_hybrid',1),
+(2,1,'Chủ đề 2',NULL,'2024-08-13',NULL,'Đây là blog...','https://img.freepik.com/free-photo/online-blog_53876-123696.jpg?semt=ais_hybrid',1),
+(3,2,'Chủ đề 3',NULL,'2024-08-13',NULL,'Đây là blog...','https://img.freepik.com/free-photo/online-blog_53876-123696.jpg?semt=ais_hybrid',1),
+(4,2,'Chủ đề 4',NULL,'2024-08-13',NULL,'Đây là blog...','https://img.freepik.com/free-photo/online-blog_53876-123696.jpg?semt=ais_hybrid',1);
 /*!40000 ALTER TABLE `blogs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -431,7 +434,10 @@ CREATE TABLE `service` (
 
 LOCK TABLES `service` WRITE;
 /*!40000 ALTER TABLE `service` DISABLE KEYS */;
-INSERT INTO `service` VALUES (1,'Dịch vụ 1',NULL,NULL,NULL,NULL,NULL,'Chi tiết 1',3,NULL),(2,'Dịch vụ 2',NULL,NULL,NULL,NULL,NULL,'Chi tiết 2',4,NULL),(3,'Dịch vụ 3',NULL,NULL,NULL,NULL,NULL,'Chi tiết 3',5,NULL),(4,'Dịch vụ 4',NULL,NULL,NULL,NULL,NULL,'Chi tiết 4',5,NULL);
+INSERT INTO `service` VALUES (1,'Dịch vụ 1',NULL,NULL,NULL,NULL,NULL,'Chi tiết 1',3,NULL),
+(2,'Dịch vụ 2',NULL,NULL,NULL,NULL,NULL,'Chi tiết 2',4,NULL),
+(3,'Dịch vụ 3',NULL,NULL,NULL,NULL,NULL,'Chi tiết 3',5,NULL),
+(4,'Dịch vụ 4',NULL,NULL,NULL,NULL,NULL,'Chi tiết 4',5,NULL);
 /*!40000 ALTER TABLE `service` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -446,6 +452,7 @@ CREATE TABLE `service_image` (
   `image_id` int NOT NULL AUTO_INCREMENT,
   `service_id` int DEFAULT NULL,
   `image_link` varchar(255) DEFAULT NULL,
+  `type` int DEFAULT NULL,
   PRIMARY KEY (`image_id`),
   KEY `service_id` (`service_id`),
   CONSTRAINT `service_image_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`)
@@ -458,7 +465,10 @@ CREATE TABLE `service_image` (
 
 LOCK TABLES `service_image` WRITE;
 /*!40000 ALTER TABLE `service_image` DISABLE KEYS */;
-INSERT INTO `service_image` VALUES (1,1,'https://media.istockphoto.com/id/1319031310/photo/doctor-writing-a-medical-prescription.jpg?s=612x612&w=0&k=20&c=DWZGM8lBb5Bun7cbxhKT1ruVxRC_itvFzA9jxgoA0N8='),(2,2,'https://media.istockphoto.com/id/1319031310/photo/doctor-writing-a-medical-prescription.jpg?s=612x612&w=0&k=20&c=DWZGM8lBb5Bun7cbxhKT1ruVxRC_itvFzA9jxgoA0N8='),(3,3,'https://media.istockphoto.com/id/1319031310/photo/doctor-writing-a-medical-prescription.jpg?s=612x612&w=0&k=20&c=DWZGM8lBb5Bun7cbxhKT1ruVxRC_itvFzA9jxgoA0N8='),(4,4,'https://media.istockphoto.com/id/1319031310/photo/doctor-writing-a-medical-prescription.jpg?s=612x612&w=0&k=20&c=DWZGM8lBb5Bun7cbxhKT1ruVxRC_itvFzA9jxgoA0N8=');
+INSERT INTO `service_image` VALUES (1,1,'https://media.istockphoto.com/id/1319031310/photo/doctor-writing-a-medical-prescription.jpg?s=612x612&w=0&k=20&c=DWZGM8lBb5Bun7cbxhKT1ruVxRC_itvFzA9jxgoA0N8='),
+(2,2,'https://media.istockphoto.com/id/1319031310/photo/doctor-writing-a-medical-prescription.jpg?s=612x612&w=0&k=20&c=DWZGM8lBb5Bun7cbxhKT1ruVxRC_itvFzA9jxgoA0N8='),
+(3,3,'https://media.istockphoto.com/id/1319031310/photo/doctor-writing-a-medical-prescription.jpg?s=612x612&w=0&k=20&c=DWZGM8lBb5Bun7cbxhKT1ruVxRC_itvFzA9jxgoA0N8='),
+(4,4,'https://media.istockphoto.com/id/1319031310/photo/doctor-writing-a-medical-prescription.jpg?s=612x612&w=0&k=20&c=DWZGM8lBb5Bun7cbxhKT1ruVxRC_itvFzA9jxgoA0N8=');
 /*!40000 ALTER TABLE `service_image` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -517,7 +527,12 @@ CREATE TABLE `slider` (
 
 LOCK TABLES `slider` WRITE;
 /*!40000 ALTER TABLE `slider` DISABLE KEYS */;
-INSERT INTO `slider` VALUES (1,'Slider 1',NULL,1,NULL,'Description 1','https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg'),(2,'Slider 2',NULL,1,NULL,'Description 2','https://media.istockphoto.com/id/1477483038/photo/doctors-nurse-or-laptop-in-night-healthcare-planning-research-or-surgery-teamwork-in-wellness.jpg?s=612x612&w=0&k=20&c=zl6vZU339QIPVzSV6wUTW3kXVNFfcyz9QXzrZ9FBsD8='),(3,'Slider 3',NULL,1,NULL,'Description 3','https://media.istockphoto.com/id/519473903/photo/doctors-showing-thumbs-up.jpg?s=612x612&w=0&k=20&c=Md62GGrulgYvSvouA3000PI-8hkmqX7YT_QcaQ0fHzE='),(4,'Slider 4',NULL,1,NULL,'Description 4','https://media.istockphoto.com/id/1371998919/photo/cropped-portrait-of-an-attractive-young-female-doctor-giving-thumbs-up-while-working-in-her.jpg?s=612x612&w=0&k=20&c=5oPD2p5gc7ZQjgyjPAJui9eOGKF8sK_GG6MJpYXmA7s='),(5,'Slider 5',NULL,1,NULL,'Description 5','https://static.vecteezy.com/system/resources/thumbnails/026/375/249/small_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg'),(6,'Slider 6',NULL,0,NULL,'Description 6','https://static.vecteezy.com/system/resources/thumbnails/026/375/249/small_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg');
+INSERT INTO `slider` VALUES (1,'Slider 1',NULL,1,NULL,'Description 1','https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg'),
+(2,'Slider 2',NULL,1,NULL,'Description 2','https://media.istockphoto.com/id/1477483038/photo/doctors-nurse-or-laptop-in-night-healthcare-planning-research-or-surgery-teamwork-in-wellness.jpg?s=612x612&w=0&k=20&c=zl6vZU339QIPVzSV6wUTW3kXVNFfcyz9QXzrZ9FBsD8='),
+(3,'Slider 3',NULL,1,NULL,'Description 3','https://media.istockphoto.com/id/519473903/photo/doctors-showing-thumbs-up.jpg?s=612x612&w=0&k=20&c=Md62GGrulgYvSvouA3000PI-8hkmqX7YT_QcaQ0fHzE='),
+(4,'Slider 4',NULL,1,NULL,'Description 4','https://media.istockphoto.com/id/1371998919/photo/cropped-portrait-of-an-attractive-young-female-doctor-giving-thumbs-up-while-working-in-her.jpg?s=612x612&w=0&k=20&c=5oPD2p5gc7ZQjgyjPAJui9eOGKF8sK_GG6MJpYXmA7s='),
+(5,'Slider 5',NULL,1,NULL,'Description 5','https://static.vecteezy.com/system/resources/thumbnails/026/375/249/small_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg'),
+(6,'Slider 6',NULL,0,NULL,'Description 6','https://static.vecteezy.com/system/resources/thumbnails/026/375/249/small_2x/ai-generative-portrait-of-confident-male-doctor-in-white-coat-and-stethoscope-standing-with-arms-crossed-and-looking-at-camera-photo.jpg');
 /*!40000 ALTER TABLE `slider` ENABLE KEYS */;
 UNLOCK TABLES;
 

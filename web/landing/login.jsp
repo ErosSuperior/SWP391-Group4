@@ -1,4 +1,5 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,7 +29,7 @@
     <!-- Loader -->
 
     <div class="back-to-home rounded d-none d-sm-block">
-        <a href="<%= request.getContextPath() %>/index.jsp" class="btn btn-icon btn-primary">
+        <a href="<%= request.getContextPath() %>/home" class="btn btn-icon btn-primary">
             <i data-feather="home" class="icons"></i>
         </a>
     </div>
@@ -39,12 +40,12 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-5 col-md-8">
-                    <img src="<%= request.getContextPath() %>/assets/images/logo-dark.png" height="24"
+                    <img src="<%= request.getContextPath() %>/assets/images/logo-dark.png" height="70"
                          class="mx-auto d-block" alt="">
                     <div class="card login-page bg-white shadow mt-4 rounded border-0">
                         <div class="card-body">
                             <h4 class="text-center">Sign In</h4>
-                            <form action="<%= request.getContextPath() %>/login" class="login-form mt-4" method="POST"> 
+                            <form action="<%= request.getContextPath() %>/login" class="login-form mt-4" method="GET"> 
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="mb-3">
@@ -69,7 +70,7 @@
                                                     <label class="form-check-label" for="remember-check">Remember me</label>
                                                 </div>
                                             </div>
-                                            <a href="<%= request.getContextPath() %>/forgot-password.jsp" class="text-dark h6 mb-0">
+                                            <a href="<%= request.getContextPath() %>/resetredirect" class="text-dark h6 mb-0">
                                                 Forgot password ?
                                             </a>
                                         </div>
@@ -84,7 +85,7 @@
                                     <div class="col-12 text-center">
                                         <p class="mb-0 mt-3">
                                             <small class="text-dark me-2">Don't have an account ?</small>
-                                            <a href="<%= request.getContextPath() %>/signup.jsp" class="text-dark fw-bold">Sign Up</a>
+                                            <a href="<%= request.getContextPath() %>/register" class="text-dark fw-bold">Sign Up</a>
                                         </p>
                                     </div>
                                 </div>
