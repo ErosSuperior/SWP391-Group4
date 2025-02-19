@@ -89,6 +89,8 @@
                         </li>
         
                         <li><a href="${pageContext.request.contextPath}/nav/dashboard" class="sub-menu-item"">Admin</a></li>
+                        
+                        <li><a href="landing/customer/MyReservation.jsp" class="sub-menu-item"">My Reservation</a></li>
                     </ul><!--end navigation menu-->
                 </div><!--end navigation-->
             </div><!--end container-->

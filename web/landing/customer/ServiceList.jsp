@@ -254,7 +254,7 @@
                             <c:forEach var="cat" items="${category}">
                                 <div class="tiny-slide">
                                     <a href="${pageContext.request.contextPath}/customer/customerlistService?categoryId=${cat.categoryId}" class="card pharpachy-categories border-0 rounded overflow-hidden">
-                                        <img src="${pageContext.request.contextPath}/${cat.categoryIcon}" class="img-fluid" alt="${cat.categoryTitle}">
+                                        <img src="${cat.categoryIcon}" class="img-fluid" alt="${cat.categoryTitle}">
                                         <div class="category-title">
                                             <span class="text-dark title-white">
                                                 <span class="h5">${cat.categoryTitle}</span>
