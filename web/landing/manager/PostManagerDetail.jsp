@@ -65,9 +65,9 @@
                                                 <select name="author" id="author" class="form-control">
                                                     <option value="null" ${selectedAuthor == null ? 'selected' : ''}>None</option>
                                                     <c:forEach var="auth" items="${author}">
-                                                            <option value="${auth.blogUserId}" ${auth.blogUserId == selectedAuthor ? 'selected' : ''}>
-                                                                ${auth.authorName}
-                                                            </option>
+                                                        <option value="${auth.blogUserId}" ${selectedAuthor != 'null' && auth.blogUserId == selectedAuthor ? 'selected' : ''}>
+                                                            ${auth.authorName}
+                                                        </option>
                                                     </c:forEach>
                                                 </select>
                                                 <br>
@@ -78,13 +78,14 @@
                                             <div class="mb-3">
                                                 <label for="category" class="form-label">Category<span style="color: red">*</span></label>
                                                 <select name="category" id="category" class="form-control">
-                                                    <option value="null" ${selectedCategoryId == null ? 'selected' : ''}>None</option>
+                                                    <option value="" ${empty selectedCategoryId ? 'selected' : ''}>None</option>
                                                     <c:forEach var="cat" items="${category}">
-                                                        <option value="${cat.blogCategory}" ${cat.blogCategory == selectedCategoryId ? 'selected' : ''}>
+                                                        <option value="${cat.blogCategory}" ${selectedCategoryId != null && selectedCategoryId == cat.blogCategory ? 'selected' : ''}>
                                                             ${cat.blogCategoryName}
                                                         </option>
                                                     </c:forEach>
                                                 </select>
+
                                                 <br>
                                             </div>
                                         </div>

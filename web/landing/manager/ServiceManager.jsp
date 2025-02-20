@@ -37,6 +37,12 @@
                     <div class="layout-specing">
                         <div class="d-md-flex justify-content-between">
                             <h5 class="mb-0">Service List</h5>
+                            <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
+                                <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
+                                    <li class="breadcrumb-item"><a href="index.html">ChildrenCare</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Service List</li>
+                                </ul>
+                            </nav>
                         </div>
                         <div class="row">
                             <form action="#" method="GET" class="row">
@@ -79,7 +85,7 @@
                                             <input type="text" name="nameOrId" class="form-control" placeholder="Search by name or ID">
                                             <button class="btn btn-primary" type="submit">Search</button>
                                             <button class="btn btn-primary ms-2" type="button"
-                                                    onclick="window.location.href = '${pageContext.request.contextPath}/manager/ServicesList'">
+                                                    onclick="window.location.href = '${pageContext.request.contextPath}/manager/ServiceList'">
                                                 <i class="uil uil-redo"></i>
                                             </button>
                                         </div>
@@ -87,7 +93,7 @@
                                 </div>
                                 <div class="col-md-auto d-flex align-items-end">
                                     <button class="btn btn-primary btn-md" type="button"
-                                            onclick="window.location.href = '${pageContext.request.contextPath}/manager/ServicesList/Add'">
+                                            onclick="window.location.href = '${pageContext.request.contextPath}/manager/ServiceList/Add'">
                                         <i class="uil uil-plus"></i>
                                     </button>
                                 </div>
@@ -128,10 +134,14 @@
                                                             </c:choose>
                                                         </td>
                                                         <td class="text-center">
-                                                            <a href="edit-service?id=${service.serviceId}" class="btn btn-sm btn-primary">Hide</a>
-                                                            <a href="edit-service?id=${service.serviceId}" class="btn btn-sm btn-primary">Show</a>
-                                                            <a href="edit-service?id=${service.serviceId}" class="btn btn-sm btn-primary">Edit</a>
-                                                            <a href="delete-service?id=${service.serviceId}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                                                            <a href="${pageContext.request.contextPath}/manager/ServiceDetail" class="btn btn-sm btn-primary">
+                                                              
+                                                                <i class="uil uil-pen"></i>
+                                                            </a>
+                                                            <a href="edit-service?id=${service.serviceId}" class="btn btn-sm btn-primary">
+                                                                <i class="uil uil-eye"></i>
+                                                            </a>
+<!--                                                            <a href="delete-service?id=${service.serviceId}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>-->
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
