@@ -31,7 +31,14 @@
     </head>
     <body>
         <!-- Loader -->
-
+        <div id="preloader">
+            <div id="status">
+                <div class="spinner">
+                    <div class="double-bounce1"></div>
+                    <div class="double-bounce2"></div>
+                </div>
+            </div>
+        </div>
         <!-- Loader -->
         <div class="page-wrapper doctris-theme toggled">
             <jsp:include page="../AdminSidebar.jsp"/>
@@ -95,6 +102,7 @@
                                                     <th class="border-bottom p-3" style="min-width: 150px;">
                                                         Author
                                                     </th>
+                                                    <th class="border-bottom p-3">Category</th>
                                                     <th class="border-bottom p-3">Detail</th>
                                                     <th class="border-bottom p-3">Status</th>
                                                     <th class="border-bottom p-3" style="min-width: 150px;">
@@ -113,6 +121,7 @@
                                                             </a>
                                                         </td>
                                                         <td class="p-3">${d.authorName}</td>
+                                                        <td class="p-3">${d.blogCategoryName    }</td>
                                                         <td class="p-3">${d.blogDetail}</td>
 
                                                         <td class="p-3">
@@ -128,7 +137,7 @@
                                                             </c:choose>
                                                         </td>
                                                         <td class="p-3">
-                                                            <a href="${pageContext.request.contextPath}/manager/managereditBlog?blog_id=${d.blogId}&blog_title=${d.blogTitle}&authorname=${d.authorName}&detail=${d.blogDetail}"
+                                                            <a href="${pageContext.request.contextPath}/manager/managereditBlog?blog_id=${d.blogId}&selectedCategoryId=${d.blogCategory}&blog_title=${d.blogTitle}&selectedAuthor=${d.blogUserId}&detail=${d.blogDetail}&image=${d.blogImage}"
                                                                class="btn btn-icon btn-pills btn-soft-primary">
                                                                 <i class="uil uil-pen"></i>
                                                             </a>
@@ -154,6 +163,11 @@
                                                                     </button>
                                                                 </c:otherwise>
                                                             </c:choose>
+                                                            <a href="javascript:void(0)" class="btn btn-icon btn-pills btn-soft-primary" 
+                                                               data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                               data-detail="${d.blogImage}">
+                                                                <i data-feather="eye" class="icons"></i>
+                                                            </a>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
@@ -201,6 +215,24 @@
 
             </main>
         </div>
+        <!-- Img modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom p-3">
+                        <h5 class="modal-title" id="exampleModalLabel">Blog Image</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="modalServiceDetail" src="" alt="Service Image" class="img-fluid" style="display: none;">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Img modal end -->
         <!-- Modal for confirmation -->
         <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
              aria-hidden="true">
@@ -270,6 +302,22 @@
                                                                                     }
                                                                                 });
                                                                             }
+
+                                                                            document.addEventListener("DOMContentLoaded", function () {
+                                                                                document.querySelectorAll("[data-bs-target='#exampleModal']").forEach(button => {
+                                                                                    button.addEventListener("click", function () {
+                                                                                        let imageUrl = this.getAttribute("data-detail"); // Get image URL from data attribute
+                                                                                        let modalImage = document.getElementById("modalServiceDetail");
+
+                                                                                        if (imageUrl) {
+                                                                                            modalImage.src = imageUrl;
+                                                                                            modalImage.style.display = "block"; // Show image
+                                                                                        } else {
+                                                                                            modalImage.style.display = "none"; // Hide if no image
+                                                                                        }
+                                                                                    });
+                                                                                });
+                                                                            });
         </script>
     </body>
 </html>

@@ -16,22 +16,24 @@ public class Blog {
     private String blogTitle;
     private String blogBi;
     private java.sql.Date blogCreatedDate;
-    private int blodCategory;
+    private int blogCategory;
+    private String blogCategoryName;
     private String blogDetail;
     private String blogImage;
     private int blogStatus;
     private String authorName;
+    
 
     public Blog() {
     }
 
-    public Blog(int blogId, int blogUserId, String blogTitle, String blogBi, Date blogCreatedDate, int blodCategory, String blogDetail, String blogImage, int blogStatus, String authorName) {
+    public Blog(int blogId, int blogUserId, String blogTitle, String blogBi, Date blogCreatedDate, int blogCategory, String blogDetail, String blogImage, int blogStatus, String authorName) {
         this.blogId = blogId;
         this.blogUserId = blogUserId;
         this.blogTitle = blogTitle;
         this.blogBi = blogBi;
         this.blogCreatedDate = blogCreatedDate;
-        this.blodCategory = blodCategory;
+        this.blogCategory = blogCategory;
         this.blogDetail = blogDetail;
         this.blogImage = blogImage;
         this.blogStatus = blogStatus;
@@ -86,12 +88,20 @@ public class Blog {
         this.blogCreatedDate = blogCreatedDate;
     }
 
-    public int getBlodCategory() {
-        return blodCategory;
+    public int getBlogCategory() {
+        return blogCategory;
     }
 
-    public void setBlodCategory(int blodCategory) {
-        this.blodCategory = blodCategory;
+    public void setBlogCategory(int blogCategory) {
+        this.blogCategory = blogCategory;
+    }
+
+    public String getBlogCategoryName() {
+        return blogCategoryName;
+    }
+
+    public void setBlogCategoryName(String blogCategoryName) {
+        this.blogCategoryName = blogCategoryName;
     }
 
     public String getBlogDetail() {

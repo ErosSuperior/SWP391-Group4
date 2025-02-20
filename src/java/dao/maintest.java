@@ -23,15 +23,9 @@ public class maintest {
         ServiceDAO svd = new ServiceDAO();
         Blog bg = new Blog();
         BlogDAO bgd = new BlogDAO();
-            
+          
 //        int abc = bgd.countBlog("", 2, -1);
 //        System.out.println(abc);
-        List<Blog> av = bgd.getBlog(0, 10, "",-1 , -1, "b.blog_id", "ASC");
-        for(int i = 0 ; i<av.size() ;i++){
-            System.out.println(av.get(i).getBlogId());
-            System.out.println(av.get(i).getBlogDetail());
-            System.out.println(av.get(i).getBlogStatus());
-        }
 //        int serviceaaa = svd.countActiveService("a");
 //        System.out.println(serviceaaa);
 //          List<String> serviceImage = svd.getAllServiceImages(1);
