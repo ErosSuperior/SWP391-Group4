@@ -47,7 +47,7 @@
                                     </div>
                                 </a>
                                 <a class="dropdown-item text-dark" href="doctor-dashboard.html"><span class="mb-0 d-inline-block me-1"><i class="uil uil-dashboard align-middle h6"></i></span> Dashboard</a>
-                                <a class="dropdown-item text-dark" href="doctor-profile-setting.html"><span class="mb-0 d-inline-block me-1"><i class="uil uil-setting align-middle h6"></i></span> Profile Settings</a>
+                                <a class="dropdown-item text-dark" href="${pageContext.request.contextPath}/myReservationController"><span class="mb-0 d-inline-block me-1"><i class="uil uil-setting align-middle h6"></i></span> Profile Settings</a>
                                 <div class="dropdown-divider border-top"></div>
                                 <c:if test="${not empty sessionScope.account.user_id}">
                                     <a class="dropdown-item text-dark" href="<c:url value='/logout' />">
@@ -90,7 +90,6 @@
         
                         <li><a href="${pageContext.request.contextPath}/nav/dashboard" class="sub-menu-item"">Admin</a></li>
                         
-                        <li><a href="landing/customer/MyReservation.jsp" class="sub-menu-item"">My Reservation</a></li>
                     </ul><!--end navigation menu-->
                 </div><!--end navigation-->
             </div><!--end container-->
