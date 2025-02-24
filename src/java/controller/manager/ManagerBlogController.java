@@ -17,10 +17,7 @@ import dao.BlogDAO;
 import init.BlogInit;
 import java.util.List;
 
-/**
- *
- * @author thang
- */
+
 @WebServlet(name = "ManagerBlogController", urlPatterns = {"/manager/managerlistBlog", "/manager/manageraddBlog", "/manager/managereditBlog", "/manager/managerupdatestatusBlog", "/manager/manageredits"})
 public class ManagerBlogController extends HttpServlet {
 
