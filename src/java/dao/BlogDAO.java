@@ -9,10 +9,7 @@ import java.util.List;
 import model.Blog;
 import context.DBContext;
 
-/**
- *
- * @author thang
- */
+
 public class BlogDAO extends DBContext {
 
     private Connection connection;
