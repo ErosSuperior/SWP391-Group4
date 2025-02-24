@@ -8,10 +8,7 @@ import model.SearchResponse;
 import model.Blog;
 import dao.BlogDAO;
 import dao.BlogDAO;
-/**
- *
- * @author thang
- */
+
 public class BlogInit {
     BlogDAO blogDAO = new BlogDAO();
     
