@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Service;
 import dao.ServiceDAO;
-import dao.ServiceInit;
+import init.ServiceInit;
 import java.util.List;
 import model.SearchResponse;
 

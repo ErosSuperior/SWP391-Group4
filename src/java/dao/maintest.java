@@ -3,11 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 package dao;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import model.Service;
 import model.Blog;
+import model.Reservation;
+import model.User;
+
 /**
  *
  * @author thang
@@ -18,12 +22,27 @@ public class maintest {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+
         Service sv = new Service();
         ServiceDAO svd = new ServiceDAO();
         Blog bg = new Blog();
         BlogDAO bgd = new BlogDAO();
-          
+        ReservationDAO rsvd = new ReservationDAO();
+        
+//        List<Reservation> r = rsvd.getReservation(0, 10, "", 1, "reservation_id", "ASC");
+//        for(int i = 0;i<r.size();i++){
+//            System.out.println(r.get(i).getUser_id());
+//        }
+
+//          List<Reservation> r = rsvd.getIdtoCompare();
+//          for(Reservation a : r){
+//              System.out.println(a.getUser_id());
+//              System.out.println(a.getReservation_id());
+//              System.out.println(a.getStaff_id());
+//              System.out.println(a.getDetail_id());
+//              System.out.println("");
+//          }
+//          
 //        int abc = bgd.countBlog("", 2, -1);
 //        System.out.println(abc);
 //        int serviceaaa = svd.countActiveService("a");
@@ -46,11 +65,7 @@ public class maintest {
 //              System.out.println(av.get(i).getServiceImage());
 //              System.out.println(av.get(i).getServicePrice());
 //          }
-          
 //            bgd.updateStatus(1, 0);
-          
-          
-          
-   }
-    
+    }
+
 }

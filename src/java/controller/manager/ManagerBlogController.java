@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.Blog;
 import model.SearchResponse;
 import dao.BlogDAO;
-import dao.BlogInit;
+import init.BlogInit;
 import java.util.List;
 
 /**

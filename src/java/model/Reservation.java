@@ -28,8 +28,7 @@ public class Reservation {
     private int children_id;
     private int medical_id;
     private String diagnosis;
-    
-    
+    private int staff_id;
     public Reservation() {
     }
 
@@ -200,6 +199,14 @@ public class Reservation {
 
     public void setDiagnosis(String diagnosis) {
         this.diagnosis = diagnosis;
+    }
+
+    public int getStaff_id() {
+        return staff_id;
+    }
+
+    public void setStaff_id(int staff_id) {
+        this.staff_id = staff_id;
     }
     
 }

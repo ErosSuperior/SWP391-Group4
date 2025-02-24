@@ -4,6 +4,8 @@
  */
 package controller.customer;
 
+import dao.ReservationDAO;
+import init.ReservationInit;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,13 +13,21 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.Reservation;
+import model.SearchResponse;
+import model.User;
 
 /**
  *
  * @author thang
  */
-@WebServlet(name = "MyReservationController", urlPatterns = {"/myReservationController"})
+@WebServlet(name = "MyReservationController", urlPatterns = {"/myReservationController", "/customer/myreservationlist"})
 public class MyReservationController extends HttpServlet {
+
+    ReservationDAO reservationDao = new ReservationDAO();
+    ReservationInit reserInit = new ReservationInit();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,7 +46,7 @@ public class MyReservationController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet MyReservationController</title>");            
+            out.println("<title>Servlet MyReservationController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet MyReservationController at " + request.getContextPath() + "</h1>");
@@ -57,7 +67,16 @@ public class MyReservationController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("landing/customer/MyReservation.jsp").forward(request, response);
+        String url = request.getServletPath();
+        switch (url) {
+            case "/myReservationController":
+                request.getRequestDispatcher("landing/customer/MyReservation.jsp").forward(request, response);
+                break;
+            case "/customer/myreservationlist":
+                handleListReservation(request, response);
+                break;
+        }
+
     }
 
     /**
@@ -74,11 +93,40 @@ public class MyReservationController extends HttpServlet {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
+    public void handleListReservation(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Check if user is logged in
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+
+        if (account == null) {
+            // Redirect to login page if not logged in
+            response.sendRedirect(request.getContextPath() + "/loginnavigation");
+            return;
+        }
+
+        // Retrieve request parameters
+        String pageNoParam = request.getParameter("pageNo");
+        int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
+        int pageSize = 4;
+        String nameOrId = request.getParameter("nameOrId");
+
+        // Get reservation list for the logged-in user
+        SearchResponse<Reservation> searchResponse = reserInit.getReservation(pageNo, pageSize, nameOrId, account.getUser_id());
+        List<User> userinfo = reservationDao.getAllUserInfo();
+        List<Reservation> idcomp = reservationDao.getIdtoCompare();
+        // Set attributes for JSP
+        request.setAttribute("reservations", searchResponse.getContent());
+        request.setAttribute("idcomp", idcomp);
+        request.setAttribute("userinfo", userinfo);
+        request.setAttribute("totalElements", searchResponse.getTotalElements());
+        request.setAttribute("pageNo", pageNo);
+        request.setAttribute("pageSize", pageSize);
+
+        // Forward to the reservation list JSP
+        request.getRequestDispatcher("/landing/customer/MyReservation.jsp").forward(request, response);
+    }
+
     @Override
     public String getServletInfo() {
         return "Short description";
