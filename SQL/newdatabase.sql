@@ -85,11 +85,14 @@ CREATE TABLE reservation (
     total_price DECIMAL(10, 2),
     note TEXT,
     reservation_status INT,
+    payment_status INT,
     created_date DATE,
+    address VARCHAR(500),
+    contact_number varchar(100),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 INSERT INTO reservation (user_id, total_price, note, reservation_status, created_date) 
-VALUES (1, 100.50, 'Initial reservation for consultation', 1, '2025-02-17');
+VALUES (1, 100.50, 'Initial reservation for consultation', 1,1, '2025-02-17', 'St12 NYC','0973256951');
 
 -- Tạo bảng feedback và thêm dữ liệu
 CREATE TABLE feedback (
@@ -216,7 +219,6 @@ CREATE TABLE reservation_detail (
     service_id INT,
     price DECIMAL(10, 2),
     quantity INT,
-    num_of_person INT,
     category_id INT,
     staff_id INT,
     begin_time DATE,
@@ -228,8 +230,8 @@ CREATE TABLE reservation_detail (
     FOREIGN KEY (staff_id) REFERENCES users(user_id),
     FOREIGN KEY (children_id) REFERENCES children(children_id)
 );
-INSERT INTO reservation_detail (reservation_id, service_id, price, quantity, num_of_person, category_id,staff_id, begin_time, slot, children_id) 
-VALUES (1, 1, 50.00, 1, 1, 1, 2, '2025-02-17', 1, 1);
+INSERT INTO reservation_detail (reservation_id, service_id, price, quantity, category_id,staff_id, begin_time, slot, children_id) 
+VALUES (1, 1, 50.00, 1, 1, 2, '2025-02-17', 1, 1);
 
 -- Tạo bảng reservation_medical và thêm dữ liệu
 CREATE TABLE reservation_medical (
