@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Reservation;
+import model.Service;
 import model.User;
 
 /**
@@ -162,31 +163,60 @@ public class ReservationDAO extends DBContext {
 
         return users;
     }
-
-    public List<Reservation> getIdtoCompare() {
-        List<Reservation> res = new ArrayList<>();
-        String query = "SELECT r.*, rd.staff_id AS staff_id "
-                + "FROM reservation r "
-                + "LEFT JOIN reservation_detail rd "
-                + "ON r.reservation_id = rd.reservation_id "
-                + "WHERE 1=1 "
-                + "AND reservation_status != 2 ";
+    
+    public List<Reservation> getReservationDetailonId(int userId){
+        List<Reservation> reservations = new ArrayList<>();
+        
+        String query = "SELECT r.*, rd.* "
+                    + "FROM reservation r "
+                    + "LEFT JOIN reservation_detail rd ON r.reservation_id = rd.reservation_id "
+                    + "WHERE 1=1 "
+                    + "AND r.user_id = ? ";
+        
         if (connection == null) {
             System.err.println("Database connection is not available.");
-            return res; // Return empty list if connection failed
+            return reservations; 
         }
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            int index = 1;
+            preparedStatement.setInt(index++, userId);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Reservation s = new Reservation();
-                s.setReservation_id(rs.getInt("reservation_id"));
-                s.setUser_id(rs.getInt("user_id"));
-                s.setStaff_id(rs.getInt("staff_id"));
-                res.add(s);
+                s.setReservation_id(rs.getInt("rd.reservation_id"));
+                s.setQuantity(rs.getInt("rd.quantity"));
+                s.setDetail_id(rs.getInt("rd.reservation_detail_id"));
+                s.setPrice(rs.getFloat("rd.price"));
+                s.setBegin_time(rs.getDate("rd.begin_time"));
+                s.setService_id(rs.getInt("rd.service_id"));
+                reservations.add(s);
+            }   
+        } catch (Exception e) {
+        }
+        
+        return reservations;
+    }
+    
+    public List<Service> getAllServiceInfo(){
+        List<Service> srvc = new ArrayList<>();
+        String query = "SELECT * "
+                + "FROM service "
+                + "WHERE 1=1";
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return srvc; 
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Service s = new Service();
+                s.setServiceId(rs.getInt("service_id"));
+                s.setServiceTitle(rs.getString("service_title"));
+                srvc.add(s);
             }
         } catch (Exception e) {
         }
-        return res;
+        return srvc;
     }
 }

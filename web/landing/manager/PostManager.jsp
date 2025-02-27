@@ -140,7 +140,7 @@
                                                             <a href="${pageContext.request.contextPath}/manager/managereditBlog?blog_id=${d.blogId}&selectedCategoryId=${d.blogCategory}&blog_title=${d.blogTitle}&selectedAuthor=${d.blogUserId}&detail=${d.blogDetail}&image=${d.blogImage}"
                                                                class="btn btn-icon btn-pills btn-soft-primary">
                                                                 <i class="uil uil-pen"></i>
-                                                            </a>
+                                                           </a>
                                                             <c:choose>
                                                                 <c:when test="${d.blogStatus == '1'}">
                                                                     <button

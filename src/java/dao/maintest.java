@@ -28,11 +28,7 @@ public class maintest {
         Blog bg = new Blog();
         BlogDAO bgd = new BlogDAO();
         ReservationDAO rsvd = new ReservationDAO();
-        
-//        List<Reservation> r = rsvd.getReservation(0, 10, "", 1, "reservation_id", "ASC");
-//        for(int i = 0;i<r.size();i++){
-//            System.out.println(r.get(i).getUser_id());
-//        }
+
 
 //          List<Reservation> r = rsvd.getIdtoCompare();
 //          for(Reservation a : r){

@@ -121,10 +121,11 @@
                                                                 <td class="text-center p-3">
                                                                     <c:choose>
                                                                         <c:when test="${reservation.status == '1'}">
-                                                                            <a href="#" class="btn btn-icon btn-pills btn-soft-primary" data-bs-toggle="modal" data-bs-target="#view-invoice">
+                                                                            <a href="${pageContext.request.contextPath}/customer/myreservationdetail" class="btn btn-icon btn-pills btn-soft-primary view-invoice-btn">
                                                                                 <i class="uil uil-eye"></i>
                                                                             </a>
                                                                         </c:when>
+
                                                                         <c:when test="${reservation.status == '0'}">
                                                                             <a href="${pageContext.request.contextPath}/customer/myreservationlist"
                                                                                class="btn btn-icon btn-pills btn-soft-primary">
@@ -186,13 +187,14 @@
         </section><!-- End Hero -->
 
         <!-- View Invoice Start -->
-        <div class="modal fade" id="view-invoice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header border-bottom p-3">
                         <h5 class="modal-title" id="exampleModalLabel">Reservation Information</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    <input type="hidden" id="selectedReservationId" value="">
                     <div class="modal-body p-3 pt-4">
                         <div class="row mb-4">
                             <div class="col-lg-8 col-md-6">
@@ -202,24 +204,24 @@
                             <div class="col-lg-4 col-md-6 mt-4 mt-sm-0 pt-2 pt-sm-0">
                                 <ul class="list-unstyled">
                                     <li class="d-flex">
-                                        <small class="mb-0 text-muted">Invoice no. : </small>
-                                        <small class="mb-0 text-dark">&nbsp;&nbsp;#54638990jnn</small>
+                                        <small class="mb-0 text-muted">Invoice no. : #</small>
+                                        <small class="mb-0 text-dark" id="invoiceNoDisplay"></small>
                                     </li>
                                     <li class="d-flex mt-2">
                                         <small class="mb-0 text-muted">Email : </small>
-                                        <small class="mb-0">&nbsp;&nbsp;<a href="mailto:contact@example.com" class="text-dark">info@doctris.com</a></small>
+                                        <small class="mb-0">${sessionScope.account.user_email}</small>
                                     </li>
                                     <li class="d-flex mt-2">
                                         <small class="mb-0 text-muted">Phone : </small>
-                                        <small class="mb-0">&nbsp;&nbsp;<a href="tel:+152534-468-854" class="text-dark">(+12) 1546-456-856</a></small>
+                                        <small class="mb-0">${sessionScope.account.user_phone}</small>  
                                     </li>
                                     <li class="d-flex mt-2">
-                                        <small class="mb-0 text-muted">Website : </small>
-                                        <small class="mb-0">&nbsp;&nbsp;<a href="#" class="text-dark">www.doctris.com</a></small>
+                                        <small class="mb-0 text-muted">Address : </small>
+                                        <small class="mb-0">${sessionScope.account.user_address}</small>
                                     </li>
                                     <li class="d-flex mt-2">
                                         <small class="mb-0 text-muted">Patient Name : </small>
-                                        <small class="mb-0">&nbsp;&nbsp;Mary Skeens</small>
+                                        <small class="mb-0">${sessionScope.account.user_fullname}</small>
                                     </li>
                                 </ul>
                             </div><!--end col-->
@@ -228,25 +230,19 @@
                         <div class="pt-4 border-top">
                             <div class="row">
                                 <div class="col-lg-8 col-md-6">
-                                    <h5 class="text-muted fw-bold">Invoice <span class="badge badge-pill badge-soft-success fw-normal ms-2">Paid</span></h5>
-                                    <h6>Surgery (Gynecology)</h6>
+                                    <h5 class="text-muted fw-bold">Reservation <span class="badge badge-pill badge-soft-success fw-normal ms-2" id="resstatus"></span></h5>
                                 </div><!--end col-->
 
                                 <div class="col-lg-4 col-md-6 mt-4 mt-sm-0 pt-2 pt-sm-0">
                                     <ul class="list-unstyled">
                                         <li class="d-flex mt-2">
                                             <small class="mb-0 text-muted">Issue Dt. : </small>
-                                            <small class="mb-0 text-dark">&nbsp;&nbsp;25th Sep. 2020</small>
-                                        </li>
-
-                                        <li class="d-flex mt-2">
-                                            <small class="mb-0 text-muted">Due Dt. : </small>
-                                            <small class="mb-0 text-dark">&nbsp;&nbsp;11th Oct. 2020</small>
+                                            <small class="mb-0 text-dark" id=""></small>
                                         </li>
 
                                         <li class="d-flex mt-2">
                                             <small class="mb-0 text-muted">Dr. Name : </small>
-                                            <small class="mb-0 text-dark">&nbsp;&nbsp;Dr. Calvin Carlo</small>
+                                            <small class="mb-0 text-dark" id=""></small>
                                         </li>
                                     </ul>
                                 </div><!--end col-->
@@ -264,24 +260,26 @@
                                                 <th scope="col" class="border-bottom p-3" style="min-width: 130px;">Total</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <th scope="row" class="text-start p-3">1</th>
-                                                <td class="text-start p-3">Hospital Charges</td>
-                                                <td class="text-center p-3">1</td>
-                                                <td class="p-3">$ 125</td>
-                                                <td class="p-3">$ 125</td>
-                                            </tr>
-                                        </tbody>
+
+                                        
+                                                <tr>
+                                                    <th scope="row" class="text-start p-3">${res.reservation_id}</th>
+                                                    <td class="text-start p-3">a</td>
+                                                    <td class="text-center p-3">a</td>
+                                                    <td class="p-3">$ a</td>
+                                                    <td class="p-3">$ a</td>
+                                                </tr>
+                                            
+
                                     </table>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-4 col-md-5 ms-auto">
                                         <ul class="list-unstyled h6 fw-normal mt-4 mb-0 ms-md-5 ms-lg-4">
-                                            <li class="text-muted d-flex justify-content-between pe-3">Subtotal :<span>$ 520</span></li>
+                                            <li class="text-muted d-flex justify-content-between pe-3">Subtotal :<small class="text-dark" id="subtotalprice"></small></li>
                                             <li class="text-muted d-flex justify-content-between pe-3">Taxes :<span> 0</span></li>
-                                            <li class="d-flex justify-content-between pe-3">Total :<span>$ 520</span></li>
+                                            <li class="d-flex justify-content-between pe-3">Total :<small class="text-dark" id="totalprice"></small></li>
                                         </ul>
                                     </div><!--end col-->
                                 </div><!--end row-->
@@ -291,7 +289,7 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="text-sm-start text-muted text-center">
-                                            <small class="mb-0">Customer Services : <a href="tel:+152534-468-854" class="text-warning">(+12) 1546-456-856</a></small>
+                                            <small class="mb-0">Customer Services : <a href="tel:+849732-569-51" class="text-warning">(+84) 9732-569-51</a></small>
                                         </div>
                                     </div><!--end col-->
 
@@ -303,10 +301,6 @@
                                 </div><!--end row-->
                             </div>
                         </div>
-
-                        <!-- <div class="text-end mt-4 pt-2">
-                            <a href="javascript:window.print()" class="btn btn-soft-primary d-print-none"><i class="uil uil-print"></i> Print</a>
-                        </div> -->
                     </div>
                 </div>
             </div>
@@ -327,5 +321,6 @@
         <script src="<%= request.getContextPath() %>/assets/js/feather.min.js"></script>
         <!-- Main Js -->
         <script src="<%= request.getContextPath() %>/assets/js/app.js"></script>
+
     </body>
 </html>

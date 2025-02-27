@@ -17,13 +17,14 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Reservation;
 import model.SearchResponse;
+import model.Service;
 import model.User;
 
 /**
  *
  * @author thang
  */
-@WebServlet(name = "MyReservationController", urlPatterns = {"/myReservationController", "/customer/myreservationlist"})
+@WebServlet(name = "MyReservationController", urlPatterns = {"/myReservationController", "/customer/myreservationlist", "/customer/myreservationdetail"})
 public class MyReservationController extends HttpServlet {
 
     ReservationDAO reservationDao = new ReservationDAO();
@@ -75,6 +76,9 @@ public class MyReservationController extends HttpServlet {
             case "/customer/myreservationlist":
                 handleListReservation(request, response);
                 break;
+            case "/customer/myreservationdetail":
+                request.getRequestDispatcher("/landing/customer/ReservationInfo.jsp").forward(request, response);
+                break;
         }
 
     }
@@ -114,11 +118,13 @@ public class MyReservationController extends HttpServlet {
         // Get reservation list for the logged-in user
         SearchResponse<Reservation> searchResponse = reserInit.getReservation(pageNo, pageSize, nameOrId, account.getUser_id());
         List<User> userinfo = reservationDao.getAllUserInfo();
-        List<Reservation> idcomp = reservationDao.getIdtoCompare();
+        List<Service> svinfo = reservationDao.getAllServiceInfo();
+        List<Reservation> rsvdetail = reservationDao.getReservationDetailonId(account.getUser_id());
         // Set attributes for JSP
         request.setAttribute("reservations", searchResponse.getContent());
-        request.setAttribute("idcomp", idcomp);
         request.setAttribute("userinfo", userinfo);
+        request.setAttribute("svinfo", svinfo);
+        request.setAttribute("rsvdetail", rsvdetail);
         request.setAttribute("totalElements", searchResponse.getTotalElements());
         request.setAttribute("pageNo", pageNo);
         request.setAttribute("pageSize", pageSize);
@@ -127,6 +133,8 @@ public class MyReservationController extends HttpServlet {
         request.getRequestDispatcher("/landing/customer/MyReservation.jsp").forward(request, response);
     }
 
+    
+    
     @Override
     public String getServletInfo() {
         return "Short description";
