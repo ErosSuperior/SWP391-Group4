@@ -91,8 +91,8 @@ CREATE TABLE reservation (
     contact_number varchar(100),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-INSERT INTO reservation (user_id, total_price, note, reservation_status, created_date) 
-VALUES (1, 100.50, 'Initial reservation for consultation', 1,1, '2025-02-17', 'St12 NYC','0973256951');
+INSERT INTO reservation (user_id, total_price, note, reservation_status, payment_status, created_date, address, contact_number) 
+VALUES (1, 100.50, 'Initial reservation for consultation', 1, 1, '2025-02-17', 'St12 NYC', '0973256951');
 
 -- Tạo bảng feedback và thêm dữ liệu
 CREATE TABLE feedback (
