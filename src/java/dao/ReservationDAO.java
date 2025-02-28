@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import model.Reservation;
 import model.Service;
@@ -32,25 +33,105 @@ public class ReservationDAO extends DBContext {
         }
     }
 
-    public String getUserImg(int userId) {
-        String query = "SELECT user_image FROM users WHERE user_id = ?";
-
-        if (connection == null) {
-            System.err.println("Database connection is not available.");
-            return "no img"; // Return "no img" if the connection failed
-        }
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, userId);
-            ResultSet rs = preparedStatement.executeQuery();
-
-            if (rs.next()) {
-                return rs.getString("user_image"); // Return the user image
+    public boolean checkCartExist(int userId) {
+        String sql = "SELECT 1 FROM reservation WHERE user_id = ? AND reservation_status = 0 LIMIT 1";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next(); // If there's a result, return true (cart exists)
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // No cart found
+    }
+
+    public boolean addCart(int userId) {
+        String sql = "INSERT INTO reservation (user_id, total_price, reservation_status, payment_status, created_date) "
+                + "VALUES (?, 0.00, 0, 0, CURDATE())";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0; // Returns true if insertion is successful
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Insert failed
+    }
+
+    public boolean addToCart(int reservationId, int serviceId, float price, int staffId, Date beginTime) {
+        String sql = "INSERT INTO reservation_detail (reservation_id, service_id, price, quantity, category_id, staff_id, begin_time, slot, children_id) "
+                + "VALUES (?, ?, ?, 1, NULL, ?, ?, NULL, NULL)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, reservationId);
+            stmt.setInt(2, serviceId);
+            stmt.setDouble(3, price);
+            stmt.setInt(4, staffId);
+            stmt.setDate(5, new java.sql.Date(beginTime.getTime()));
+
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0; // Returns true if insertion is successful
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Insert failed
+    }
+
+    public Integer getCartByUserID(int userId) {
+        String query = "SELECT reservation_id FROM reservation WHERE user_id = ? AND reservation_status = 0";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("reservation_id");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if no reservation is found
+    }
+
+    public int getCartQuantity(int reservationId, int serviceId) {
+        int quantity = 0;
+        String query = "SELECT quantity FROM reservation_detail WHERE reservation_id = ? AND service_id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+
+            ps.setInt(1, reservationId);
+            ps.setInt(2, serviceId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    quantity = rs.getInt("quantity");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        return "noimg"; // Default return if no user image is found
+        return quantity;
+    }
+
+    public void updateCartQuantity(int reservationId, int serviceId, int quantity) {
+        String query = "UPDATE reservation_detail SET quantity = ? WHERE reservation_id = ? AND service_id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+
+            ps.setInt(1, quantity);
+            ps.setInt(2, reservationId);
+            ps.setInt(3, serviceId);
+
+            int updatedRows = ps.executeUpdate();
+            if (updatedRows > 0) {
+                System.out.println("Cart quantity updated successfully.");
+            } else {
+                System.out.println("No matching record found to update.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Reservation> getReservation(int offset, int limit, String nameOrId, int userId, String sortBy, String sortDir) {
@@ -163,19 +244,19 @@ public class ReservationDAO extends DBContext {
 
         return users;
     }
-    
-    public List<Reservation> getReservationDetailonId(int userId){
+
+    public List<Reservation> getReservationDetailonId(int userId) {
         List<Reservation> reservations = new ArrayList<>();
-        
+
         String query = "SELECT r.*, rd.* "
-                    + "FROM reservation r "
-                    + "LEFT JOIN reservation_detail rd ON r.reservation_id = rd.reservation_id "
-                    + "WHERE 1=1 "
-                    + "AND r.user_id = ? ";
-        
+                + "FROM reservation r "
+                + "LEFT JOIN reservation_detail rd ON r.reservation_id = rd.reservation_id "
+                + "WHERE 1=1 "
+                + "AND r.user_id = ? ";
+
         if (connection == null) {
             System.err.println("Database connection is not available.");
-            return reservations; 
+            return reservations;
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -191,21 +272,21 @@ public class ReservationDAO extends DBContext {
                 s.setBegin_time(rs.getDate("rd.begin_time"));
                 s.setService_id(rs.getInt("rd.service_id"));
                 reservations.add(s);
-            }   
+            }
         } catch (Exception e) {
         }
-        
+
         return reservations;
     }
-    
-    public List<Service> getAllServiceInfo(){
+
+    public List<Service> getAllServiceInfo() {
         List<Service> srvc = new ArrayList<>();
         String query = "SELECT * "
                 + "FROM service "
                 + "WHERE 1=1";
         if (connection == null) {
             System.err.println("Database connection is not available.");
-            return srvc; 
+            return srvc;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet rs = preparedStatement.executeQuery();
