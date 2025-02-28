@@ -87,13 +87,13 @@ CREATE TABLE reservation (
     reservation_status INT,
     payment_status INT,
     created_date DATE,
-    address VARCHAR(500),
-    contact_number varchar(100),
+    receiver_address VARCHAR(500),
+    receiver_number varchar(100),
     receiver_email varchar(100),
-    receivar_name varchar(100),
+    receiver_name varchar(100),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-INSERT INTO reservation (user_id, total_price, note, reservation_status, payment_status, created_date, address, contact_number, receiver_email, receiver_name) 
+INSERT INTO reservation (user_id, total_price, note, reservation_status, payment_status, created_date, receiver_address, receiver_number, receiver_email, receiver_name) 
 VALUES (1, 100.50, 'Initial reservation for consultation', 1, 1, '2025-02-17', 'St12 NYC', '0973256951', 'abc@gmail.com', 'nguyendat');
 
 -- Tạo bảng feedback và thêm dữ liệu
