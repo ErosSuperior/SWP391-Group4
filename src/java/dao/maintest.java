@@ -14,6 +14,7 @@ import java.util.List;
 import model.Service;
 import model.Blog;
 import model.Reservation;
+import model.ReservationDetail;
 import model.User;
 
 /**
@@ -33,12 +34,20 @@ public class maintest {
         BlogDAO bgd = new BlogDAO();
         ReservationDAO reservationDAO = new ReservationDAO();
         UserDAO userDAO = new UserDAO();
+        ShopCartDAO scd = new ShopCartDAO();
         
-        List<Reservation> r = reservationDAO.getReservation(0, 10, "", 1, 30, -1, -1, "reservation_id", "ASC");
+        List<ReservationDetail> s= scd.getReservationDetail(3);
         
-        for(Reservation a : r){
-            System.out.println(a.getCreated_date());
+        for(ReservationDetail c : s){
+            System.out.println(c.getPrice());
+            System.out.println(c.getImage_link());
         }
+        
+//        List<Reservation> r = reservationDAO.getReservation(0, 10, "", 1, 30, -1, -1, "reservation_id", "ASC");
+//        
+//        for(Reservation a : r){
+//            System.out.println(a.getCreated_date());
+//        }
         
 //        boolean cartExists = reservationDAO.checkCartExist(1);
 //

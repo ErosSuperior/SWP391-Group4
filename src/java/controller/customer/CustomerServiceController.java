@@ -62,6 +62,9 @@ public class CustomerServiceController extends HttpServlet {
             case "/customer/service/addToCart":
                 handleAddtoCart(request, response);
                 break;
+            default:
+                System.out.println("Unknown URL requested: " + url);
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
@@ -109,7 +112,7 @@ public class CustomerServiceController extends HttpServlet {
     private void handleServiceDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int serviceId = -1; // Default value to prevent errors
         String serviceIdParam = request.getParameter("serviceId");
-
+        String cartmessage = request.getParameter("cartmessage");
         try {
             if (serviceIdParam != null && !serviceIdParam.trim().isEmpty()) {
                 serviceId = Integer.parseInt(serviceIdParam);
@@ -125,6 +128,7 @@ public class CustomerServiceController extends HttpServlet {
 
         // Set attributes for JSP
         request.setAttribute("serviceImages", serviceImage);
+        request.setAttribute("cartmessage", cartmessage);
         request.setAttribute("highlightedService", highlightedService);
         request.setAttribute("relatedServices", allServiceByCategory);
         request.setAttribute("staffList", userDao.getAllStaffNotBusy());
@@ -150,11 +154,11 @@ public class CustomerServiceController extends HttpServlet {
             String reservationDate = request.getParameter("reservation_date");
 
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            
+
             Date utilDate = format.parse(reservationDate);
-            
+
             Date beginTime = new Date(utilDate.getTime());
-            
+
             int selectedStaffId = Integer.parseInt(request.getParameter("selected_staff"));
 
             String serviceparam = request.getParameter("serviceId");
@@ -173,17 +177,22 @@ public class CustomerServiceController extends HttpServlet {
                 int newQuantity = curQuantity + quantity;
 
                 reservationDao.updateCartQuantity(cartId, serviceId, newQuantity); // If the cart already have the correnponding service, update the newquantity to the cart 
+
+                request.setAttribute("cartmessage", "SUCCESSFUL ADDED");
                 
-                response.sendRedirect(request.getContextPath() + "/customer/customerdetailService?serviceId=" + serviceId);
+                handleServiceDetail(request, response);
+
+            }else{
+
+            reservationDao.addToCart(cartId, serviceId, (float) (sv.getServicePrice() - sv.getServiceDiscount()), selectedStaffId, beginTime,quantity,sv.getCategoryId());
+
+            request.setAttribute("cartmessage", "SUCCESSFUL ADDED");
+            
+            handleServiceDetail(request, response);
             }
 
-            reservationDao.addToCart(cartId, serviceId, (float) (sv.getServicePrice()-sv.getServiceDiscount()), selectedStaffId, beginTime);
-            
-            response.sendRedirect(request.getContextPath() + "/customer/customerdetailService?serviceId=" + serviceId);
-            
-            
         } catch (Exception e) {
-            response.sendRedirect(request.getContextPath() + "/customer/customerlistService");
+            handleServiceList(request, response);
         }
 
     }

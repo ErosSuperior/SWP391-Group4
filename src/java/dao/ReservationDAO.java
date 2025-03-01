@@ -59,15 +59,17 @@ public class ReservationDAO extends DBContext {
         return false; // Insert failed
     }
 
-    public boolean addToCart(int reservationId, int serviceId, float price, int staffId, Date beginTime) {
+    public boolean addToCart(int reservationId, int serviceId, float price, int staffId, Date beginTime, int quantity, int category) {
         String sql = "INSERT INTO reservation_detail (reservation_id, service_id, price, quantity, category_id, staff_id, begin_time, slot, children_id) "
-                + "VALUES (?, ?, ?, 1, NULL, ?, ?, NULL, NULL)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, reservationId);
             stmt.setInt(2, serviceId);
             stmt.setDouble(3, price);
-            stmt.setInt(4, staffId);
-            stmt.setDate(5, new java.sql.Date(beginTime.getTime()));
+            stmt.setInt(4, quantity);
+            stmt.setInt(5, category);
+            stmt.setInt(6, staffId);
+            stmt.setDate(7, new java.sql.Date(beginTime.getTime()));
 
             int rowsInserted = stmt.executeUpdate();
             return rowsInserted > 0; // Returns true if insertion is successful

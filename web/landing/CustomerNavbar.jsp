@@ -85,7 +85,7 @@
                         </li>
                         
                         <li class="has-submenu parent-menu-item">
-                            <a href="#">Your Cart</a><span class="sub-menu-item"></span>
+                            <a href="${pageContext.request.contextPath}/mycart">Your Cart</a><span class="sub-menu-item"></span>
                         </li>
         
                         <li><a href="${pageContext.request.contextPath}/nav/dashboard" class="sub-menu-item"">Admin</a></li>
