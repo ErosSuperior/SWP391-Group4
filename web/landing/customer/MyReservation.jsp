@@ -82,6 +82,39 @@
                                     </div>
                                 </div>
 
+
+                                <%
+                                    int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR); // take this current year
+                                %>
+                                <div class="col-12">
+                                    <div class="col-md-4 mt-3">
+                                        <label class="form-label">Select Date</label>
+                                        <div class="input-group">
+                                            <select name="day" class="form-select">
+                                                <option value="">Day</option>
+                                                <c:forEach var="d" begin="1" end="31">
+                                                    <option value="${d}" ${param.day == d ? 'selected' : ''}>${d}</option>
+                                                </c:forEach>
+                                            </select>
+                                            <select name="month" class="form-select ms-2">
+                                                <option value="">Month</option>
+                                                <c:forEach var="m" begin="1" end="12">
+                                                    <option value="${m}" ${param.month == m ? 'selected' : ''}>${m}</option>
+                                                </c:forEach>
+                                            </select>
+                                            <select name="year" class="form-select ms-2">
+                                                <option value="">Year</option>
+                                                <c:forEach var="y" begin="<%= currentYear - 10 %>" end="<%= currentYear %>">
+                                                    <option value="${y}" ${param.year == y ? 'selected' : ''}>${y}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
                             </div>
 
                             <div class="row">
@@ -92,7 +125,7 @@
                                                 <tr>
                                                     <th class="border-bottom p-3">#</th>
                                                     <th class="border-bottom p-3">Note</th>     
-                                                    <th class="border-bottom p-3">Date</th>
+                                                    <th class="border-bottom p-3">Submit Date</th>
                                                     <th class="border-bottom p-3">State</th>
                                                     <th class="border-bottom p-3">Total Price</th>
                                                     <th class="border-bottom p-3 text-center">Actions</th>
@@ -261,15 +294,15 @@
                                             </tr>
                                         </thead>
 
-                                        
-                                                <tr>
-                                                    <th scope="row" class="text-start p-3">${res.reservation_id}</th>
-                                                    <td class="text-start p-3">a</td>
-                                                    <td class="text-center p-3">a</td>
-                                                    <td class="p-3">$ a</td>
-                                                    <td class="p-3">$ a</td>
-                                                </tr>
-                                            
+
+                                        <tr>
+                                            <th scope="row" class="text-start p-3">${res.reservation_id}</th>
+                                            <td class="text-start p-3">a</td>
+                                            <td class="text-center p-3">a</td>
+                                            <td class="p-3">$ a</td>
+                                            <td class="p-3">$ a</td>
+                                        </tr>
+
 
                                     </table>
                                 </div>

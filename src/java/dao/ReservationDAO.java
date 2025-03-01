@@ -134,7 +134,7 @@ public class ReservationDAO extends DBContext {
         }
     }
 
-    public List<Reservation> getReservation(int offset, int limit, String nameOrId, int userId, String sortBy, String sortDir) {
+    public List<Reservation> getReservation(int offset, int limit, String nameOrId, int userId, int day, int month, int year, String sortBy, String sortDir) {
         List<Reservation> reservations = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT * "
                 + "FROM reservation "
@@ -144,6 +144,18 @@ public class ReservationDAO extends DBContext {
 
         if (nameOrId != null && !nameOrId.isEmpty()) {
             query.append(" AND (note LIKE ? OR reservation_id = ?)");
+        }
+
+        if (year != -1) {
+            query.append(" AND YEAR(created_date) = ?");
+        }
+
+        if (month != -1) {
+            query.append(" AND MONTH(created_date) = ?");
+        }
+
+        if (day != -1) {
+            query.append(" AND DAY(created_date) = ?");
         }
 
         query.append(" ORDER BY ").append(sortBy).append(" ").append(sortDir.equalsIgnoreCase("ASC") ? "ASC" : "DESC");
@@ -164,6 +176,18 @@ public class ReservationDAO extends DBContext {
                 preparedStatement.setString(index++, nameOrId);
             }
 
+            if (year != -1) {
+                preparedStatement.setInt(index++, year);
+            }
+
+            if (month != -1) {
+                preparedStatement.setInt(index++, month);
+            }
+
+            if (day != -1) {
+                preparedStatement.setInt(index++, day);
+            }
+
             preparedStatement.setInt(index++, limit);
             preparedStatement.setInt(index++, offset);
 
@@ -182,7 +206,7 @@ public class ReservationDAO extends DBContext {
         return reservations;
     }
 
-    public int countReservation(String nameOrId, int userId) {
+    public int countReservation(String nameOrId, int userId, int day, int month, int year) {
         int count = 0;
         StringBuilder query = new StringBuilder("SELECT COUNT(*) "
                 + "FROM reservation "
@@ -191,6 +215,18 @@ public class ReservationDAO extends DBContext {
                 + "AND user_id = ?");
         if (nameOrId != null && !nameOrId.isEmpty()) {
             query.append(" AND (note LIKE ? OR reservation_id = ?)");
+        }
+
+        if (year != -1) {
+            query.append(" AND YEAR(created_date) = ?");
+        }
+
+        if (month != -1) {
+            query.append(" AND MONTH(created_date) = ?");
+        }
+
+        if (day != -1) {
+            query.append(" AND DAY(created_date) = ?");
         }
 
         if (connection == null) {
@@ -204,6 +240,18 @@ public class ReservationDAO extends DBContext {
             if (nameOrId != null && !nameOrId.isEmpty()) {
                 preparedStatement.setString(index++, "%" + nameOrId + "%");
                 preparedStatement.setString(index++, nameOrId);
+            }
+
+            if (year != -1) {
+                preparedStatement.setInt(index++, year);
+            }
+
+            if (month != -1) {
+                preparedStatement.setInt(index++, month);
+            }
+
+            if (day != -1) {
+                preparedStatement.setInt(index++, day);
             }
 
             ResultSet rs = preparedStatement.executeQuery();

@@ -70,7 +70,7 @@ public class MyReservationController extends HttpServlet {
             throws ServletException, IOException {
         String url = request.getServletPath();
         switch (url) {
-            case "/myReservationController":
+            case "/myReservationController":  // place holder for accessing dashboard
                 request.getRequestDispatcher("landing/customer/MyReservation.jsp").forward(request, response);
                 break;
             case "/customer/myreservationlist":
@@ -109,32 +109,42 @@ public class MyReservationController extends HttpServlet {
             return;
         }
 
+        String dayParam = request.getParameter("day");
+        String monthParam = request.getParameter("month");
+        String yearParam = request.getParameter("year");
+
         // Retrieve request parameters
         String pageNoParam = request.getParameter("pageNo");
         int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
         int pageSize = 4;
         String nameOrId = request.getParameter("nameOrId");
 
-        // Get reservation list for the logged-in user
-        SearchResponse<Reservation> searchResponse = reserInit.getReservation(pageNo, pageSize, nameOrId, account.getUser_id());
-        List<User> userinfo = reservationDao.getAllUserInfo();
-        List<Service> svinfo = reservationDao.getAllServiceInfo();
-        List<Reservation> rsvdetail = reservationDao.getReservationDetailonId(account.getUser_id());
+        int day = -1;
+        int month = -1;
+        int year = -1;
+
+        if (dayParam != null && !dayParam.isEmpty()) {
+            day = Integer.parseInt(dayParam);
+        }
+        if (monthParam != null && !monthParam.isEmpty()) {
+            month = Integer.parseInt(monthParam);
+        }
+        if (yearParam != null && !yearParam.isEmpty()) {
+            year = Integer.parseInt(yearParam);
+        }
+        SearchResponse<Reservation> searchResponse = reserInit.getReservation(pageNo, pageSize, nameOrId, account.getUser_id(), day, month, year);
         // Set attributes for JSP
         request.setAttribute("reservations", searchResponse.getContent());
-        request.setAttribute("userinfo", userinfo);
-        request.setAttribute("svinfo", svinfo);
-        request.setAttribute("rsvdetail", rsvdetail);
+        request.setAttribute("selectedDay", day);
+        request.setAttribute("selectedMonth", month);
+        request.setAttribute("selectedYear", year);
         request.setAttribute("totalElements", searchResponse.getTotalElements());
         request.setAttribute("pageNo", pageNo);
         request.setAttribute("pageSize", pageSize);
-
-        // Forward to the reservation list JSP
         request.getRequestDispatcher("/landing/customer/MyReservation.jsp").forward(request, response);
+
     }
 
-    
-    
     @Override
     public String getServletInfo() {
         return "Short description";

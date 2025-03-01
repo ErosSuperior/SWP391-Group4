@@ -33,6 +33,13 @@ public class maintest {
         BlogDAO bgd = new BlogDAO();
         ReservationDAO reservationDAO = new ReservationDAO();
         UserDAO userDAO = new UserDAO();
+        
+        List<Reservation> r = reservationDAO.getReservation(0, 10, "", 1, 30, -1, -1, "reservation_id", "ASC");
+        
+        for(Reservation a : r){
+            System.out.println(a.getCreated_date());
+        }
+        
 //        boolean cartExists = reservationDAO.checkCartExist(1);
 //
 //        if (cartExists) {
@@ -45,21 +52,21 @@ public class maintest {
 //        System.out.println(addcart);
 
 
-        String dateString = "2025-02-17"; // Your date as a string
-
-        try {
-            // Convert string to java.util.Date
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date utilDate = format.parse(dateString);
-
-            // Convert java.util.Date to java.sql.Date
-            Date beginTime = new Date(utilDate.getTime());
-            System.out.println(beginTime);
-            boolean a = reservationDAO.addToCart(3, 1, (float) 40.0, 2, beginTime);
-            System.out.println(a);
-        }catch(Exception e){
-            
-        }
+//        String dateString = "2025-02-17"; // Your date as a string
+//
+//        try {
+//            // Convert string to java.util.Date
+//            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+//            Date utilDate = format.parse(dateString);
+//
+//            // Convert java.util.Date to java.sql.Date
+//            Date beginTime = new Date(utilDate.getTime());
+//            System.out.println(beginTime);
+//            boolean a = reservationDAO.addToCart(3, 1, (float) 40.0, 2, beginTime);
+//            System.out.println(a);
+//        }catch(Exception e){
+//            
+//        }
 
 //        List<User> user = userDAO.getAllStaffNotBusy();
 //        for(User u :user){
