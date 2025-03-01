@@ -112,7 +112,10 @@ public class CustomerServiceController extends HttpServlet {
     private void handleServiceDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int serviceId = -1; // Default value to prevent errors
         String serviceIdParam = request.getParameter("serviceId");
-        String cartmessage = request.getParameter("cartmessage");
+
+        // Retrieve cart message from request attributes
+        String cartmessage = (String) request.getAttribute("cartmessage");
+
         try {
             if (serviceIdParam != null && !serviceIdParam.trim().isEmpty()) {
                 serviceId = Integer.parseInt(serviceIdParam);
@@ -128,11 +131,12 @@ public class CustomerServiceController extends HttpServlet {
 
         // Set attributes for JSP
         request.setAttribute("serviceImages", serviceImage);
-        request.setAttribute("cartmessage", cartmessage);
+        request.setAttribute("cartmessage", cartmessage);  
         request.setAttribute("highlightedService", highlightedService);
         request.setAttribute("relatedServices", allServiceByCategory);
         request.setAttribute("staffList", userDao.getAllStaffNotBusy());
         request.setAttribute("serviceId", serviceId);
+
         request.getRequestDispatcher("/landing/customer/ServiceDetail.jsp").forward(request, response);
     }
 
@@ -179,16 +183,16 @@ public class CustomerServiceController extends HttpServlet {
                 reservationDao.updateCartQuantity(cartId, serviceId, newQuantity); // If the cart already have the correnponding service, update the newquantity to the cart 
 
                 request.setAttribute("cartmessage", "SUCCESSFUL ADDED");
-                
+
                 handleServiceDetail(request, response);
 
-            }else{
+            } else {
 
-            reservationDao.addToCart(cartId, serviceId, (float) (sv.getServicePrice() - sv.getServiceDiscount()), selectedStaffId, beginTime,quantity,sv.getCategoryId());
+                reservationDao.addToCart(cartId, serviceId, (float) (sv.getServicePrice() - sv.getServiceDiscount()), selectedStaffId, beginTime, quantity, sv.getCategoryId());
 
-            request.setAttribute("cartmessage", "SUCCESSFUL ADDED");
-            
-            handleServiceDetail(request, response);
+                request.setAttribute("cartmessage", "SUCCESSFUL ADDED");
+
+                handleServiceDetail(request, response);
             }
 
         } catch (Exception e) {

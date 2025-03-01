@@ -5,7 +5,7 @@
 <header id="topnav" class="defaultscroll sticky">
             <div class="container">
                 <!-- Logo container-->
-                <a class="logo" href="${pageContext.request.contextPath}/nav/homepage">
+                <a class="logo" href="${pageContext.request.contextPath}/home">
                     <img src="${pageContext.request.contextPath}/assets/images/logo-dark.png?v=<%= System.currentTimeMillis() %>" height="70" class="logo-light-mode" alt="">
                     <img src="${pageContext.request.contextPath}/assets/images/logo-light.png?v=<%= System.currentTimeMillis() %>" height="70" class="logo-dark-mode" alt="">
                 </a>                

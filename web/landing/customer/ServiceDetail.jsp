@@ -225,6 +225,24 @@
 
     </section><!--end section-->
 
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered"> <!-- Center the modal -->
+            <div class="modal-content">
+                <div class="modal-header border-bottom p-3">
+                    <h5 class="modal-title" id="exampleModalLabel">Notification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center"> <!-- Center text inside the modal -->
+                    <p class="text-success fw-bold">${cartmessage}</p> <!-- Green text and bold -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Start -->
     <jsp:include page="../Footer.jsp"/>
     <!--end footer-->
@@ -265,6 +283,15 @@
             document.querySelectorAll(".staff-img").forEach(img => {
                 img.classList.toggle("d-none", img.getAttribute("data-user-id") !== selectedId);
             });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var cartMessage = "${cartmessage}"; // Get cart message from JSP
+            if (cartMessage && cartMessage.trim() !== "") {
+                var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {});
+                myModal.show();
+            }
         });
     </script>
 </body>
