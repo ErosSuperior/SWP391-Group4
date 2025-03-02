@@ -36,12 +36,13 @@ public class maintest {
         UserDAO userDAO = new UserDAO();
         ShopCartDAO scd = new ShopCartDAO();
         
-        List<ReservationDetail> s= scd.getReservationDetail(3);
-        
-        for(ReservationDetail c : s){
-            System.out.println(c.getPrice());
-            System.out.println(c.getImage_link());
-        }
+//        List<ReservationDetail> s= scd.getReservationDetail(1);
+//        
+//        for(ReservationDetail c : s){
+//            System.out.println(c.getPrice());
+//            System.out.println(c.getImage_link());
+//        }
+          System.out.println(reservationDAO.getPaymentStatus(4));
         
 //        List<Reservation> r = reservationDAO.getReservation(0, 10, "", 1, 30, -1, -1, "reservation_id", "ASC");
 //        

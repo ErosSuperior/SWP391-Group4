@@ -141,7 +141,7 @@ public class ReservationDAO extends DBContext {
         StringBuilder query = new StringBuilder("SELECT * "
                 + "FROM reservation "
                 + "WHERE 1=1 "
-                + "AND reservation_status != 2 "
+                + "AND reservation_status != 0 "
                 + "AND user_id = ?");
 
         if (nameOrId != null && !nameOrId.isEmpty()) {
@@ -213,7 +213,7 @@ public class ReservationDAO extends DBContext {
         StringBuilder query = new StringBuilder("SELECT COUNT(*) "
                 + "FROM reservation "
                 + "WHERE 1=1 "
-                + "AND reservation_status != 2 "
+                + "AND reservation_status != 0 "
                 + "AND user_id = ?");
         if (nameOrId != null && !nameOrId.isEmpty()) {
             query.append(" AND (note LIKE ? OR reservation_id = ?)");
@@ -266,43 +266,14 @@ public class ReservationDAO extends DBContext {
         return count;
     }
 
-    public List<User> getAllUserInfo() {
-        List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM users WHERE 1=1 ";
-
-        if (connection == null) {
-            System.err.println("Database connection is not available.");
-            return users; // Return "no img" if the connection failed
-        }
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                User s = new User();
-                s.setUser_id(rs.getInt("user_id"));
-                s.setUser_fullname(rs.getString("user_fullname"));
-                s.setUser_gender(rs.getBoolean("user_gender"));
-                s.setUser_address(rs.getString("user_address"));
-                s.setUser_email(rs.getString("user_email"));
-                s.setUser_phone(rs.getString("user_phone"));
-                s.setUser_image(rs.getString("user_image"));
-                users.add(s);
-            }
-        } catch (Exception e) {
-        }
-
-        return users;
-    }
-
-    public List<Reservation> getReservationDetailonId(int userId) {
+    public List<Reservation> getReservationDetailonResId(int reservationId) {
         List<Reservation> reservations = new ArrayList<>();
 
         String query = "SELECT r.*, rd.* "
                 + "FROM reservation r "
                 + "LEFT JOIN reservation_detail rd ON r.reservation_id = rd.reservation_id "
                 + "WHERE 1=1 "
-                + "AND r.user_id = ? ";
+                + "AND r.reservation_id = ? ";
 
         if (connection == null) {
             System.err.println("Database connection is not available.");
@@ -311,7 +282,7 @@ public class ReservationDAO extends DBContext {
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             int index = 1;
-            preparedStatement.setInt(index++, userId);
+            preparedStatement.setInt(index++, reservationId);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Reservation s = new Reservation();
@@ -350,4 +321,80 @@ public class ReservationDAO extends DBContext {
         }
         return srvc;
     }
+
+    public int totalService(int userid) { // Hàm tính tổng số sản phẩm ở trong giỏ hàng
+        int a = 0;
+        String sql = "SELECT SUM(rd.quantity) AS total_quantity "
+                + "FROM reservation_detail rd "
+                + "JOIN reservation r ON rd.reservation_id = r.reservation_id "
+                + "WHERE r.reservation_id = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userid); // Gán giá trị cho dấu "?"
+            ResultSet rs = st.executeQuery(); // Thực thi câu lệnh 
+            if (rs.next()) {
+                a = rs.getInt("total_quantity");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return a;
+    }
+
+    public User getReceiverInfo(int reservation_id) {
+        User users = null; // Set to null initially
+
+        String query = "SELECT receiver_name, receiver_address, receiver_email, receiver_number "
+                + "FROM reservation WHERE reservation_id = ?";
+
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return null; // Return null if there's no connection
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, reservation_id);
+
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) { // Use `if` instead of `while`
+                    users = new User();
+                    users.setUser_fullname(rs.getString("receiver_name"));
+                    users.setUser_address(rs.getString("receiver_address"));
+                    users.setUser_email(rs.getString("receiver_email"));
+                    users.setUser_phone(rs.getString("receiver_number"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Print the exception for debugging
+        }
+
+        return users; // Return the user object
+    }
+    
+    public int getPaymentStatus(int reservation_id){
+        String query = "SELECT payment_status "
+                + "FROM reservation WHERE reservation_id = ?";
+        int status = -1;
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return 0; // Return null if there's no connection
+        }
+        
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, reservation_id);
+
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                preparedStatement.setInt(1, reservation_id);
+                if (rs.next()) { // Use `if` instead of `while`
+                    status = rs.getInt("payment_status");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Print the exception for debugging
+        }
+
+        return status; // Return the user object
+        
+    }
+
 }

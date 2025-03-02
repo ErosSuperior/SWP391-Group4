@@ -126,7 +126,7 @@
                                                     <th class="border-bottom p-3">#</th>
                                                     <th class="border-bottom p-3">Note</th>     
                                                     <th class="border-bottom p-3">Submit Date</th>
-                                                    <th class="border-bottom p-3">State</th>
+                                                    <th class="border-bottom p-3" style="width:240px">State</th>
                                                     <th class="border-bottom p-3">Total Price</th>
                                                     <th class="border-bottom p-3 text-center">Actions</th>
                                                 </tr>
@@ -142,10 +142,13 @@
                                                                 <td class="p-3">
                                                                     <c:choose>
                                                                         <c:when test="${reservation.status == '1'}">
-                                                                            <span class="badge bg-soft-success">Submitted</span>
+                                                                            <span class="badge bg-soft-danger">Not Yet</span> 
+                                                                        </c:when>
+                                                                        <c:when test="${reservation.status == '2'}">
+                                                                            <span class="badge bg-soft-success">Confirmed </span>  <span class="badge bg-soft-danger">Not Operated</span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="badge bg-soft-danger">Pending</span>
+                                                                            <span class="badge bg-soft-success">Confirmed </span> <span class="badge bg-soft-success">Operated</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
@@ -154,17 +157,18 @@
                                                                 <td class="text-center p-3">
                                                                     <c:choose>
                                                                         <c:when test="${reservation.status == '1'}">
-                                                                            <a href="${pageContext.request.contextPath}/customer/myreservationdetail" class="btn btn-icon btn-pills btn-soft-primary view-invoice-btn">
-                                                                                <i class="uil uil-eye"></i>
-                                                                            </a>
-                                                                        </c:when>
-
-                                                                        <c:when test="${reservation.status == '0'}">
                                                                             <a href="${pageContext.request.contextPath}/customer/myreservationlist"
                                                                                class="btn btn-icon btn-pills btn-soft-primary">
                                                                                 <i class="uil uil-pen"></i>
                                                                             </a>
                                                                         </c:when>
+                                                                        
+                                                                        <c:otherwise>
+                                                                            <a href="${pageContext.request.contextPath}/customer/myreservationdetail?reservation_id=${reservation.reservation_id}" 
+                                                                               class="btn btn-icon btn-pills btn-soft-primary view-invoice-btn">
+                                                                                <i class="uil uil-eye"></i>
+                                                                            </a>
+                                                                        </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
                                                             </tr>
@@ -218,127 +222,6 @@
                 </div>
             </div>
         </section><!-- End Hero -->
-
-        <!-- View Invoice Start -->
-        <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header border-bottom p-3">
-                        <h5 class="modal-title" id="exampleModalLabel">Reservation Information</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <input type="hidden" id="selectedReservationId" value="">
-                    <div class="modal-body p-3 pt-4">
-                        <div class="row mb-4">
-                            <div class="col-lg-8 col-md-6">
-                                <img src="${pageContext.request.contextPath}/assets/images/logo-dark.png?v=<%= System.currentTimeMillis() %>" height="140" class="logo-light-mode" alt="">
-                            </div><!--end col-->
-
-                            <div class="col-lg-4 col-md-6 mt-4 mt-sm-0 pt-2 pt-sm-0">
-                                <ul class="list-unstyled">
-                                    <li class="d-flex">
-                                        <small class="mb-0 text-muted">Invoice no. : #</small>
-                                        <small class="mb-0 text-dark" id="invoiceNoDisplay"></small>
-                                    </li>
-                                    <li class="d-flex mt-2">
-                                        <small class="mb-0 text-muted">Email : </small>
-                                        <small class="mb-0">${sessionScope.account.user_email}</small>
-                                    </li>
-                                    <li class="d-flex mt-2">
-                                        <small class="mb-0 text-muted">Phone : </small>
-                                        <small class="mb-0">${sessionScope.account.user_phone}</small>  
-                                    </li>
-                                    <li class="d-flex mt-2">
-                                        <small class="mb-0 text-muted">Address : </small>
-                                        <small class="mb-0">${sessionScope.account.user_address}</small>
-                                    </li>
-                                    <li class="d-flex mt-2">
-                                        <small class="mb-0 text-muted">Patient Name : </small>
-                                        <small class="mb-0">${sessionScope.account.user_fullname}</small>
-                                    </li>
-                                </ul>
-                            </div><!--end col-->
-                        </div><!--end row-->
-
-                        <div class="pt-4 border-top">
-                            <div class="row">
-                                <div class="col-lg-8 col-md-6">
-                                    <h5 class="text-muted fw-bold">Reservation <span class="badge badge-pill badge-soft-success fw-normal ms-2" id="resstatus"></span></h5>
-                                </div><!--end col-->
-
-                                <div class="col-lg-4 col-md-6 mt-4 mt-sm-0 pt-2 pt-sm-0">
-                                    <ul class="list-unstyled">
-                                        <li class="d-flex mt-2">
-                                            <small class="mb-0 text-muted">Issue Dt. : </small>
-                                            <small class="mb-0 text-dark" id=""></small>
-                                        </li>
-
-                                        <li class="d-flex mt-2">
-                                            <small class="mb-0 text-muted">Dr. Name : </small>
-                                            <small class="mb-0 text-dark" id=""></small>
-                                        </li>
-                                    </ul>
-                                </div><!--end col-->
-                            </div><!--end row-->
-
-                            <div class="invoice-table pb-4">
-                                <div class="table-responsive shadow rounded mt-4">
-                                    <table class="table table-center invoice-tb mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col" class="text-start border-bottom p-3" style="min-width: 60px;">No.</th>
-                                                <th scope="col" class="text-start border-bottom p-3" style="min-width: 220px;">Item</th>
-                                                <th scope="col" class="text-center border-bottom p-3" style="min-width: 60px;">Qty</th>
-                                                <th scope="col" class="border-bottom p-3" style="min-width: 130px;">Rate</th>
-                                                <th scope="col" class="border-bottom p-3" style="min-width: 130px;">Total</th>
-                                            </tr>
-                                        </thead>
-
-
-                                        <tr>
-                                            <th scope="row" class="text-start p-3">${res.reservation_id}</th>
-                                            <td class="text-start p-3">a</td>
-                                            <td class="text-center p-3">a</td>
-                                            <td class="p-3">$ a</td>
-                                            <td class="p-3">$ a</td>
-                                        </tr>
-
-
-                                    </table>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-4 col-md-5 ms-auto">
-                                        <ul class="list-unstyled h6 fw-normal mt-4 mb-0 ms-md-5 ms-lg-4">
-                                            <li class="text-muted d-flex justify-content-between pe-3">Subtotal :<small class="text-dark" id="subtotalprice"></small></li>
-                                            <li class="text-muted d-flex justify-content-between pe-3">Taxes :<span> 0</span></li>
-                                            <li class="d-flex justify-content-between pe-3">Total :<small class="text-dark" id="totalprice"></small></li>
-                                        </ul>
-                                    </div><!--end col-->
-                                </div><!--end row-->
-                            </div>
-
-                            <div class="border-top pt-4">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="text-sm-start text-muted text-center">
-                                            <small class="mb-0">Customer Services : <a href="tel:+849732-569-51" class="text-warning">(+84) 9732-569-51</a></small>
-                                        </div>
-                                    </div><!--end col-->
-
-                                    <div class="col-sm-6">
-                                        <div class="text-sm-end text-muted text-center">
-                                            <small class="mb-0"><a href="#" class="text-primary">Terms & Conditions</a></small>
-                                        </div>
-                                    </div><!--end col-->
-                                </div><!--end row-->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- View Invoice End -->
 
         <!-- Back to top -->
         <a href="#" onclick="topFunction()" id="back-to-top" class="btn btn-icon btn-pills btn-primary back-to-top"><i data-feather="arrow-up" class="icons"></i></a>

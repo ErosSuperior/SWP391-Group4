@@ -5,6 +5,7 @@
 package controller.customer;
 
 import dao.ReservationDAO;
+import dao.ShopCartDAO;
 import init.ReservationInit;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Reservation;
+import model.ReservationDetail;
 import model.SearchResponse;
 import model.Service;
 import model.User;
@@ -24,7 +26,7 @@ import model.User;
  *
  * @author thang
  */
-@WebServlet(name = "MyReservationController", urlPatterns = {"/myReservationController", "/customer/myreservationlist", "/customer/myreservationdetail"})
+@WebServlet(name = "MyReservationController", urlPatterns = {"/myReservationController", "/customer/myreservationlist", "/customer/myreservationdetail","/customer/myreservationinfo"})
 public class MyReservationController extends HttpServlet {
 
     ReservationDAO reservationDao = new ReservationDAO();
@@ -77,7 +79,10 @@ public class MyReservationController extends HttpServlet {
                 handleListReservation(request, response);
                 break;
             case "/customer/myreservationdetail":
-                request.getRequestDispatcher("/landing/customer/ReservationInfo.jsp").forward(request, response);
+                handleListReservationDetail(request, response);
+                break;
+            case "/customer/myreservationinfo":
+                handleListReservationInfo(request, response);
                 break;
         }
 
@@ -143,6 +148,51 @@ public class MyReservationController extends HttpServlet {
         request.setAttribute("pageSize", pageSize);
         request.getRequestDispatcher("/landing/customer/MyReservation.jsp").forward(request, response);
 
+    }
+
+    public void handleListReservationDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        User account = (User) request.getSession().getAttribute("account");
+        if (account == null) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+        ShopCartDAO d = new ShopCartDAO();
+
+        int reservationID = Integer.parseInt(request.getParameter("reservation_id"));
+
+        List<ReservationDetail> listreservation = d.getReservationDetail(reservationID);
+
+        request.setAttribute("listreservation", listreservation);
+        request.setAttribute("reservation_id", reservationID);
+        request.getRequestDispatcher("/landing/customer/ReservationInfo.jsp").forward(request, response);
+    }
+
+    public void handleListReservationInfo(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        User account = (User) request.getSession().getAttribute("account"); // Lấy session để kiểm tra xem đăng nhập chưa
+        if (account == null) { // Nếu chưa đăng nhập
+            response.sendRedirect(request.getContextPath() + "/home"); // Đẩy về trang home
+            return; // Dừng thực hiện các lệnh tiếp theo
+        }
+        // Tiếp tục nếu đã đăng nhập
+        
+        int reservation_id = Integer.parseInt(request.getParameter("reservation_id"));
+        
+        ShopCartDAO d = new ShopCartDAO(); // Tạo đối tượng để sử dụng hàm của nó
+        int totalservice = reservationDao.totalService(reservation_id); // Gọi hàm để tính tổng service khách chọn
+        int payment_status = reservationDao.getPaymentStatus(reservation_id);
+        if (totalservice <= 0) { // Nếu không có service
+            response.sendRedirect(request.getContextPath() + "/mycart"); // Đẩy về trang cart không cho checkout
+            return;
+        }
+        User u = reservationDao.getReceiverInfo(reservation_id);
+        List<ReservationDetail> listreservation = d.getReservationDetail(reservation_id); // Lấy dánh sách service
+        request.setAttribute("receiver", u);
+        request.setAttribute("payment_status", payment_status);
+        request.setAttribute("listreservation", listreservation); // Lưu vào resquest để đẩy lên JSP
+        request.setAttribute("totalservice", totalservice); // Lưu tổng số service vào để đẩy lên jsp
+        request.getRequestDispatcher("/landing/customer/ReservationInfoDetail.jsp").forward(request, response); //Tham chiếu tới trang Checkout.jsp
     }
 
     @Override

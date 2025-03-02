@@ -21,14 +21,12 @@ public class Reservation {
     private int service_id;
     private float price;
     private int quantity;
-    private int num_of_person;
     private int category;
     private Date begin_time;
     private int slot;
     private int children_id;
-    private int medical_id;
-    private String diagnosis;
     private int staff_id;
+    private int payment_status;
     public Reservation() {
     }
 
@@ -41,14 +39,13 @@ public class Reservation {
         this.created_date = created_date;
     }
 
-    public Reservation(int reservation_id, int user_id, int detail_id, int service_id, float price, int quantity, int num_of_person, int category, Date begin_time, int slot, int children_id) {
+    public Reservation(int reservation_id, int user_id, int detail_id, int service_id, float price, int quantity, int category, Date begin_time, int slot, int children_id) {
         this.reservation_id = reservation_id;
         this.user_id = user_id;
         this.detail_id = detail_id;
         this.service_id = service_id;
         this.price = price;
         this.quantity = quantity;
-        this.num_of_person = num_of_person;
         this.category = category;
         this.begin_time = begin_time;
         this.slot = slot;
@@ -59,8 +56,6 @@ public class Reservation {
         this.user_id = user_id;
         this.created_date = created_date;
         this.detail_id = detail_id;
-        this.medical_id = medical_id;
-        this.diagnosis = diagnosis;
     }
 
     
@@ -145,14 +140,6 @@ public class Reservation {
         this.quantity = quantity;
     }
 
-    public int getNum_of_person() {
-        return num_of_person;
-    }
-
-    public void setNum_of_person(int num_of_person) {
-        this.num_of_person = num_of_person;
-    }
-
     public int getCategory() {
         return category;
     }
@@ -183,22 +170,6 @@ public class Reservation {
 
     public void setChildren_id(int children_id) {
         this.children_id = children_id;
-    }
-
-    public int getMedical_id() {
-        return medical_id;
-    }
-
-    public void setMedical_id(int medical_id) {
-        this.medical_id = medical_id;
-    }
-
-    public String getDiagnosis() {
-        return diagnosis;
-    }
-
-    public void setDiagnosis(String diagnosis) {
-        this.diagnosis = diagnosis;
     }
 
     public int getStaff_id() {
