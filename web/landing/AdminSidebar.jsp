@@ -22,7 +22,9 @@
             <li><a href="${pageContext.request.contextPath}/manager/sliders"><i class="uil uil-apps me-2 d-inline-block"></i>Slider Management</a></li>
 
             <li><a href="${pageContext.request.contextPath}/manager/serviceList"><i class="uil uil-apps me-2 d-inline-block"></i>Service Management</a></li>
-
+      
+            <li><a href="${pageContext.request.contextPath}/admin/adminList"><i class="uil uil-apps me-2 d-inline-block"></i>User Management</a></li>
+            
             <li><a href="${pageContext.request.contextPath}/home"><i class="uil uil-window me-2 d-inline-block"></i>Home page</a></li>
         </ul>
         <!-- sidebar-menu  -->

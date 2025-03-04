@@ -199,4 +199,334 @@ public class UserDAO {
         return staffList;
     }
 
+    public List<User> getUser(int offset, int limit, String nameOrId, int roleId, int status, String sortBy, String sortDir) throws Exception {
+        List<User> users = new ArrayList<>();
+        StringBuilder query = new StringBuilder("SELECT u.*, r.role_name "
+                + "FROM users u "
+                + "LEFT JOIN role r ON u.role_id = r.role_id "
+                + "WHERE 1=1 ");
+
+        if (nameOrId != null && !nameOrId.isEmpty()) {
+            query.append(" AND (u.user_fullname LIKE ? OR u.user_id = ?)");
+        }
+
+        if (status != -1) {
+            query.append(" AND (u.user_status = ?)");
+        }
+
+        if (roleId != -1) {
+            query.append(" AND (u.role_id = ?)");
+        }
+
+        query.append(" ORDER BY ").append(sortBy).append(" ").append(sortDir.equalsIgnoreCase("ASC") ? "ASC" : "DESC");
+        query.append(" LIMIT ? OFFSET ?");
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        try {
+            conn = new DBContext().getConnection();
+            if (conn == null) {
+                System.err.println("Database connection is not available.");
+                return users; // Return empty list if connection failed
+            }
+
+            preparedStatement = conn.prepareStatement(query.toString());
+            int index = 1;
+            if (nameOrId != null && !nameOrId.isEmpty()) {
+                preparedStatement.setString(index++, "%" + nameOrId + "%");
+                preparedStatement.setString(index++, nameOrId);
+            }
+
+            if (status != -1) {
+                preparedStatement.setInt(index++, status);
+            }
+
+            if (roleId != -1) {
+                preparedStatement.setInt(index++, roleId);
+            }
+
+            preparedStatement.setInt(index++, limit);
+            preparedStatement.setInt(index++, offset);
+
+            rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                User u = new User();
+                u.setUser_id(rs.getInt("user_id"));
+                u.setUser_fullname(rs.getString("user_fullname"));
+                u.setUser_email(rs.getString("user_email"));
+                u.setUser_gender(rs.getBoolean("user_gender"));
+                u.setUser_address(rs.getString("user_address"));
+                u.setUser_phone(rs.getString("user_phone"));
+                u.setUser_image(rs.getString("user_image"));
+                u.setRole_id(rs.getInt("role_id"));
+                u.setUser_status(rs.getBoolean("user_status"));
+                users.add(u);
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return users;
+    }
+
+    public int countUser(String nameOrId, int roleId, int status) throws Exception {
+        int count = 0;
+        StringBuilder query = new StringBuilder("SELECT COUNT(*) "
+                + "FROM users u "
+                + "LEFT JOIN role r ON u.role_id = r.role_id "
+                + "WHERE 1=1 ");
+
+        if (nameOrId != null && !nameOrId.isEmpty()) {
+            query.append(" AND (u.user_fullname LIKE ? OR u.user_id = ?)");
+        }
+
+        if (status != -1) {
+            query.append(" AND (u.user_status = ?)");
+        }
+
+        if (roleId != -1) {
+            query.append(" AND (u.role_id = ?)");
+        }
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        try {
+            conn = new DBContext().getConnection();
+            if (conn == null) {
+                System.err.println("Database connection is not available.");
+                return 0;
+            }
+
+            preparedStatement = conn.prepareStatement(query.toString());
+            int index = 1;
+            if (nameOrId != null && !nameOrId.isEmpty()) {
+                preparedStatement.setString(index++, "%" + nameOrId + "%");
+                preparedStatement.setString(index++, nameOrId);
+            }
+
+            if (status != -1) {
+                preparedStatement.setInt(index++, status);
+            }
+
+            if (roleId != -1) {
+                preparedStatement.setInt(index++, roleId);
+            }
+
+            rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return count;
+    }
+
+    public void addUser(String fullname, boolean gender, String address, String password,
+            String email, String phone, int roleId, boolean status, String image) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        String sql = "INSERT INTO users (user_fullname, user_gender, user_address, user_password, user_email, user_phone, role_id, user_status, user_image) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, fullname);
+            ps.setBoolean(2, gender);
+            ps.setString(3, address);
+            ps.setString(4, password);
+            ps.setString(5, email);
+            ps.setString(6, phone);
+            ps.setInt(7, roleId);
+            ps.setBoolean(8, status);
+            ps.setString(9, image);
+
+            ps.executeUpdate();
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+    public void updateUser(int userId, String fullname, boolean gender, String address,
+            String email, String phone, int roleId, boolean status, String image) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        String sql = "UPDATE users SET user_fullname=?, user_gender=?, user_address=?, "
+                + "user_email=?, user_phone=?, role_id=?, user_status=?, user_image=? "
+                + "WHERE user_id=?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, fullname);
+            ps.setBoolean(2, gender);
+            ps.setString(3, address);
+            ps.setString(4, email);
+            ps.setString(5, phone);
+            ps.setInt(6, roleId);
+            ps.setBoolean(7, status);
+            ps.setString(8, image);
+            ps.setInt(9, userId);
+
+            ps.executeUpdate();
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+    public void deleteUser(int userId, boolean status) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        String sql = "UPDATE users SET user_status =? WHERE user_id = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setBoolean(1, status);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
+
+    public int getUserStatus(int userId) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = "SELECT user_status FROM users WHERE user_id = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("user_status");
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return -1; // Trả về -1 nếu không tìm thấy user hoặc có lỗi
+    }
+
+    public List<User> getAllUser() {
+        List<User> users = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = "SELECT * FROM users";
+
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                User user = new User(
+                        rs.getInt("user_id"),
+                        rs.getString("user_fullname"),
+                        rs.getBoolean("user_gender"),
+                        rs.getString("user_address"),
+                        rs.getString("user_password"),
+                        rs.getString("user_email"),
+                        rs.getString("user_phone"),
+                        rs.getInt("role_id"),
+                        rs.getBoolean("user_status"),
+                        rs.getString("user_image")
+                );
+                users.add(user);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return users;
+    }
 }
