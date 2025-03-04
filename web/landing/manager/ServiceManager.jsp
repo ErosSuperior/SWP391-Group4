@@ -143,7 +143,7 @@
                                                             </td>
                                                             <td class="text-center">
                                                                 <c:choose>
-                                                                    <c:when test="${service.serviceStatus == 1}">
+                                                                    <c:when test="${service.serviceStatus == '1'}">
                                                                         <span class="badge bg-success">Active</span>
                                                                     </c:when>
                                                                     <c:otherwise>

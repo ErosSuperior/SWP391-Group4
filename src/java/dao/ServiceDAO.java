@@ -43,7 +43,7 @@ public class ServiceDAO extends DBContext {
         if (categoryId != -1) {
             query.append(" AND (s.category_id = ?)");
         }
-        
+
         if (minPrice > -1 && maxPrice > -1) {
             query.append(" AND s.service_price BETWEEN ? AND ?");
         }
@@ -65,7 +65,7 @@ public class ServiceDAO extends DBContext {
             if (categoryId != -1) {
                 preparedStatement.setInt(index++, categoryId);
             }
-            
+
             if (minPrice > -1 && maxPrice > -1) {
                 preparedStatement.setInt(index++, minPrice);
                 preparedStatement.setInt(index++, maxPrice);
@@ -110,11 +110,11 @@ public class ServiceDAO extends DBContext {
         if (categoryId != -1) {
             query.append(" AND (s.category_id = ?)");
         }
-        
+
         if (minPrice > -1 && maxPrice > -1) {
             query.append(" AND s.service_price BETWEEN ? AND ?");
         }
-        
+
         if (connectionection == null) {
             System.err.println("Database connectionection is not available.");
             return 0; // Return empty list if connectionection failed
@@ -464,7 +464,7 @@ public class ServiceDAO extends DBContext {
         }
         return services;
     }
-    
+
     public int countAllServices(String nameOrId, int categoryId, int status) {
         int total = 0;
         if (connectionection == null) {
@@ -506,7 +506,7 @@ public class ServiceDAO extends DBContext {
 
         return total;
     }
-    
+
     // Cập nhật trạng thái dịch vụ trong bảng service_status
     public void updateStatus(int serviceId, int status) {
         String sql = "UPDATE service_status SET service_status = ? WHERE service_id = ?";
@@ -545,9 +545,9 @@ public class ServiceDAO extends DBContext {
             connectionection.setAutoCommit(false); // Bắt đầu transaction
 
             // Thêm vào bảng service
-            String sqlService = "INSERT INTO service (service_title, service_bi, service_created_date, category_id, " +
-                    "service_price, service_discount, service_detail, service_rateStar, service_vote) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sqlService = "INSERT INTO service (service_title, service_bi, service_created_date, category_id, "
+                    + "service_price, service_discount, service_detail, service_rateStar, service_vote) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             stmtService = connectionection.prepareStatement(sqlService, PreparedStatement.RETURN_GENERATED_KEYS);
             stmtService.setString(1, service.getServiceTitle());
             stmtService.setString(2, service.getServiceBi());
@@ -597,10 +597,18 @@ public class ServiceDAO extends DBContext {
             throw new RuntimeException("Error adding service: " + e.getMessage());
         } finally {
             try {
-                if (generatedKeys != null) generatedKeys.close();
-                if (stmtService != null) stmtService.close();
-                if (stmtStatus != null) stmtStatus.close();
-                if (connection != null) connection.close();
+                if (generatedKeys != null) {
+                    generatedKeys.close();
+                }
+                if (stmtService != null) {
+                    stmtService.close();
+                }
+                if (stmtStatus != null) {
+                    stmtStatus.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -617,9 +625,9 @@ public class ServiceDAO extends DBContext {
             connection.setAutoCommit(false); // Bắt đầu transaction
 
             // Cập nhật bảng service
-            String sqlService = "UPDATE service SET service_title = ?, service_bi = ?, service_created_date = ?, " +
-                    "category_id = ?, service_price = ?, service_discount = ?, service_detail = ?, " +
-                    "service_rateStar = ?, service_vote = ? WHERE service_id = ?";
+            String sqlService = "UPDATE service SET service_title = ?, service_bi = ?, service_created_date = ?, "
+                    + "category_id = ?, service_price = ?, service_discount = ?, service_detail = ?, "
+                    + "service_rateStar = ?, service_vote = ? WHERE service_id = ?";
             stmtService = connection.prepareStatement(sqlService);
             stmtService.setString(1, service.getServiceTitle());
             stmtService.setString(2, service.getServiceBi());
@@ -671,15 +679,65 @@ public class ServiceDAO extends DBContext {
             throw new RuntimeException("Error updating service: " + e.getMessage());
         } finally {
             try {
-                if (stmtService != null) stmtService.close();
-                if (stmtImage != null) stmtImage.close();
-                if (connection != null) connection.close();
+                if (stmtService != null) {
+                    stmtService.close();
+                }
+                if (stmtImage != null) {
+                    stmtImage.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
-    
-    
-}
 
+    public Service getServiceById(int serviceId) throws Exception {
+        try (Connection conn = getConnection()) {
+            String sql = "SELECT s.* FROM service s WHERE s.service_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, serviceId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    Service service = new Service();
+                    service.setServiceId(rs.getInt("service_id"));
+                    service.setServiceTitle(rs.getString("service_title"));
+                    service.setServiceBi(rs.getString("service_bi"));
+                    service.setServiceCreatedDate(rs.getDate("service_created_date"));
+                    service.setCategoryTitle(rs.getString("category_title"));
+                    service.setServicePrice(rs.getDouble("service_price"));
+                    service.setServiceDiscount(rs.getDouble("service_discount"));
+                    service.setServiceDetail(rs.getString("service_detail"));
+                    service.setServiceRateStar(rs.getDouble("service_rateStar"));
+                    service.setServiceVote(rs.getInt("service_vote"));
+
+                    String statusSql = "SELECT service_status FROM service_status WHERE service_id = ?";
+                    try (PreparedStatement statusStmt = conn.prepareStatement(statusSql)) {
+                        statusStmt.setInt(1, serviceId);
+                        ResultSet statusRs = statusStmt.executeQuery();
+                        if (statusRs.next()) {
+                            service.setServiceStatus(statusRs.getBoolean("service_status") ? 1 : 0);
+                        }
+                    }
+
+                    String imageSql = "SELECT image_link FROM service_image WHERE service_id = ? LIMIT 1";
+                    try (PreparedStatement imageStmt = conn.prepareStatement(imageSql)) {
+                        imageStmt.setInt(1, serviceId);
+                        ResultSet imageRs = imageStmt.executeQuery();
+                        if (imageRs.next()) {
+                            service.setServiceImage(imageRs.getString("image_link"));
+                        }
+                    }
+
+                    return service;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error retrieving service: " + e.getMessage());
+        }
+        return null;
+    }
+}

@@ -4,28 +4,4 @@
 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	 xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
 	 version="6.0">
-    <servlet>
-        <servlet-name>ShopCartController</servlet-name>
-        <servlet-class>controller.cart.ShopCartController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Error</servlet-name>
-        <servlet-class>controller.cart.Error</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>CheckoutController</servlet-name>
-        <servlet-class>controller.cart.CheckoutController</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ShopCartController</servlet-name>
-        <url-pattern>/mycart</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Error</servlet-name>
-        <url-pattern>/error</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CheckoutController</servlet-name>
-        <url-pattern>/checkout</url-pattern>
-    </servlet-mapping>
 </web-app>
