@@ -260,3 +260,22 @@ CREATE TABLE prescription_details (
 );
 INSERT INTO prescription_details (medical_id, medicine_id, quantity, price) 
 VALUES (1, 1, 1, 10.50);
+
+-- Tạo bảng setting và thêm dữ liệu
+CREATE TABLE setting (
+    setting_id INT AUTO_INCREMENT PRIMARY KEY,
+ setting_name VARCHAR(100) NOT NULL,
+    setting_type VARCHAR(50) NOT NULL,
+    setting_description TEXT,
+    setting_value VARCHAR(100) NOT NULL,
+    setting_status ENUM('Active', 'Inactive') NOT NULL
+);
+
+INSERT INTO setting (setting_type, setting_name, setting_value, setting_description, setting_status) VALUES
+('General', 'Enable Notifications', 'ON', 'Turn system notifications on or off', 'Active'),
+('UI', 'Default Theme', 'Light', 'Default theme of the user interface', 'Active'),
+('Security', 'Two-factor Auth', 'Enabled', 'Enable or disable two-factor authentication', 'Active'),
+('System', 'Auto Backup', 'OFF', 'Automatically back up data', 'Inactive'),
+('Account', 'Allow Guest Login', 'No', 'Allow guest users to log in without an account', 'Active'),
+('Email', 'Email Expiration Time', '30 days', 'Expiration period for temporary emails', 'Active'),
+('General', 'Language', 'English', 'Default system language', 'Active');
