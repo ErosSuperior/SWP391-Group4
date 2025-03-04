@@ -5,29 +5,48 @@
 package controller.manager;
 
 import dao.ServiceDAO;
-import jakarta.servlet.RequestDispatcher;
-import java.io.IOException;
-import java.io.PrintWriter;
+import init.ServiceInit;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import model.Service;
 
-/**
- *
- * @author CMD
- */
-@WebServlet(name = "ServiceListController", urlPatterns = {"/manager/ServiceList", "/manager/ServiceList/Add", "/manager/ServiceList/Update", "/manager/ServiceList/Delete", "/manager/ServiceDetail"})
+@WebServlet(name = "ServiceController", urlPatterns = {
+    "/manager/serviceList", 
+    "/manager/serviceAdd", 
+    "/manager/serviceEdit", 
+    "/manager/serviceUpdateStatus", 
+    "/manager/serviceEdits"})
 public class ServiceController extends HttpServlet {
 
-    private ServiceDAO serviceDAO;
+    private ServiceDAO serviceDao;
+    private ServiceInit serviceInit;
 
     @Override
     public void init() throws ServletException {
-        serviceDAO = new ServiceDAO();
+        serviceDao = new ServiceDAO();
+        serviceInit = new ServiceInit();
+    }
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ServiceController</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet ServiceController at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
     }
 
     @Override
@@ -35,19 +54,31 @@ public class ServiceController extends HttpServlet {
             throws ServletException, IOException {
         String url = request.getServletPath();
         switch (url) {
-            case "/manager/ServiceList":
+            case "/manager/serviceList":
                 handleServiceList(request, response);
                 break;
-            case "/manager/ServiceList/Add":
-                handleAddService(request, response);
-            case "/manager/ServiceList/Update":
+            case "/manager/serviceAdd":
+                request.getRequestDispatcher("/landing/manager/ServiceDetail.jsp").forward(request, response);
                 break;
-            case "/manager/ServiceList/Delete":
+            case "/manager/serviceEdit":
+                
+                String serviceId = request.getParameter("serviceId");
+                String title = request.getParameter("serviceTitle");
+                String categoryId = request.getParameter("categoryId");
+                String price = request.getParameter("servicePrice");
+                String discount = request.getParameter("serviceDiscount");
+                String detail = request.getParameter("serviceDetail");
+                String image = request.getParameter("serviceImage");
+                request.setAttribute("serviceId", serviceId);
+                request.setAttribute("title", title);
+                request.setAttribute("categoryId", categoryId);
+                request.setAttribute("servicePrice", price);
+                request.setAttribute("serviceDiscount", discount);
+                request.setAttribute("serviceDetail", detail);
+                request.setAttribute("serviceImage", image);
+                request.getRequestDispatcher("/landing/manager/ServiceDetail.jsp").forward(request, response);
                 break;
-            case "/manager/ServiceDetail":
-                handleServiceDetail(request, response);
         }
-
     }
 
     @Override
@@ -55,25 +86,34 @@ public class ServiceController extends HttpServlet {
             throws ServletException, IOException {
         String url = request.getServletPath();
         switch (url) {
-            case "/manager/managerupdatestatusBlog":
-                updateService(request, response);
+            case "/manager/serviceUpdateStatus":
+                updateStatus(request, response);
+                break;
+            case "/manager/serviceEdits":
+                String submit = request.getParameter("submit");
+                if (submit.equalsIgnoreCase("add")) {
+                    addService(request, response);
+                    handleServiceList(request, response);
+                } else {
+                    editService(request, response);
+                    handleServiceList(request, response);
+                }
                 break;
         }
     }
 
     private void handleServiceList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // get parameter from request
+        String pageParam = request.getParameter("page");
+        int page = (pageParam != null && !pageParam.isEmpty()) ? Integer.parseInt(pageParam) : 1;
+        int limit = 3;
+        int offset = (page - 1) * limit;
+
         String nameOrId = request.getParameter("nameOrId");
         String statusParam = request.getParameter("status");
-        String pageParam = request.getParameter("page");
+        int status = (statusParam != null && !statusParam.isEmpty()) ? Integer.parseInt(statusParam) : -1;
         String sortBy = request.getParameter("sortBy");
         String sortDir = request.getParameter("sortDir");
-
-        int status = (statusParam != null) ? Integer.parseInt(statusParam) : -1;
-        int page = (pageParam != null) ? Integer.parseInt(pageParam) : 1;
-        int limit = 3; // Số bản ghi mỗi trang
-        int offset = (page - 1) * limit;
 
         if (sortBy == null || sortBy.isEmpty()) {
             sortBy = "title";
@@ -82,9 +122,8 @@ public class ServiceController extends HttpServlet {
             sortDir = "asc";
         }
 
-        List<Service> services = serviceDAO.getAllService(offset, limit, nameOrId, -1, status, sortBy, sortDir);
-
-        int totalRecords = serviceDAO.countAllServices(nameOrId, -1, status);
+        List<Service> services = serviceDao.getAllService(offset, limit, nameOrId, -1, status, sortBy, sortDir);
+        int totalRecords = serviceDao.countAllServices(nameOrId, -1, status);
         int totalPages = (int) Math.ceil((double) totalRecords / limit);
 
         request.setAttribute("services", services);
@@ -95,87 +134,118 @@ public class ServiceController extends HttpServlet {
         request.setAttribute("sortBy", sortBy);
         request.setAttribute("sortDir", sortDir);
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/landing/manager/ServiceManager.jsp");
-        dispatcher.forward(request, response);
+        request.getRequestDispatcher("/landing/manager/ServiceManager.jsp").forward(request, response);
     }
 
-    private void handleServiceDetail(HttpServletRequest request, HttpServletResponse response)
+    private void updateStatus(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // get parameter from request
-        String nameOrId = request.getParameter("nameOrId");
-        String statusParam = request.getParameter("status");
-        String pageParam = request.getParameter("page");
-        String sortBy = request.getParameter("sortBy");
-        String sortDir = request.getParameter("sortDir");
-
-        int status = (statusParam != null) ? Integer.parseInt(statusParam) : -1;
-        int page = (pageParam != null) ? Integer.parseInt(pageParam) : 1;
-        int limit = 3; // Số bản ghi mỗi trang
-        int offset = (page - 1) * limit;
-
-        if (sortBy == null || sortBy.isEmpty()) {
-            sortBy = "title";
-        }
-        if (sortDir == null || sortDir.isEmpty()) {
-            sortDir = "asc";
-        }
-
-        List<Service> services = serviceDAO.getAllService(offset, limit, nameOrId, -1, status, sortBy, sortDir);
-
-        int totalRecords = serviceDAO.countAllServices(nameOrId, -1, status);
-        int totalPages = (int) Math.ceil((double) totalRecords / limit);
-
-        request.setAttribute("services", services);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("nameOrId", nameOrId);
-        request.setAttribute("status", status);
-        request.setAttribute("sortBy", sortBy);
-        request.setAttribute("sortDir", sortDir);
-
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/landing/manager/ServiceDetail.jsp");
-        dispatcher.forward(request, response);
+        String serviceIdParam = request.getParameter("serviceId");
+        int serviceId = Integer.parseInt(serviceIdParam);
+        String statusParam = request.getParameter("serviceStatus");
+        int status = Integer.parseInt(statusParam);
+        serviceDao.updateStatus(serviceId, status);
     }
-    
-    private void handleAddService(HttpServletRequest request, HttpServletResponse response)
+
+    private void addService(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // get parameter from request
-        String nameOrId = request.getParameter("nameOrId");
-        String statusParam = request.getParameter("status");
-        String pageParam = request.getParameter("page");
-        String sortBy = request.getParameter("sortBy");
-        String sortDir = request.getParameter("sortDir");
+        List<Service> category = serviceDao.getActiveCategory();
+        String title = request.getParameter("title");
+        String categoryIdParam = request.getParameter("categoryId");
+        String priceParam = request.getParameter("servicePrice");
+        String discountParam = request.getParameter("serviceDiscount");
+        String detail = request.getParameter("serviceDetail");
+        String image = request.getParameter("serviceImage");
 
-        int status = (statusParam != null) ? Integer.parseInt(statusParam) : -1;
-        int page = (pageParam != null) ? Integer.parseInt(pageParam) : 1;
-        int limit = 3; // Số bản ghi mỗi trang
-        int offset = (page - 1) * limit;
-
-        if (sortBy == null || sortBy.isEmpty()) {
-            sortBy = "title";
+        if (title == null || title.trim().isEmpty() ||
+            categoryIdParam == null || categoryIdParam.trim().isEmpty() ||
+            priceParam == null || priceParam.trim().isEmpty() ||
+            detail == null || detail.trim().isEmpty() ||
+            image == null || image.trim().isEmpty()) {
+            request.setAttribute("message", "All fields are required.");
+            request.setAttribute("title", title);
+            request.setAttribute("categoryId", categoryIdParam);
+            request.setAttribute("servicePrice", priceParam);
+            request.setAttribute("serviceDiscount", discountParam);
+            request.setAttribute("serviceDetail", detail);
+            request.setAttribute("serviceImage", image);
+            request.setAttribute("category", category);
+            request.getRequestDispatcher("/landing/manager/ServiceDetail.jsp").forward(request, response);
+            return;
         }
-        if (sortDir == null || sortDir.isEmpty()) {
-            sortDir = "asc";
+
+        try {
+            int categoryId = Integer.parseInt(categoryIdParam);
+            double price = Double.parseDouble(priceParam);
+            double discount = (discountParam != null && !discountParam.trim().isEmpty()) ? Double.parseDouble(discountParam) : 0.0;
+
+            Service service = new Service();
+            service.setServiceTitle(title);
+            service.setCategoryId(categoryId);
+            service.setServicePrice(price);
+            service.setServiceDiscount(discount);
+            service.setServiceDetail(detail);
+            service.setServiceImage(image);
+            service.setServiceStatus(1); // Default status
+            serviceDao.addService(service);
+        } catch (NumberFormatException e) {
+            request.setAttribute("message", "Invalid number format.");
+            request.getRequestDispatcher("/landing/manager/ServiceDetail.jsp").forward(request, response);
         }
-
-        List<Service> services = serviceDAO.getAllService(offset, limit, nameOrId, -1, status, sortBy, sortDir);
-
-        int totalRecords = serviceDAO.countAllServices(nameOrId, -1, status);
-        int totalPages = (int) Math.ceil((double) totalRecords / limit);
-
-        request.setAttribute("services", services);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("nameOrId", nameOrId);
-        request.setAttribute("status", status);
-        request.setAttribute("sortBy", sortBy);
-        request.setAttribute("sortDir", sortDir);
-
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/landing/manager/AddService.jsp");
-        dispatcher.forward(request, response);
     }
-    private void updateService(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
 
+    private void editService(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<Service> category = serviceDao.getActiveCategory();        
+        String serviceIdParam = request.getParameter("serviceId");
+        String title = request.getParameter("title");
+        String categoryIdParam = request.getParameter("categoryId");
+        String priceParam = request.getParameter("servicePrice");
+        String discountParam = request.getParameter("serviceDiscount");
+        String detail = request.getParameter("serviceDetail");
+        String image = request.getParameter("serviceImage");
+
+        if (serviceIdParam == null || serviceIdParam.trim().isEmpty() ||
+            title == null || title.trim().isEmpty() ||
+            categoryIdParam == null || categoryIdParam.trim().isEmpty() ||
+            priceParam == null || priceParam.trim().isEmpty() ||
+            detail == null || detail.trim().isEmpty() ||
+            image == null || image.trim().isEmpty()) {
+            request.setAttribute("message", "All fields are required.");
+            request.setAttribute("serviceId", serviceIdParam);
+            request.setAttribute("title", title);
+            request.setAttribute("categoryId", categoryIdParam);
+            request.setAttribute("servicePrice", priceParam);
+            request.setAttribute("serviceDiscount", discountParam);
+            request.setAttribute("serviceDetail", detail);
+            request.setAttribute("serviceImage", image);
+            request.setAttribute("category", category);
+            request.getRequestDispatcher("/landing/manager/ServiceDetail.jsp").forward(request, response);
+            return;
+        }
+
+        try {
+            int serviceId = Integer.parseInt(serviceIdParam);
+            int categoryId = Integer.parseInt(categoryIdParam);
+            double price = Double.parseDouble(priceParam);
+            double discount = (discountParam != null && !discountParam.trim().isEmpty()) ? Double.parseDouble(discountParam) : 0.0;
+
+            Service service = new Service();
+            service.setServiceId(serviceId);
+            service.setServiceTitle(title);
+            service.setCategoryId(categoryId);
+            service.setServicePrice(price);
+            service.setServiceDiscount(discount);
+            service.setServiceDetail(detail);
+            service.setServiceImage(image);
+            serviceDao.updateService(service);
+        } catch (NumberFormatException e) {
+            request.setAttribute("message", "Invalid number format.");
+            request.getRequestDispatcher("/landing/manager/ServiceDetail.jsp").forward(request, response);
+        }
+    }
+
+    @Override
+    public String getServletInfo() {
+        return "Servlet for managing services in the child management system";
     }
 }
