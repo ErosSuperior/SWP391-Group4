@@ -16,16 +16,23 @@
 
         <ul class="sidebar-menu pt-3">
             <li><a href="${pageContext.request.contextPath}/nav/dashboard"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
-           
+
             <li><a href="${pageContext.request.contextPath}/manager/managerlistBlog"><i class="uil uil-apps me-2 d-inline-block"></i>Post Management</a></li>
 
             <li><a href="${pageContext.request.contextPath}/manager/sliders"><i class="uil uil-apps me-2 d-inline-block"></i>Slider Management</a></li>
 
             <li><a href="${pageContext.request.contextPath}/manager/serviceList"><i class="uil uil-apps me-2 d-inline-block"></i>Service Management</a></li>
-      
+
             <li><a href="${pageContext.request.contextPath}/admin/adminList"><i class="uil uil-apps me-2 d-inline-block"></i>User Management</a></li>
-            
-            <li><a href="${pageContext.request.contextPath}/home"><i class="uil uil-window me-2 d-inline-block"></i>Home page</a></li>
+            <li class="sidebar-dropdown">
+                <a href="javascript:void(0)"><i class="uil uil-user me-2 d-inline-block"></i>Settings</a>
+                <div class="sidebar-submenu">
+                    <ul>
+                        <li><a href="${pageContext.request.contextPath}/adminsettinglist">Settings</a></li>
+                        <li><a href="${pageContext.request.contextPath}/adminaddsetting">Add Setting</a></li>
+                    </ul>
+                </div>
+            </li>            <li><a href="${pageContext.request.contextPath}/home"><i class="uil uil-window me-2 d-inline-block"></i>Home page</a></li>
         </ul>
         <!-- sidebar-menu  -->
     </div>
