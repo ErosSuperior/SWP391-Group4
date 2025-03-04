@@ -96,25 +96,6 @@ CREATE TABLE reservation (
 INSERT INTO reservation (user_id, total_price, note, reservation_status, payment_status, created_date, receiver_address, receiver_number, receiver_email, receiver_name) 
 VALUES (1, 100.50, 'Initial reservation for consultation', 1, 1, '2025-02-17', 'St12 NYC', '0973256951', 'abc@gmail.com', 'nguyendat');
 
--- Tạo bảng feedback và thêm dữ liệu
-CREATE TABLE feedback (
-    feedback_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    reservation_id INT,
-    content TEXT,
-    name VARCHAR(255),
-    gender BOOLEAN,
-    email VARCHAR(255),
-    mobile VARCHAR(255),
-    feedback_image TEXT,
-    rate_Star INT,
-    status BOOLEAN,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (reservation_id) REFERENCES reservation(reservation_id)
-);
-INSERT INTO feedback (user_id, reservation_id, content, name, gender, email, mobile, feedback_image, rate_Star, status) 
-VALUES (1, 1, 'Great service, will book again!', 'John Doe', 1, 'john.doe@example.com', '1234567890', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl4SxpMqqFgtouMCduw_zK6BJzBbQF-kFkvA&s', 5, 1);
-
 -- Tạo bảng service và thêm dữ liệu
 CREATE TABLE service (
     service_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -131,6 +112,29 @@ CREATE TABLE service (
 );
 INSERT INTO service (service_title, service_bi, service_created_date, category_id, service_price, service_discount, service_detail, service_rateStar, service_vote) 
 VALUES ('Pediatric Consultation', 'Consultation for children', '2025-02-17', 1, 50.00, 10.00, 'Consultation for children with pediatricians', 5, 100);
+
+
+
+-- Tạo bảng feedback và thêm dữ liệu
+CREATE TABLE feedback (
+    feedback_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    service_id INT,
+    content TEXT,
+    name VARCHAR(255),
+    gender BOOLEAN,
+    email VARCHAR(255),
+    mobile VARCHAR(255),
+    feedback_image TEXT,
+    rate_Star INT,
+    status INT,
+    created_date DATE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (service_id) REFERENCES service(service_id)
+);
+INSERT INTO feedback (user_id, service_id, content, name, gender, email, mobile, feedback_image, rate_Star, status, created_date) 
+VALUES (1, 1, 'Great service, will book again!', 'John Doe', 1, 'john.doe@example.com', '1234567890', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl4SxpMqqFgtouMCduw_zK6BJzBbQF-kFkvA&s', 5, 1, '2025-02-17');
+
 
 
 -- Tạo bảng service_image và thêm dữ liệu

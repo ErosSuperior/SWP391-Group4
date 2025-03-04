@@ -11,11 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.Service;
 import dao.ServiceDAO;
 import dao.UserDAO;
+import init.FeedbackInit;
 import init.ServiceInit;
 import jakarta.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import model.Feedback;
 import model.SearchResponse;
 import model.User;
 
@@ -23,13 +25,14 @@ import model.User;
  *
  * @author thang
  */
-@WebServlet(name = "CustomerServiceController", urlPatterns = {"/customer/customerlistService", "/customer/customerdetailService", "/customer/service/addToCart"})
+@WebServlet(name = "CustomerServiceController", urlPatterns = {"/customer/customerlistService", "/customer/customerdetailService", "/customer/service/addToCart", "/customer/service/serviceFeedBack"})
 public class CustomerServiceController extends HttpServlet {
 
     ServiceDAO serviceDAO = new ServiceDAO();
     ServiceInit serviceInit = new ServiceInit();
     ReservationDAO reservationDao = new ReservationDAO();
     UserDAO userDao = new UserDAO();
+    FeedbackInit feedbackInit = new FeedbackInit();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -61,6 +64,9 @@ public class CustomerServiceController extends HttpServlet {
                 break;
             case "/customer/service/addToCart":
                 handleAddtoCart(request, response);
+                break;
+            case "/customer/service/serviceFeedBack":
+                handleServiceFeedback(request, response);
                 break;
             default:
                 System.out.println("Unknown URL requested: " + url);
@@ -131,7 +137,7 @@ public class CustomerServiceController extends HttpServlet {
 
         // Set attributes for JSP
         request.setAttribute("serviceImages", serviceImage);
-        request.setAttribute("cartmessage", cartmessage);  
+        request.setAttribute("cartmessage", cartmessage);
         request.setAttribute("highlightedService", highlightedService);
         request.setAttribute("relatedServices", allServiceByCategory);
         request.setAttribute("staffList", userDao.getAllStaffNotBusy());
@@ -199,6 +205,40 @@ public class CustomerServiceController extends HttpServlet {
             handleServiceList(request, response);
         }
 
+    }
+
+    private void handleServiceFeedback(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+        String service_id = request.getParameter("service_id");
+        int serviceId = Integer.parseInt(service_id);
+        if (account == null) {
+            // Redirect to login page if not logged in
+            request.setAttribute("loggedin", "no");
+            return;
+        } else {
+            boolean check = reservationDao.hasReservationWithService(account.getUser_id(), service_id);
+
+            if (check) {
+                request.setAttribute("purchased", "purchased");
+                return;
+            }
+        }
+        
+        String pageNoParam = request.getParameter("pageNo");
+        int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
+        int pageSize = 4;
+        String nameOrId = request.getParameter("nameOrId");
+        SearchResponse<Feedback> searchResponse = feedbackInit.getServiceFeedback(pageNo, pageSize, nameOrId, serviceId);
+        
+        
+        request.setAttribute("allfeedback", searchResponse.getContent());
+        request.setAttribute("totalElements", searchResponse.getTotalElements());
+        request.setAttribute("pageNo", pageNo);
+        request.setAttribute("pageSize", pageSize);
+
+        request.setAttribute("service_id", service_id);
+        request.getRequestDispatcher("/landing/customer/ServiceFeedback.jsp").forward(request, response);
     }
 
     @Override

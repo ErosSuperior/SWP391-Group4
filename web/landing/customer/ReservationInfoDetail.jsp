@@ -46,8 +46,7 @@
                 <div class="row mt-5 justify-content-center">
                     <div class="col-12">
                         <div class="section-title text-center">
-                            <h3 class="sub-title mb-4">Checkout</h3>
-                            <p class="para-desc mx-auto text-muted">Excellent service if you need immediate and effective assistance, emergency care, or a simple consultation for your family member.</p>
+                            <h3 class="sub-title mb-4">Reservation Information</h3>
 
                             <nav aria-label="breadcrumb" class="d-inline-block mt-3">
                                 <ul class="breadcrumb bg-light rounded mb-0 bg-transparent">

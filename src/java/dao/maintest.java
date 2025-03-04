@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import model.Service;
 import model.Blog;
+import model.Feedback;
 import model.Reservation;
 import model.ReservationDetail;
 import model.User;
@@ -42,8 +43,7 @@ public class maintest {
 //            System.out.println(c.getPrice());
 //            System.out.println(c.getImage_link());
 //        }
-          System.out.println(reservationDAO.getPaymentStatus(4));
-        
+          
 //        List<Reservation> r = reservationDAO.getReservation(0, 10, "", 1, 30, -1, -1, "reservation_id", "ASC");
 //        
 //        for(Reservation a : r){

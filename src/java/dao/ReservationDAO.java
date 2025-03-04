@@ -516,4 +516,22 @@ public class ReservationDAO extends DBContext {
         return false;
     }
 
+    public boolean hasReservationWithService(int userId, String serviceId) {
+        String sql = "SELECT COUNT(*) FROM reservation r " +
+                     "JOIN reservation_detail rd ON r.reservation_id = rd.reservation_id " +
+                     "WHERE r.user_id = ? AND rd.service_id = ? AND r.reservation_status = 3";
+        
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setString(2, serviceId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // If count > 0, return true
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false; // Default return false if no match found
+    }
+    
 }

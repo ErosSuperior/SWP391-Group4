@@ -170,7 +170,11 @@
 
                             <div class="mt-4 pt-2">
                                 <button type="submit" class="btn btn-primary">Add to Cart</button>
-                                <button type="submit" class="btn btn-soft-primary ms-2">Feedback & Rating</button>
+                                <button type="button" class="btn btn-soft-primary ms-2" 
+                                        onclick="window.location.href = '${pageContext.request.contextPath}/customer/service/serviceFeedBack?service_id=${serviceId}'">
+                                    Feedback & Rating
+                                </button>
+
                             </div>
 
                         </div>
