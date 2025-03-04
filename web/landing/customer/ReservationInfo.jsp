@@ -127,9 +127,15 @@
                     </div>
                     <div class="modal-body" style="padding: 10px; background-color: white; border-radius: 5px;">
                         <p style="color: #000; margin-bottom: 25px; ">Do you want to delete this service ?</p>
+                        <c:if test="${numofreservation == 1}">
+                            <p style="color: red; font-weight: bold; text-align: center;">
+                                This is the only item, your current reservation will be canceled.
+                            </p>
+                        </c:if>
                         <div class="col-md-12 form-group" style="display: flex; justify-content: space-between;">
                             <button id="cancelBtn" onclick="closeModal()" style="border: 2px solid #1BA8FF; background-color: #FFFFFF; color: #1BA8FF; padding: 10px 20px; border-radius: 2px; cursor: pointer; font-size: 16px; width: 200px; transition: background-color 0.3s;">No</button>
-                            <form action="mycart" method="POST">
+                            <form action="${pageContext.request.contextPath}/reservation/reservationserviceedit" method="POST">
+                                <input type="hidden" name="reservation_id" value="${reservation_id}">
                                 <input type="hidden" name="delete_id" id="ServiceId" value="0">
                                 <!--                                Trường dữ liệu ẩn được gửi xuống servlet-->
                                 <button id="confirmBtn" style="border: 1px solid #FF424E; background-color: #FF424E; color: #FFFFFF; padding: 10px 20px; border-radius: 2px; cursor: pointer; font-size: 16px; width: 200px; transition: background-color 0.3s;">Yes</button>
@@ -145,7 +151,9 @@
                             <table class="table table-center table-padding mb-0">
                                 <thead>
                                     <tr>
-                                        
+                                        <c:if test="${not empty fix}">
+                                            <th class="border-bottom p-3" style="min-width:20px "></th>
+                                            </c:if>
                                         <th class="border-bottom p-3" style="min-width: 300px;">Service</th>
                                         <th class="border-bottom text-center p-3" style="min-width: 160px;">Price</th>
                                         <th class="border-bottom text-center p-3" style="min-width: 190px;">Qty</th>
@@ -156,7 +164,10 @@
                                 <tbody>
                                     <!-- Vòng for để in ra các item -->
                                     <c:forEach var="r" items="${listreservation}"> 
-                                        <tr data-service-id="${r.service_id}">
+                                        <tr data-service-id="${r.service_id}" data-reservation-id="${reservation_id}" data-detail-id="${r.reservation_detail_id}">
+                                            <c:if test="${not empty fix}">
+                                                <td class="h5 p-3 text-center"><a onclick="openModal(${r.reservation_detail_id});" style="cursor: pointer;" class="text-danger"><i class="uil uil-times"></i></a></td>
+                                                    </c:if>
                                             <td class="p-3">
                                                 <div class="d-flex align-items-center">
                                                     <img src="${r.image_link}" class="img-fluid avatar avatar-small rounded shadow" style="height:auto;" alt="">
@@ -174,7 +185,13 @@
                                             <td class="text-center p-3 service_price">$ ${r.price}</td>
                                             <td class="text-center shop-list p-3">
                                                 <div class="qty-icons">
+                                                    <c:if test="${not empty fix}">
+                                                        <button onclick="this.parentNode.querySelector('input[type=number]').stepDown(); this.parentNode.querySelector('input[type=number]').dispatchEvent(new Event('change'));" class="btn btn-icon btn-primary minus">-</button>
+                                                    </c:if>
                                                     <input min="1" name="quantity" value="${r.quantity}" type="number" class="btn btn-icon btn-primary qty-btn quantity">
+                                                    <c:if test="${not empty fix}">
+                                                        <button onclick="this.parentNode.querySelector('input[type=number]').stepUp(); this.parentNode.querySelector('input[type=number]').dispatchEvent(new Event('change'));" class="btn btn-icon btn-primary plus">+</button>
+                                                    </c:if>
                                                 </div>
                                             </td>
                                             <td class="text-end font-weight-bold p-3 subtotal">$ ${r.price * r.quantity}</td>
@@ -209,7 +226,12 @@
                             </table>
                         </div>
                         <div class="mt-4 pt-2 text-end">
-                            <a href="${pageContext.request.contextPath}/customer/myreservationinfo?reservation_id=${reservation_id}" class="btn btn-primary">See Reservation Info</a>
+                            <c:if test="${empty fix}">
+                                <a href="${pageContext.request.contextPath}/customer/myreservationinfo?reservation_id=${reservation_id}" class="btn btn-primary">See Reservation Info</a>
+                            </c:if>
+                            <c:if test="${not empty fix}">
+                                <a href="${pageContext.request.contextPath}/customer/myreservationinfo?reservation_id=${reservation_id}&fix=1" class="btn btn-primary">Edit Reservation Info</a>
+                            </c:if>
                         </div>
                     </div><!--end col-->
                 </div><!--end row-->
@@ -231,15 +253,18 @@
                     var quantity = $(this).val(); // Lấy giá trị quantity mới khi người dùng thay đổi
                     var row = $(this).closest("tr"); // Lấy hàng (tr) chứa input quantity
                     var service_id = row.data("service-id"); // Lấy service_id từ data của tr
+                    var reservation_id = row.data("reservation-id"); // Get reservation_id
+                    var detail_id = row.data("detail-id");
                     var price = parseFloat(row.find(".service_price").text().replace('$', '').trim()); // Lấy giá của dịch vụ từ phần tử .service_price và chuyển đổi thành số
                     var previousQuantity = $(this).data("previous-quantity"); // Lấy quantity trước đó từ data của phần tử
 
                     // Gửi yêu cầu AJAX để cập nhật số lượng dịch vụ trên giỏ hàng
                     $.ajax({
-                        url: "mycart", // Địa chỉ URL để gửi yêu cầu
+                        url: "${pageContext.request.contextPath}/reservation/reservationserviceedit", // Địa chỉ URL để gửi yêu cầu
                         method: "POST", // Phương thức POST
                         data: {
                             service_id: service_id, // Truyền service_id
+                            detail_id: detail_id,
                             quantity: quantity // Truyền quantity mới
                         },
                         success: function (response) {

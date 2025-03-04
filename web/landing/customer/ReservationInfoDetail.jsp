@@ -51,8 +51,7 @@
 
                             <nav aria-label="breadcrumb" class="d-inline-block mt-3">
                                 <ul class="breadcrumb bg-light rounded mb-0 bg-transparent">
-                                    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/mycart">Shop Cart</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Reservation Info</li>
                                 </ul>
                             </nav>
                         </div>
@@ -78,7 +77,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="h5 mb-0">Your Reservation</span>
                                 <span class="badge bg-primary rounded-pill">
-                                    <a href="${pageContext.request.contextPath}/mycart" class="text-white">${totalservice}</a>
+                                    <a href="#" class="text-white">${totalservice}</a>
                                 </span>
                             </div>
                             <ul class="list-group mb-3 border">
@@ -115,12 +114,19 @@
                     <div class="col-md-7 col-lg-8">
                         <div class="card rounded shadow p-4 border-0">
                             <h5 class="mb-3">Billing address</h5>
-                            <form class="needs-validation" action="checkout" method="POST" novalidate>
+                            <form class="needs-validation" action="${pageContext.request.contextPath}/reservation/reservationserviceinfoedit" method="POST" novalidate>
+                                <input type="hidden" name="reservation_id" value="${reservation_id}">
                                 <div class="row g-3">
                                     <div class="col-sm-12">
                                         <label for="firstName" class="form-label">Name</label>
+                                        <c:if test="${empty fix}"> 
                                         <input type="text" name="name" class="form-control" id="firstName" placeholder="First Name"
                                                value="${receiver.user_fullname}" readonly>
+                                        </c:if>
+                                        <c:if test="${not empty fix}"> 
+                                        <input type="text" name="name" class="form-control" id="firstName" placeholder="First Name"
+                                               value="${receiver.user_fullname}" required>
+                                        </c:if>
                                         <div class="invalid-feedback">Valid name is required.</div>
                                     </div>
 
@@ -129,25 +135,56 @@
                                     <div class="col-12">
                                         <label for="phone" class="form-label">Phone Number</label>
                                         <div class="input-group has-validation">
+                                            <c:if test="${empty fix}"> 
                                             <input type="tel" name="phone" pattern="\+?[0-9\- ]{7,15}" class="form-control" id="phone" placeholder="Phone Number"
                                                    value="${receiver.user_phone}" readonly>
+                                            </c:if>
+                                            <c:if test="${not empty fix}"> 
+                                            <input type="tel" name="phone" pattern="\+?[0-9\- ]{7,15}" class="form-control" id="phone" placeholder="Phone Number"
+                                                   value="${receiver.user_phone}" required>
+                                            </c:if>
                                             <div class="invalid-feedback">Your phone number is required.</div>
                                         </div>
                                     </div>
 
                                     <div class="col-12">
                                         <label for="email" class="form-label">Email </label>
+                                        <c:if test="${empty fix}"> 
                                         <input type="email" name="email" class="form-control" id="email" placeholder="you@example.com"
                                                value="${receiver.user_email}" readonly>
+                                        </c:if>
+                                        <c:if test="${not empty fix}"> 
+                                        <input type="email" name="email" class="form-control" id="email" placeholder="you@example.com"
+                                               value="${receiver.user_email}" required>
+                                        </c:if>
                                         <div class="invalid-feedback">Please enter a valid email address.</div>
                                     </div>
 
                                     <div class="col-12">
                                         <label for="address" class="form-label">Address</label>
+                                        <c:if test="${empty fix}"> 
                                         <input type="text" name="address" class="form-control" id="address" placeholder="1234 Main St"
                                                value="${receiver.user_address}" readonly>
+                                        </c:if>
+                                        <c:if test="${not empty fix}"> 
+                                        <input type="text" name="address" class="form-control" id="address" placeholder="1234 Main St"
+                                               value="${receiver.user_address}" required>
+                                        </c:if>
                                         <div class="invalid-feedback">Please enter your address.</div>
                                     </div>
+                                        
+                                    <div class="col-12">
+                                        <label for="note" class="form-label">Note</label>
+                                        <c:if test="${empty fix}"> 
+                                        <input type="text" name="note" class="form-control" id="note" placeholder="1234 Main St"
+                                               value="${note}" readonly>
+                                        </c:if>
+                                        <c:if test="${not empty fix}"> 
+                                        <input type="text" name="note" class="form-control" id="note" placeholder="1234 Main St"
+                                               value="${note}" required>
+                                        </c:if>
+                                        <div class="invalid-feedback">Please enter your address.</div>
+                                    </div>    
 
                                 </div>
                                 <h5 class="mb-3 mt-4 pt-4 border-top">Payment Status</h5>
@@ -159,7 +196,9 @@
                                     <span class="badge bg-soft-danger">Not Paid</span>
                                 </c:if>
                                 <div class="my-3">
-
+                                    <c:if test="${not empty fix}">
+                                    <button class="w-100 btn btn-primary" type="submit">Update reservation information</button>
+                                    </c:if>
                                 </div>
                             </form>
                         </div>

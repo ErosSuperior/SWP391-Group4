@@ -26,7 +26,8 @@ import model.User;
  *
  * @author thang
  */
-@WebServlet(name = "MyReservationController", urlPatterns = {"/myReservationController", "/customer/myreservationlist", "/customer/myreservationdetail","/customer/myreservationinfo"})
+@WebServlet(name = "MyReservationController", urlPatterns = {"/myReservationController", "/customer/myreservationlist", "/customer/myreservationdetail", "/customer/myreservationinfo",
+    "/reservation/reservationserviceedit", "/reservation/reservationserviceinfoedit"})
 public class MyReservationController extends HttpServlet {
 
     ReservationDAO reservationDao = new ReservationDAO();
@@ -84,6 +85,7 @@ public class MyReservationController extends HttpServlet {
             case "/customer/myreservationinfo":
                 handleListReservationInfo(request, response);
                 break;
+
         }
 
     }
@@ -99,7 +101,15 @@ public class MyReservationController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String url = request.getServletPath();
+        switch (url) {
+            case "/reservation/reservationserviceedit":
+                handleEditReservationDetail(request,response);
+                break;
+            case "/reservation/reservationserviceinfoedit":
+                handleEditReservationDetailInfo(request,response);
+                break;
+        }
     }
 
     public void handleListReservation(HttpServletRequest request, HttpServletResponse response)
@@ -157,12 +167,22 @@ public class MyReservationController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
+
+        String fix = request.getParameter("fix");
+
         ShopCartDAO d = new ShopCartDAO();
-
+        
         int reservationID = Integer.parseInt(request.getParameter("reservation_id"));
-
+        int numofreservation = reservationDao.countServiceInReservation(reservationID);
+        if(numofreservation == 0){
+            reservationDao.updateReservationStatus(reservationID, 4);
+            handleListReservation(request, response);
+            return;
+        }
         List<ReservationDetail> listreservation = d.getReservationDetail(reservationID);
 
+        request.setAttribute("fix", fix);
+        request.setAttribute("numofreservation", numofreservation);
         request.setAttribute("listreservation", listreservation);
         request.setAttribute("reservation_id", reservationID);
         request.getRequestDispatcher("/landing/customer/ReservationInfo.jsp").forward(request, response);
@@ -177,24 +197,78 @@ public class MyReservationController extends HttpServlet {
         }
         // Tiếp tục nếu đã đăng nhập
         
+        String fix = request.getParameter("fix");
         int reservation_id = Integer.parseInt(request.getParameter("reservation_id"));
         
+        String note = reservationDao.getReservationNote(reservation_id);
         ShopCartDAO d = new ShopCartDAO(); // Tạo đối tượng để sử dụng hàm của nó
         int totalservice = reservationDao.totalService(reservation_id); // Gọi hàm để tính tổng service khách chọn
         int payment_status = reservationDao.getPaymentStatus(reservation_id);
         if (totalservice <= 0) { // Nếu không có service
-            response.sendRedirect(request.getContextPath() + "/mycart"); // Đẩy về trang cart không cho checkout
+            handleListReservation(request, response); // trả về trang MyReservation
             return;
         }
         User u = reservationDao.getReceiverInfo(reservation_id);
         List<ReservationDetail> listreservation = d.getReservationDetail(reservation_id); // Lấy dánh sách service
         request.setAttribute("receiver", u);
+        request.setAttribute("note", note);
+        request.setAttribute("fix", fix);
+        request.setAttribute("reservation_id", reservation_id);
         request.setAttribute("payment_status", payment_status);
         request.setAttribute("listreservation", listreservation); // Lưu vào resquest để đẩy lên JSP
         request.setAttribute("totalservice", totalservice); // Lưu tổng số service vào để đẩy lên jsp
         request.getRequestDispatcher("/landing/customer/ReservationInfoDetail.jsp").forward(request, response); //Tham chiếu tới trang Checkout.jsp
     }
 
+    public void handleEditReservationDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String service_id = request.getParameter("service_id"); // Lấy dữ liệu từ JSP gửi về 
+        String quantity = request.getParameter("quantity"); // Lấy dữ liệu từ JSP gửi về 
+        String reservation_detail_id = request.getParameter("detail_id");
+        String delete_id = request.getParameter("delete_id"); // Lấy dữ liệu từ JSP gửi về 
+        String reservation_id = request.getParameter("reservation_id");
+        
+        User account = (User) request.getSession().getAttribute("account");  // Lấy session để kiểm tra xem đăng nhập chưa
+
+        
+        if (delete_id != null && !delete_id.isEmpty()) { // Kiểm tra xem có delete_id gửi về hay k. Nếu có
+            boolean nhom = reservationDao.deleteService(delete_id); // Gọi hàm xóa service khỏi giỏ hàng
+            if (nhom) { //Xóa thành công
+                handleListReservationDetail(request, response);
+                return;
+            } else {
+                response.sendRedirect(request.getContextPath() + "/error"); // Xóa ko thành công chuyển tới trang lỗi
+                return;
+            }
+        }
+
+        boolean result = reservationDao.updateQuantity(quantity, service_id, reservation_detail_id); // Update số lượng
+
+        if (result) { // Update thành công
+            response.setContentType("application/json"); // Xác định loại thông báo
+            response.getWriter().write("{\"status\":\"1\"}"); // Gửi thông báo về client
+        } else {
+            response.setContentType("application/json"); // Xác định loại thông báo 
+            response.getWriter().write("{\"status\":\"0\"}"); // Gửi thông báo về client
+        }
+    }
+
+    public void handleEditReservationDetailInfo(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+        String name = request.getParameter("name");
+        String phone = request.getParameter("phone"); 
+        String email = request.getParameter("email");
+        String address = request.getParameter("address");  
+        String paymentMethod = request.getParameter("paymentMethod"); 
+        String total = request.getParameter("total"); 
+        String note = request.getParameter("note");
+        String reservation_id = request.getParameter("reservation_id");
+        
+        reservationDao.updateReservation(reservation_id, note, address, phone, email, name, total);
+        
+        handleListReservation(request, response);
+    }
+    
     @Override
     public String getServletInfo() {
         return "Short description";

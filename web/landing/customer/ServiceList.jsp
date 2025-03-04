@@ -312,7 +312,6 @@
                                                 <i data-feather="eye" class="icons"></i>
                                             </a>
                                         </li>
-                                        <li class="mt-2"><a href="#" class="btn btn-icon btn-pills btn-soft-warning"><i data-feather="shopping-cart" class="icons"></i></a></li>
                                     </ul>
                                 </div>
                                 <div class="card-body content pt-4 p-2">

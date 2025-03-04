@@ -147,6 +147,9 @@
                                                                         <c:when test="${reservation.status == '2'}">
                                                                             <span class="badge bg-soft-success">Confirmed </span>  <span class="badge bg-soft-danger">Not Operated</span>
                                                                         </c:when>
+                                                                        <c:when test="${reservation.status == '4'}">
+                                                                            <span class="badge bg-soft-danger">Cancelled</span> 
+                                                                        </c:when>
                                                                         <c:otherwise>
                                                                             <span class="badge bg-soft-success">Confirmed </span> <span class="badge bg-soft-success">Operated</span>
                                                                         </c:otherwise>
@@ -157,12 +160,19 @@
                                                                 <td class="text-center p-3">
                                                                     <c:choose>
                                                                         <c:when test="${reservation.status == '1'}">
-                                                                            <a href="${pageContext.request.contextPath}/customer/myreservationlist"
+                                                                            <a href="${pageContext.request.contextPath}/customer/myreservationdetail?reservation_id=${reservation.reservation_id}&fix=1"
                                                                                class="btn btn-icon btn-pills btn-soft-primary">
                                                                                 <i class="uil uil-pen"></i>
                                                                             </a>
                                                                         </c:when>
                                                                         
+                                                                        <c:when test="${reservation.status == '4'}">
+                                                                            <a href="${pageContext.request.contextPath}/customer/myreservationdetail?reservation_id=${reservation.reservation_id}&fix=1"
+                                                                               >
+                                                                                
+                                                                            </a>
+                                                                        </c:when>
+
                                                                         <c:otherwise>
                                                                             <a href="${pageContext.request.contextPath}/customer/myreservationdetail?reservation_id=${reservation.reservation_id}" 
                                                                                class="btn btn-icon btn-pills btn-soft-primary view-invoice-btn">

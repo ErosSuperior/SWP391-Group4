@@ -370,8 +370,8 @@ public class ReservationDAO extends DBContext {
 
         return users; // Return the user object
     }
-    
-    public int getPaymentStatus(int reservation_id){
+
+    public int getPaymentStatus(int reservation_id) {
         String query = "SELECT payment_status "
                 + "FROM reservation WHERE reservation_id = ?";
         int status = -1;
@@ -379,7 +379,7 @@ public class ReservationDAO extends DBContext {
             System.err.println("Database connection is not available.");
             return 0; // Return null if there's no connection
         }
-        
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, reservation_id);
 
@@ -394,7 +394,126 @@ public class ReservationDAO extends DBContext {
         }
 
         return status; // Return the user object
-        
+
+    }
+
+    public boolean deleteService(String delete_id) { // Hàm xóa service trong giỏ hàng của ng dùng
+        String sql = "DELETE reservation_detail\n"
+                + " FROM reservation_detail\n"
+                + " JOIN reservation ON reservation.reservation_id = reservation_detail.reservation_id\n"
+                + " WHERE reservation_detail.reservation_detail_id = ? ;\n";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, delete_id);
+            int rowsAffected = st.executeUpdate();
+
+            if (rowsAffected > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public boolean updateQuantity(String quantity, String service_id, String detail_id) { // Hàm update số lượng sản phẩm trong giỏ hàng
+        String sql = "UPDATE reservation_detail rd\n"
+                + "JOIN reservation r ON rd.reservation_id = r.reservation_id\n"
+                + "SET rd.quantity = ?\n"
+                + "WHERE rd.service_id = ?\n"
+                + "AND rd.reservation_detail_id = ?;"; // Câu lệnh update sản phẩm 
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, quantity); // Set giá trị cho dấu "?"
+            st.setString(2, service_id); // Set giá trị cho dấu "?"
+            st.setString(3, detail_id); // Set giá trị cho dấu "?"
+
+            int rowsAffected = st.executeUpdate(); // Lấy số dòng thay đổi
+
+            if (rowsAffected > 0) { // Kiểm tra xem nếu có thay đổi thì trả về true 
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false; // Ko thì false 
+    }
+
+    public int countServiceInReservation(int reservation_id) {
+        String sql = "SELECT COUNT(*) AS detail_count FROM reservation_detail WHERE reservation_id = ?;";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, reservation_id); // Set the value for the placeholder "?"
+
+            ResultSet rs = st.executeQuery(); // Execute the query
+            if (rs.next()) {
+                return rs.getInt("detail_count"); // Retrieve the count from the result set
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Print the exception for debugging
+        }
+        return 0; // Return 0 if there's an error or no records found
+    }
+
+    public void updateReservationStatus(int reservation_id, int status) {
+        String sql = "UPDATE reservation SET reservation_status = ? WHERE reservation_id = ?;";
+
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, status);
+            st.setInt(2, reservation_id);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace(); // Print error details for debugging
+        }
+    }
+
+    public String getReservationNote(int reservation_id) {
+        String sql = "SELECT note FROM reservation WHERE reservation_id = ?";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, reservation_id); // Set the value for the placeholder "?"
+
+            ResultSet rs = st.executeQuery(); // Execute the query
+            if (rs.next()) {
+                return rs.getString("note"); // Retrieve the count from the result set
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Print the exception for debugging
+        }
+        return null;
+    }
+
+    public boolean updateReservation(String reservation_id, String note, String receiver_address,
+            String receiver_number, String receiver_email,
+            String receiver_name, String total_price) {
+        String sql = "UPDATE reservation SET "
+                + "note = ?, "
+                + "receiver_address = ?, "
+                + "receiver_number = ?, "
+                + "receiver_email = ?, "
+                + "receiver_name = ?, "
+                + "total_price = ?, "
+                + "created_date = CURDATE() "
+                + // Sets the current date
+                "WHERE reservation_id = ?;";
+
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, note);
+            st.setString(2, receiver_address);
+            st.setString(3, receiver_number);
+            st.setString(4, receiver_email);
+            st.setString(5, receiver_name);
+            st.setString(6, total_price); 
+            st.setString(7, reservation_id);
+
+            return st.executeUpdate() > 0; // Returns true if the update was successful
+        } catch (SQLException e) {
+            e.printStackTrace(); // Print error for debugging
+        }
+        return false;
     }
 
 }

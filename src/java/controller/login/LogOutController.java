@@ -40,7 +40,7 @@ public class LogOutController extends HttpServlet {
         }
 
         // Chuyển hướng về trang chủ hoặc trang login sau khi đăng xuất
-        response.sendRedirect(request.getContextPath() + "/loginnavigation"); // Thay đổi đường dẫn theo yêu cầu của bạn
+        response.sendRedirect(request.getContextPath() + "/home"); // Thay đổi đường dẫn theo yêu cầu của bạn
     }
 
     /**
