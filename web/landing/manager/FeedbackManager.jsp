@@ -397,7 +397,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const date = this.getAttribute("data-created-date");
             const content = this.getAttribute("data-content");
 
-            document.getElementById("feedbackUserImage").src = userImage ? userImage : "../assets/images/default-avatar.jpg";
+            document.getElementById("feedbackUserImage").src = userImage ? userImage : "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-image-icon-default-avatar-profile-icon-social-media-user-vector-image-209162840.jpg";
             document.getElementById("feedbackUserName").innerText = userName;
             document.getElementById("feedbackEmail").innerText = email;
             document.getElementById("feedbackMobile").innerText = mobile;
