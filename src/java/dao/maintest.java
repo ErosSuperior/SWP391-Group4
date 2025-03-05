@@ -36,6 +36,11 @@ public class maintest {
         ReservationDAO reservationDAO = new ReservationDAO();
         UserDAO userDAO = new UserDAO();
         ShopCartDAO scd = new ShopCartDAO();
+        FeedbackDAO fbd = new FeedbackDAO();
+//        Service s = svd.getServiceVotebyId(1);
+//        System.out.println(s.getServiceVote());
+//        System.out.println(s.getServiceRateStar());
+//        System.out.println(fbd.getUserLatestVote(3));
         
 //        List<ReservationDetail> s= scd.getReservationDetail(1);
 //        

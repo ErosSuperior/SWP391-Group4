@@ -69,7 +69,6 @@ public class FeedbackDAO extends DBContext {
                 s.setMobile(rs.getString("mobile"));
                 s.setRateStar(rs.getInt("rate_Star"));
                 s.setUserId(rs.getInt("user_id"));
-                s.setFeedbackImage(rs.getString("feedback_image"));
                 s.setUserImage(rs.getString("user_image"));
                 reservations.add(s);
             }
@@ -112,6 +111,59 @@ public class FeedbackDAO extends DBContext {
             exception.printStackTrace();
         }
         return count;
+    }
+
+    public int getUserLatestVote(int userId) {
+        String sql = "SELECT rate_Star "
+                + "FROM feedback "
+                + "WHERE user_id = ? "
+                + "AND rate_Star != 0 "
+                + "ORDER BY created_date DESC, feedback_id DESC "
+                + "LIMIT 1;";
+        int rate = -1;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int index = 1;
+            preparedStatement.setInt(index++, userId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                rate = rs.getInt("rate_Star");
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return rate;
+    }
+
+    public int addFeedback(int userId, int serviceId, String content, String name, boolean gender,
+            String email, String mobile, int rateStar) {
+        String sql = "INSERT INTO feedback (user_id, service_id, content, name, gender, email, mobile, rate_Star, status, created_date) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, CURDATE())";
+        int generatedId = -1;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            int index = 1;
+            preparedStatement.setInt(index++, userId);
+            preparedStatement.setInt(index++, serviceId);
+            preparedStatement.setString(index++, content);
+            preparedStatement.setString(index++, name);
+            preparedStatement.setBoolean(index++, gender);
+            preparedStatement.setString(index++, email);
+            preparedStatement.setString(index++, mobile);
+            preparedStatement.setInt(index++, rateStar);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                ResultSet rs = preparedStatement.getGeneratedKeys();
+                if (rs.next()) {
+                    generatedId = rs.getInt(1); // Get the generated feedback_id
+                }
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return generatedId;
     }
 
 }

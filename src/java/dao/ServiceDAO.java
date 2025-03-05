@@ -740,4 +740,41 @@ public class ServiceDAO extends DBContext {
         }
         return null;
     }
+
+    public Service getServiceVotebyId(int service_id) {
+        Service service = null;
+        String query = "SELECT service_rateStar, service_vote FROM service WHERE service_id = ?";
+
+        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query)) {
+            preparedStatement.setInt(1, service_id);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if (rs.next()) {
+                service = new Service();
+                service.setServiceId(service_id);
+                service.setServiceRateStar(rs.getDouble("service_rateStar"));
+                service.setServiceVote(rs.getInt("service_vote"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return service;
+    }
+
+    public boolean updateServiceVoteAndRate(int serviceId, int serviceVote, double serviceRateStar) {
+        String sql = "UPDATE service SET service_vote = ?, service_rateStar = ? WHERE service_id = ?";
+        boolean isUpdated = false;
+
+        try (PreparedStatement preparedStatement = connectionection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, serviceVote);
+            preparedStatement.setDouble(2, serviceRateStar);
+            preparedStatement.setInt(3, serviceId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            isUpdated = rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isUpdated;
+    }
 }

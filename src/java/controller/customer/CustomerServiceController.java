@@ -1,5 +1,6 @@
 package controller.customer;
 
+import dao.FeedbackDAO;
 import dao.ReservationDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,7 +26,7 @@ import model.User;
  *
  * @author thang
  */
-@WebServlet(name = "CustomerServiceController", urlPatterns = {"/customer/customerlistService", "/customer/customerdetailService", "/customer/service/addToCart", "/customer/service/serviceFeedBack"})
+@WebServlet(name = "CustomerServiceController", urlPatterns = {"/customer/customerlistService", "/customer/customerdetailService", "/customer/service/addToCart", "/customer/service/serviceFeedBack", "/customer/service/updateRating"})
 public class CustomerServiceController extends HttpServlet {
 
     ServiceDAO serviceDAO = new ServiceDAO();
@@ -33,6 +34,7 @@ public class CustomerServiceController extends HttpServlet {
     ReservationDAO reservationDao = new ReservationDAO();
     UserDAO userDao = new UserDAO();
     FeedbackInit feedbackInit = new FeedbackInit();
+    FeedbackDAO feedbackDao = new FeedbackDAO();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -77,7 +79,12 @@ public class CustomerServiceController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String url = request.getServletPath();
+        switch(url){
+            case "/customer/service/updateRating":
+                handleUpdateFeedbackRating(request,response);
+                break;
+        }
     }
 
     private void handleServiceList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -215,23 +222,22 @@ public class CustomerServiceController extends HttpServlet {
         if (account == null) {
             // Redirect to login page if not logged in
             request.setAttribute("loggedin", "no");
-            return;
-        } else {
-            boolean check = reservationDao.hasReservationWithService(account.getUser_id(), service_id);
 
-            if (check) {
-                request.setAttribute("purchased", "purchased");
-                return;
-            }
         }
-        
+        if(account!=null){
+        boolean check = reservationDao.hasReservationWithService(account.getUser_id(), service_id);
+
+        if (check) {
+            request.setAttribute("purchased", "purchased");
+        }
+        }
+
         String pageNoParam = request.getParameter("pageNo");
         int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
         int pageSize = 4;
         String nameOrId = request.getParameter("nameOrId");
         SearchResponse<Feedback> searchResponse = feedbackInit.getServiceFeedback(pageNo, pageSize, nameOrId, serviceId);
-        
-        
+
         request.setAttribute("allfeedback", searchResponse.getContent());
         request.setAttribute("totalElements", searchResponse.getTotalElements());
         request.setAttribute("pageNo", pageNo);
@@ -241,6 +247,87 @@ public class CustomerServiceController extends HttpServlet {
         request.getRequestDispatcher("/landing/customer/ServiceFeedback.jsp").forward(request, response);
     }
 
+    private void handleUpdateFeedbackRating(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int serviceId = Integer.parseInt(request.getParameter("service_id"));
+        String rating = request.getParameter("rateStar");
+        String message = request.getParameter("message");
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+        
+        Service vote = serviceDAO.getServiceVotebyId(serviceId);
+        
+        if (rating.equals("-1")&&!message.isEmpty()){
+            
+            int rate = 0;
+            
+            int addcheck = feedbackDao.addFeedback(account.getUser_id(), serviceId, message, account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
+            
+            handleServiceFeedback(request, response);
+            
+        }else if(!rating.equals("-1")&&message.isEmpty()){
+            
+            int rate = Integer.parseInt(rating);
+            
+            int oldrate = feedbackDao.getUserLatestVote(account.getUser_id());
+            
+            double serviceavg = vote.getServiceRateStar();
+            
+            int votenum = vote.getServiceVote();
+            
+            if(oldrate==-1){
+                double newavg = ((serviceavg*votenum)+rate)/(votenum+1);
+                
+                int newvote = votenum+1;
+                
+                serviceDAO.updateServiceVoteAndRate(serviceId, newvote, newavg);
+                
+                feedbackDao.addFeedback(account.getUser_id(), serviceId, "I have paid for the service(default comment)", account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
+                
+                handleServiceFeedback(request, response);
+                return;
+            }
+            
+            double newavg = ((serviceavg*votenum)-oldrate+rate)/votenum;
+            
+            serviceDAO.updateServiceVoteAndRate(serviceId, votenum, newavg);
+            
+            feedbackDao.addFeedback(account.getUser_id(), serviceId, "I have paid for the service(default comment)", account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
+            
+            handleServiceFeedback(request, response);
+        }else{
+            int rate = Integer.parseInt(rating);
+            
+            int oldrate = feedbackDao.getUserLatestVote(account.getUser_id());
+            
+            double serviceavg = vote.getServiceRateStar();
+            
+            int votenum = vote.getServiceVote();
+            
+            if(oldrate==-1){
+                double newavg = ((serviceavg*votenum)+rate)/(votenum+1);
+                
+                int newvote = votenum+1;
+                
+                serviceDAO.updateServiceVoteAndRate(serviceId, newvote, newavg);
+                
+                feedbackDao.addFeedback(account.getUser_id(), serviceId, message, account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
+                
+                handleServiceFeedback(request, response);
+                return;
+            }
+            
+            double newavg = ((serviceavg*votenum)-oldrate+rate)/votenum;
+            
+            serviceDAO.updateServiceVoteAndRate(serviceId, votenum, newavg);
+            
+            feedbackDao.addFeedback(account.getUser_id(), serviceId, message, account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
+            
+            handleServiceFeedback(request, response);
+        }
+        
+        
+        
+    }
     @Override
     public String getServletInfo() {
         return "Short description";

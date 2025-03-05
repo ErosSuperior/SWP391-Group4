@@ -44,11 +44,6 @@
                     <div class="col-12">
                         <div class="section-title text-center">
                             <h3 class="sub-title mb-4">Feedback so we can improve our service</h3>
-
-                            <ul class="list-unstyled mt-4">
-                                <li class="list-inline-item user text-muted me-2"><i class="mdi mdi-account"></i> Calvin Carlo</li>
-                                <li class="list-inline-item date text-muted"><i class="mdi mdi-calendar-check"></i> 1st January, 2021</li>
-                            </ul>
                         </div>
                     </div><!--end col-->
                 </div><!--end row-->
@@ -68,7 +63,9 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 col-lg-7">
+                        <!-- Feedback List & Pagination (GET) -->
                         <form action="${pageContext.request.contextPath}/customer/service/serviceFeedBack" method="get">
+                            <input type="hidden" name="service_id" value="${service_id}">
                             <h5 class="card-title mt-4 mb-0">Comments :</h5>
 
                             <ul class="media-list list-unstyled mb-0">
@@ -87,11 +84,13 @@
 
                                                     <!-- Rating Stars -->
                                                     <ul class="list-inline mb-0">
+                                                        <c:if test="${feed.rateStar != 0}">
                                                         <c:forEach var="i" begin="1" end="5">
                                                             <li class="list-inline-item">
                                                                 <i class="mdi ${i <= feed.rateStar ? 'mdi-star' : 'mdi-star-outline'}"></i>
                                                             </li>
                                                         </c:forEach>
+                                                        </c:if>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -102,41 +101,88 @@
                                                 ${feed.content}
                                             </p>
                                         </div>
-
                                     </li>
                                 </c:forEach>
                             </ul>
 
+                            <!-- Pagination -->
+                            <div class="d-md-flex align-items-center text-center justify-content-between" style="margin-top: 25px">
+                                <span class="text-muted me-3">Showing ${pageNo * pageSize + 1}
+                                    - ${totalElements.intValue() < ((pageNo + 1) * pageSize) ? totalElements.intValue() : ((pageNo + 1) * pageSize)} out of
+                                    ${totalElements.intValue()}</span>
+                                <ul class="pagination justify-content-center mb-0 mt-3 mt-sm-0">
+                                    <c:set var="totalPages" value="${(totalElements + pageSize - 1) div pageSize}" />
+                                    <li class="page-item ${pageNo <= 0 ? 'disabled' : ''}">
+                                        <button type="submit" name="pageNo" value="0" class="page-link">First</button>
+                                    </li>
+                                    <c:if test="${pageNo >= 1}">
+                                        <li class="page-item">
+                                            <button type="submit" name="pageNo" value="${pageNo - 1}" class="page-link">${pageNo}</button>
+                                        </li>
+                                    </c:if>
+                                    <li class="page-item active">
+                                        <button type="submit" name="pageNo" value="${pageNo}" class="page-link" disabled>${pageNo + 1}</button>
+                                    </li>
+                                    <c:if test="${(pageNo + 1).intValue() < totalPages.intValue()}">
+                                        <li class="page-item">
+                                            <button type="submit" name="pageNo" value="${pageNo + 1}" class="page-link">${pageNo + 2}</button>
+                                        </li>
+                                    </c:if>
+                                    <li class="page-item ${pageNo + 1 >= totalPages.intValue() ? 'disabled' : ''}">
+                                        <button type="submit" name="pageNo" value="${(totalPages - 1).intValue()}" class="page-link">Last</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+
+                        <!-- Feedback Submission Form (POST) -->
+                        <form action="${pageContext.request.contextPath}/customer/service/updateRating" method="post" onsubmit="return validateFeedback()">
                             <h5 class="card-title mt-4 mb-0">Leave A Comment :</h5>
 
                             <div class="mt-3">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Your Comment</label>
-                                            <textarea id="message" placeholder="Your Comment" rows="5" name="message" class="form-control" required=""></textarea>
-                                        </div>
-                                    </div><!--end col-->
+                                        <c:if test="${not empty loggedin}">
+                                            <p class="text-danger">Please Login/Register to access feedback</p>
+                                        </c:if>
 
-                                    <div class="col-md-12 d-flex justify-content-between align-items-center">
-                                        <div class="send">
-                                            <button type="submit" class="btn btn-primary">Send Message</button>
-                                        </div>
-                                        <div class="rate-product">
-                                            <select class="form-select" aria-label="Rate Product">
-                                                <option selected>Rate Product</option>
-                                                <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
-                                                <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
-                                                <option value="3">⭐⭐⭐ (3 Stars)</option>
-                                                <option value="2">⭐⭐ (2 Stars)</option>
-                                                <option value="1">⭐ (1 Star)</option>
-                                            </select>
-                                        </div>
+                                        <c:if test="${empty loggedin and empty purchased}">
+                                            <p class="text-danger">Please purchase the service before leaving feedback</p>
+                                        </c:if>
+
+                                        <c:if test="${not empty purchased}">
+                                            <input type="hidden" name="service_id" value="${service_id}">
+
+                                            <!-- Comment Input -->
+                                            <div class="mb-3">
+                                                <label class="form-label">Your Comment</label>
+                                                <textarea id="message" placeholder="Your Comment" rows="5" name="message" class="form-control"></textarea>
+                                            </div>
+
+                                            <!-- Rating Dropdown -->
+                                            <div class="col-md-12 d-flex justify-content-between align-items-center">
+                                                <div class="rate-product">
+                                                    <select class="form-select" name="rateStar" id="rateStar">
+                                                        <option value="-1" selected>Rate Product</option>
+                                                        <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+                                                        <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                                                        <option value="3">⭐⭐⭐ (3 Stars)</option>
+                                                        <option value="2">⭐⭐ (2 Stars)</option>
+                                                        <option value="1">⭐ (1 Star)</option>
+                                                    </select>
+                                                </div>
+
+                                                <!-- Submit Button -->
+                                                <div class="send">
+                                                    <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                                                </div>
+                                            </div>
+                                        </c:if>
                                     </div>
+                                </div>
+                            </div>
+                        </form>
 
-                                </div><!--end row-->
-                            </div>    
-                        </form><!--end form-->
                     </div><!--end col-->
 
 
@@ -152,6 +198,25 @@
                     </div><!--end col-->
                 </div><!--end row-->
             </div><!--end container-->
+
+            <!-- Notification Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom p-3">
+                            <h5 class="modal-title" id="exampleModalLabel">Notification</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Please enter a comment or select a rating.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </section><!--end section-->
         <!-- End -->
 
@@ -173,6 +238,20 @@
         <script src="<%= request.getContextPath() %>/assets/js/feather.min.js"></script>
         <!-- Main Js -->
         <script src="<%= request.getContextPath() %>/assets/js/app.js"></script>
+
+        <script>
+            function validateFeedback() {
+                var message = document.getElementById("message").value.trim();
+                var rateStar = document.getElementById("rateStar").value;
+
+                if (message === "" && rateStar === "-1") {
+                    var modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+                    modal.show(); // Show the Bootstrap modal
+                    return false; // Prevent form submission
+                }
+                return true; // Allow form submission
+            }
+        </script>
 
     </body>
 
