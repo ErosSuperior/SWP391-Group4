@@ -51,11 +51,12 @@
                                             <div class="col-md-3">
                                                 <div class="mb-3">
                                                     <label class="form-label">Role</label>
-                                                    <select name="role_id" class="form-control">
+                                                    <select name="status" class="form-control">
                                                         <option value="-1">All Roles</option>
                                                         <option value="1" ${param.role_id=='1' ? 'selected' : ''}>Admin</option>
-                                                        <option value="2" ${param.role_id=='2' ? 'selected' : ''}>Staff</option>
-                                                        <option value="3" ${param.role_id=='3' ? 'selected' : ''}>Customer</option>
+                                                        <option value="3" ${param.role_id=='3' ? 'selected' : ''}>Staff</option>
+                                                        <option value="2" ${param.role_id=='2' ? 'selected' : ''}>Manager</option>
+                                                        <option value="4" ${param.role_id=='4' ? 'selected' : ''}>Customer</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -63,7 +64,7 @@
                                             <div class="col-md-3">
                                                 <div class="mb-3">
                                                     <label class="form-label">Status</label>
-                                                    <select name="status" class="form-control">
+                                                    <select name="role_id" class="form-control">
                                                         <option value="-1">All Status</option>
                                                         <option value="1" ${param.status=='1' ? 'selected' : ''}>Active</option>
                                                         <option value="0" ${param.status=='0' ? 'selected' : ''}>Inactive</option>
@@ -123,8 +124,9 @@
                                                             <td class="p-3">
                                                                 <c:choose>
                                                                     <c:when test="${user.role_id == 1}">Admin</c:when>
-                                                                    <c:when test="${user.role_id == 2}">Staff</c:when>
-                                                                    <c:when test="${user.role_id == 3}">Customer</c:when>
+                                                                    <c:when test="${user.role_id == 2}">Manager</c:when>
+                                                                    <c:when test="${user.role_id == 3}">Staff</c:when>
+                                                                    <c:when test="${user.role_id == 4}">Customer</c:when>
                                                                 </c:choose>
                                                             </td>
                                                             <td class="p-3">

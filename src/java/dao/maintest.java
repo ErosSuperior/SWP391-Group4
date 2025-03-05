@@ -27,7 +27,7 @@ public class maintest {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException, Exception {
 
         Service sv = new Service();
         ServiceDAO svd = new ServiceDAO();
@@ -38,17 +38,23 @@ public class maintest {
         ShopCartDAO scd = new ShopCartDAO();
         FeedbackDAO fbd = new FeedbackDAO();
         
-        List<Feedback> f = fbd.getAllServiceFeedback(0, 10, "", 1, -1, -1, "feedback_id", "ASC");
-        
-        
-        for(Feedback a : f){
-            System.out.println(a.getServiceTitle());
-            System.out.println(a.getName());
-            System.out.println(a.getUserImage());
-            System.out.println(a.getFeedbackId());
-        }
-        
-        System.out.println(fbd.countAllServiceFeedback("", 1, -1, -1));
+//        List<Feedback> f = fbd.getAllServiceFeedback(0, 10, "", 1, -1, -1, "feedback_id", "ASC");
+//        
+//        
+//        for(Feedback a : f){
+//            System.out.println(a.getServiceTitle());
+//            System.out.println(a.getName());
+//            System.out.println(a.getUserImage());
+//            System.out.println(a.getFeedbackId());
+//        }
+//        
+//        System.out.println(fbd.countAllServiceFeedback("", 1, -1, -1));
+
+            List<User> u = userDAO.getUser(0,10, "", 1, -1, "user_id", "ASC");
+            for(User a : u){
+                System.out.println(a.getRole_id());
+                System.out.println(a.getUser_fullname());
+            }
 //        Service s = svd.getServiceVotebyId(1);
 //        System.out.println(s.getServiceVote());
 //        System.out.println(s.getServiceRateStar());

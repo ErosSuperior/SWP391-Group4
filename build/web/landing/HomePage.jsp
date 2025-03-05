@@ -225,7 +225,7 @@
                     <c:forEach items="${requestScope.blogs}" var="b">
                         <div class="col-md-4">
                             <div class="card shadow-sm">
-                                <img src="https://img.freepik.com/free-photo/online-blog_53876-123696.jpg?semt=ais_hybrid" class="card-img-top" alt="Blog Image">
+                                <img src="${b.blogImage}" class="card-img-top" alt="Blog Image">
                                 <div class="card-body">
                                     <h5 class="card-title">${b.blogTitle}</h5>
                                     <p class="card-text text-muted">Tác giả: <strong>${b.authorName}</strong></p>

@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.SearchResponse;
 import dao.UserDAO;
 import init.UserInit;
+import jakarta.servlet.RequestDispatcher;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
@@ -36,26 +37,25 @@ public class UserManagerController extends HttpServlet {
         switch (url) {
             case "/admin/adminList":
                 try {
-                    handleUserList(request, response);
-                } catch (Exception ex) {
-                    Logger.getLogger(UserManagerController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                break;
+                handleUserList(request, response);
+            } catch (Exception ex) {
+                Logger.getLogger(UserManagerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            break;
             case "/admin/adduser":
                 request.getRequestDispatcher("/landing/manager/UserManagerDetail.jsp").forward(request, response);
                 break;
             case "/admin/edituser":
                 handleEditUserForm(request, response);
                 break;
-            case "/admin/updatestatus":
-            {
+            case "/admin/updatestatus": {
                 try {
                     updateStatus(request, response);
                 } catch (Exception ex) {
                     Logger.getLogger(UserManagerController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-                break;
+            break;
         }
     }
 
@@ -81,7 +81,7 @@ public class UserManagerController extends HttpServlet {
         }
     }
 
-    private void handleUserList(HttpServletRequest request, HttpServletResponse response) 
+    private void handleUserList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         String pageNoParam = request.getParameter("pageNo");
         int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
@@ -89,18 +89,28 @@ public class UserManagerController extends HttpServlet {
         String nameOrId = request.getParameter("nameOrId");
         int role_id = -1;
         int status = -1;
-        
+
         try {
             String role_idParam = request.getParameter("role_id");
-            if (role_idParam != null && !role_idParam.trim().isEmpty()) {
+            if (role_idParam != null && !role_idParam.isEmpty()) {
                 role_id = Integer.parseInt(role_idParam);
             }
             String statusParam = request.getParameter("status");
+
             status = (statusParam != null && !statusParam.isEmpty()) ? Integer.parseInt(statusParam) : -1;
+
+            SearchResponse<User> searchResponse = userInit.getUser(pageNo, pageSize, nameOrId, role_id, status);
+
+            request.setAttribute("alluser", searchResponse.getContent());
+            request.setAttribute("totalElements", searchResponse.getTotalElements());
+            request.setAttribute("pageNo", pageNo);
+            request.setAttribute("pageSize", pageSize);
+            request.getRequestDispatcher("/landing/manager/UserManager.jsp").forward(request, response);
+            return;
         } catch (NumberFormatException e) {
             System.err.println("Invalid roleId or status: " + e.getMessage());
         }
-        
+
         SearchResponse<User> searchResponse = userInit.getUser(pageNo, pageSize, nameOrId, role_id, status);
 
         request.setAttribute("alluser", searchResponse.getContent());
@@ -110,7 +120,7 @@ public class UserManagerController extends HttpServlet {
         request.getRequestDispatcher("/landing/manager/UserManager.jsp").forward(request, response);
     }
 
-    private void handleEditUserForm(HttpServletRequest request, HttpServletResponse response) 
+    private void handleEditUserForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String email = request.getParameter("email");
         if (email != null && !email.trim().isEmpty()) {
@@ -130,8 +140,8 @@ public class UserManagerController extends HttpServlet {
             int userId = Integer.parseInt(userIdParam);
             String statusParam = request.getParameter("status");
             boolean status = Boolean.parseBoolean(statusParam);
-            userDao.deleteUser(userId,status); // This method actually updates status
-            handleUserList(request,response);
+            userDao.deleteUser(userId, status); // This method actually updates status
+            handleUserList(request, response);
         } catch (NumberFormatException e) {
             Logger.getLogger(UserManagerController.class.getName()).log(Level.SEVERE, "Error updating user status", e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -162,7 +172,7 @@ public class UserManagerController extends HttpServlet {
             boolean genderBool = Boolean.parseBoolean(gender);
             int roleIdInt = Integer.parseInt(roleId);
             boolean statusBool = Boolean.parseBoolean(status);
-            
+
             userDao.addUser(fullname, genderBool, address, password, email, phone, roleIdInt, statusBool, image);
         } catch (NumberFormatException e) {
             Logger.getLogger(UserManagerController.class.getName()).log(Level.SEVERE, "Error adding user", e);
@@ -196,7 +206,7 @@ public class UserManagerController extends HttpServlet {
             boolean genderBool = Boolean.parseBoolean(gender);
             int roleIdInt = Integer.parseInt(roleId);
             boolean statusBool = Boolean.parseBoolean(status);
-            
+
             userDao.updateUser(userIdInt, fullname, genderBool, address, email, phone, roleIdInt, statusBool, image);
         } catch (NumberFormatException e) {
             Logger.getLogger(UserManagerController.class.getName()).log(Level.SEVERE, "Error updating user", e);

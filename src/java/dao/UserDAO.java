@@ -211,11 +211,11 @@ public class UserDAO {
         }
 
         if (status != -1) {
-            query.append(" AND (u.user_status = ?)");
+            query.append(" AND u.user_status = ?");
         }
 
         if (roleId != -1) {
-            query.append(" AND (u.role_id = ?)");
+            query.append(" AND u.role_id = ?");
         }
 
         query.append(" ORDER BY ").append(sortBy).append(" ").append(sortDir.equalsIgnoreCase("ASC") ? "ASC" : "DESC");
@@ -295,11 +295,11 @@ public class UserDAO {
         }
 
         if (status != -1) {
-            query.append(" AND (u.user_status = ?)");
+            query.append(" AND u.user_status = ? ");
         }
 
         if (roleId != -1) {
-            query.append(" AND (u.role_id = ?)");
+            query.append(" AND u.role_id = ? ");
         }
 
         Connection conn = null;

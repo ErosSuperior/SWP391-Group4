@@ -13,7 +13,7 @@ public class UserInit {
     
     public SearchResponse<User> getUser(int pageNo, int pageSize, String nameOrId, int status, int role_id) throws Exception {
         int offset = pageNo * pageSize;
-        List<User> users = userDAO.getUser(offset, pageSize, nameOrId,role_id,status,"u.user_id", "ASC");
+        List<User> users = userDAO.getUser(offset, pageSize, nameOrId,role_id, status,"user_id", "ASC");
         int totalElements = userDAO.countUser(nameOrId,role_id,status);
         return new SearchResponse<>(totalElements, users, pageNo, pageSize);
     }

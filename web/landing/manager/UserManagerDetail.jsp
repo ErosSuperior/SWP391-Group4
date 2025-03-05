@@ -90,8 +90,9 @@
                                                     <label class="form-label">Role</label>
                                                     <select name="roleId" id="roleId" class="form-control">
                                                         <option value="1" ${user.role_id == 1 ? 'selected' : ''}>Admin</option>
-                                                        <option value="2" ${user.role_id == 2 ? 'selected' : ''}>Staff</option>
-                                                        <option value="3" ${user.role_id == 3 ? 'selected' : ''}>Customer</option>
+                                                        <option value="3" ${user.role_id == 3 ? 'selected' : ''}>Staff</option>
+                                                        <option value="2" ${user.role_id == 2 ? 'selected' : ''}>Manager</option>
+                                                        <option value="4" ${user.role_id == 4 ? 'selected' : ''}>Customer</option>
                                                     </select>
                                                 </div>
                                             </div>
