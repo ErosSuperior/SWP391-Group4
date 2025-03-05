@@ -37,6 +37,18 @@ public class maintest {
         UserDAO userDAO = new UserDAO();
         ShopCartDAO scd = new ShopCartDAO();
         FeedbackDAO fbd = new FeedbackDAO();
+        
+        List<Feedback> f = fbd.getAllServiceFeedback(0, 10, "", 1, -1, -1, "feedback_id", "ASC");
+        
+        
+        for(Feedback a : f){
+            System.out.println(a.getServiceTitle());
+            System.out.println(a.getName());
+            System.out.println(a.getUserImage());
+            System.out.println(a.getFeedbackId());
+        }
+        
+        System.out.println(fbd.countAllServiceFeedback("", 1, -1, -1));
 //        Service s = svd.getServiceVotebyId(1);
 //        System.out.println(s.getServiceVote());
 //        System.out.println(s.getServiceRateStar());

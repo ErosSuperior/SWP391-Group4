@@ -188,17 +188,6 @@
 
                 </div><!--end row-->
             </div><!--end container-->
-
-            <div class="container mt-100 mt-60">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="section-title">
-                            <h4 class="title mb-0">Related Post:</h4>
-                        </div>
-                    </div><!--end col-->
-                </div><!--end row-->
-            </div><!--end container-->
-
             <!-- Notification Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">

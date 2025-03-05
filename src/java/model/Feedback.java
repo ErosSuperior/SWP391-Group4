@@ -24,6 +24,7 @@ public class Feedback {
     private int status;
     private Date createdDate;
     private String userImage;
+    private String serviceTitle;
 
     public int getFeedbackId() {
         return feedbackId;
@@ -128,4 +129,13 @@ public class Feedback {
     public void setUserImage(String userImage) {
         this.userImage = userImage;
     }
+
+    public String getServiceTitle() {
+        return serviceTitle;
+    }
+
+    public void setServiceTitle(String serviceTitle) {
+        this.serviceTitle = serviceTitle;
+    }
+    
 }
