@@ -50,11 +50,11 @@ public class maintest {
 //        
 //        System.out.println(fbd.countAllServiceFeedback("", 1, -1, -1));
 
-            List<User> u = userDAO.getUser(0,10, "", 1, -1, "user_id", "ASC");
-            for(User a : u){
-                System.out.println(a.getRole_id());
-                System.out.println(a.getUser_fullname());
-            }
+          List<Service> svl = svd.getAllService(0, 10, "", -1, -1, "service_id","ASC");
+          for(Service c : svl){
+              System.out.println(c.getCategoryTitle());
+              System.out.println(c.getCategoryId());
+          }
 //        Service s = svd.getServiceVotebyId(1);
 //        System.out.println(s.getServiceVote());
 //        System.out.println(s.getServiceRateStar());

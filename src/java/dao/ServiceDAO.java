@@ -15,14 +15,14 @@ import context.DBContext;
  */
 public class ServiceDAO extends DBContext {
 
-    private Connection connectionection;
+    private Connection connection;
 
     public ServiceDAO() {
         try {
-            this.connectionection = getConnection(); // Initialize the connectionection
+            this.connection = getConnection(); // Initialize the connection
         } catch (Exception e) {
             e.printStackTrace();
-            this.connectionection = null; // Set to null if connectionection fails
+            this.connection = null; // Set to null if connection fails
         }
     }
 
@@ -50,12 +50,12 @@ public class ServiceDAO extends DBContext {
         query.append(" ORDER BY ").append(sortBy).append(" ").append(sortDir.equalsIgnoreCase("ASC") ? "ASC" : "DESC");
         query.append(" LIMIT ? OFFSET ?");
 
-        if (connectionection == null) {
-            System.err.println("Database connectionection is not available.");
-            return services; // Return empty list if connectionection failed
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return services; // Return empty list if connection failed
         }
 
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query.toString())) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
             int index = 1;
             if (nameOrId != null && !nameOrId.isEmpty()) {
                 preparedStatement.setString(index++, "%" + nameOrId + "%");
@@ -115,12 +115,12 @@ public class ServiceDAO extends DBContext {
             query.append(" AND s.service_price BETWEEN ? AND ?");
         }
 
-        if (connectionection == null) {
-            System.err.println("Database connectionection is not available.");
-            return 0; // Return empty list if connectionection failed
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return 0; // Return empty list if connection failed
         }
 
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query.toString())) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
             int index = 1;
             if (nameOrId != null && !nameOrId.isEmpty()) {
                 preparedStatement.setString(index++, "%" + nameOrId + "%");
@@ -147,12 +147,12 @@ public class ServiceDAO extends DBContext {
         List<Service> services = new ArrayList<>();
         String query = "SELECT * FROM category WHERE 1=1 ORDER BY category_id DESC";
 
-        if (connectionection == null) {
-            System.err.println("Database connectionection is not available.");
-            return services; // Return empty list if connectionection failed
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return services; // Return empty list if connection failed
         }
 
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -172,12 +172,12 @@ public class ServiceDAO extends DBContext {
         List<String> imageLinks = new ArrayList<>();
         String query = "SELECT image_link FROM service_image WHERE service_id = ?";
 
-        if (connectionection == null) {
-            System.err.println("Database connectionection is not available.");
-            return imageLinks; // Return empty list if connectionection failed
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return imageLinks; // Return empty list if connection failed
         }
 
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, serviceId);
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {
@@ -201,7 +201,7 @@ public class ServiceDAO extends DBContext {
                 + " AND si.type = 0"
                 + " AND category_id = ?");
 
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query.toString())) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
 
             preparedStatement.setInt(1, categoryId);
             try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -237,7 +237,7 @@ public class ServiceDAO extends DBContext {
         if (serviceId != -1) {
             query.append(" AND (s.service_id = ?)");
         }
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query.toString())) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
             int index = 1;
 
             if (serviceId != -1) {
@@ -268,7 +268,7 @@ public class ServiceDAO extends DBContext {
         String query = "SELECT category_id FROM service WHERE service_id = ?";
         int categoryId = -1; // Default value if not found
 
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, serviceId);
             try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -291,11 +291,11 @@ public class ServiceDAO extends DBContext {
                 + "WHERE 1=1 "
                 + "AND ss.service_status = 1 "
                 + " AND si.type = 0";
-        if (connectionection == null) {
-            System.err.println("Database connectionection is not available.");
-            return services; // Return empty list if connectionection failed
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return services; // Return empty list if connection failed
         }
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Service s = new Service();
@@ -356,13 +356,35 @@ public class ServiceDAO extends DBContext {
 
         return bestServices;
     }
+    
+    // Thêm một dịch vụ mới vào bảng service và các bảng liên quan
+    public boolean addService(Service service) {
+        String query = "INSERT INTO service (service_title, service_bi, service_created_date, category_id, "
+                + "service_price, service_discount, service_detail) "
+                + "VALUES (?, ?, CURDATE(), ?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, service.getServiceTitle());
+            preparedStatement.setString(2, service.getServiceBi());
+            preparedStatement.setInt(3, service.getCategoryId());
+            preparedStatement.setDouble(4, service.getServicePrice());
+            preparedStatement.setDouble(5, service.getServiceDiscount());
+            preparedStatement.setString(6, service.getServiceDetail());
+
+            int rowsInserted = preparedStatement.executeUpdate();
+            return rowsInserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     //manager start form here
     public List<Service> getAllService(int offset, int limit, String nameOrId, int categoryId, int status, String sortBy, String sortDir) {
         List<Service> services = new ArrayList<>();
-        if (connectionection == null) {
-            System.err.println("Database connectionection is not available.");
-            return services; // return empty database if the connectionection is not available
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return services; // return empty database if the connection is not available
         }
 
         // Check sortBy value for avoiding SQL injection
@@ -396,7 +418,7 @@ public class ServiceDAO extends DBContext {
         query.append(" ORDER BY ").append(sortBy).append(" ").append(orderDirection);
         query.append(" LIMIT ? OFFSET ?");
 
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query.toString())) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
             int index = 1;
             if (nameOrId != null && !nameOrId.trim().isEmpty()) {
                 preparedStatement.setString(index++, "%" + nameOrId + "%");
@@ -442,7 +464,7 @@ public class ServiceDAO extends DBContext {
                 + "ORDER BY s.service_rateStar DESC "
                 + "LIMIT 3";
 
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Service service = new Service();
@@ -464,10 +486,12 @@ public class ServiceDAO extends DBContext {
         }
         return services;
     }
+    
+    
 
     public int countAllServices(String nameOrId, int categoryId, int status) {
         int total = 0;
-        if (connectionection == null) {
+        if (connection == null) {
             return total;
         }
 
@@ -483,7 +507,7 @@ public class ServiceDAO extends DBContext {
             query.append(" AND ss.service_status = ? ");
         }
 
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query.toString())) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
             int index = 1;
             if (nameOrId != null && !nameOrId.trim().isEmpty()) {
                 preparedStatement.setString(index++, "%" + nameOrId + "%");
@@ -510,7 +534,7 @@ public class ServiceDAO extends DBContext {
     // Cập nhật trạng thái dịch vụ trong bảng service_status
     public void updateStatus(int serviceId, int status) {
         String sql = "UPDATE service_status SET service_status = ? WHERE service_id = ?";
-        try (PreparedStatement stmt = connectionection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setBoolean(1, status == 1); // Chuyển đổi int thành boolean
             stmt.setInt(2, serviceId);
             int rowsAffected = stmt.executeUpdate();
@@ -527,225 +551,107 @@ public class ServiceDAO extends DBContext {
     // Phương thức hỗ trợ để thêm trạng thái nếu chưa tồn tại
     private void insertStatus(int serviceId, int status) throws SQLException {
         String sql = "INSERT INTO service_status (service_id, service_status) VALUES (?, ?)";
-        try (PreparedStatement stmt = connectionection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, serviceId);
             stmt.setBoolean(2, status == 1);
             stmt.executeUpdate();
         }
     }
 
-    // Thêm một dịch vụ mới vào bảng service và các bảng liên quan
-    public void addService(Service service) {
-        Connection connection = null;
-        PreparedStatement stmtService = null;
-        PreparedStatement stmtStatus = null;
-        ResultSet generatedKeys = null;
+    
 
-        try {
-            connectionection.setAutoCommit(false); // Bắt đầu transaction
+    private void insertServiceStatus(int serviceId, int status) throws SQLException {
+        String query = "INSERT INTO service_status (service_id, service_status) VALUES (?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, serviceId);
+            ps.setInt(2, status);
+            ps.executeUpdate();
+        }
+    }
 
-            // Thêm vào bảng service
-            String sqlService = "INSERT INTO service (service_title, service_bi, service_created_date, category_id, "
-                    + "service_price, service_discount, service_detail, service_rateStar, service_vote) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            stmtService = connectionection.prepareStatement(sqlService, PreparedStatement.RETURN_GENERATED_KEYS);
-            stmtService.setString(1, service.getServiceTitle());
-            stmtService.setString(2, service.getServiceBi());
-            stmtService.setInt(3, service.getCategoryId());
-            stmtService.setDouble(4, service.getServicePrice());
-            stmtService.setDouble(5, service.getServiceDiscount());
-            stmtService.setString(6, service.getServiceDetail());
-            stmtService.setDouble(7, service.getServiceRateStar());
-            stmtService.setInt(8, service.getServiceVote());
-            stmtService.executeUpdate();
-
-            // Lấy service_id vừa được tạo
-            generatedKeys = stmtService.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                int serviceId = generatedKeys.getInt(1);
-                service.setServiceId(serviceId); // Cập nhật serviceId cho đối tượng Service
-
-                // Thêm trạng thái mặc định vào bảng service_status
-                String sqlStatus = "INSERT INTO service_status (service_id, service_status) VALUES (?, ?)";
-                stmtStatus = connection.prepareStatement(sqlStatus);
-                stmtStatus.setInt(1, serviceId);
-                stmtStatus.setBoolean(2, service.getServiceStatus() == 1);
-                stmtStatus.executeUpdate();
-
-                // Nếu có image, thêm vào bảng service_image
-                if (service.getServiceImage() != null && !service.getServiceImage().isEmpty()) {
-                    String sqlImage = "INSERT INTO service_image (service_id, image_link, type) VALUES (?, ?, ?)";
-                    try (PreparedStatement stmtImage = connection.prepareStatement(sqlImage)) {
-                        stmtImage.setInt(1, serviceId);
-                        stmtImage.setString(2, service.getServiceImage());
-                        stmtImage.setInt(3, 0); // Giả định type = 0 nếu không được chỉ định
-                        stmtImage.executeUpdate();
-                    }
-                }
-            }
-
-            connection.commit(); // Commit transaction
-        } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback(); // Rollback nếu có lỗi
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            e.printStackTrace();
-            throw new RuntimeException("Error adding service: " + e.getMessage());
-        } finally {
-            try {
-                if (generatedKeys != null) {
-                    generatedKeys.close();
-                }
-                if (stmtService != null) {
-                    stmtService.close();
-                }
-                if (stmtStatus != null) {
-                    stmtStatus.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+    private void insertServiceImage(int serviceId, String imageLink) throws SQLException {
+        String query = "INSERT INTO service_image (service_id, image_link, type) VALUES (?, ?, 0)"; // Assuming type 0 is for thumbnail
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, serviceId);
+            ps.setString(2, imageLink);
+            ps.executeUpdate();
         }
     }
 
     // Cập nhật thông tin dịch vụ trong bảng service và các bảng liên quan
-    public void updateService(Service service) {
-        Connection connection = null;
-        PreparedStatement stmtService = null;
-        PreparedStatement stmtImage = null;
+    public boolean updateService(Service service) {
+        boolean success = false;
+        String updateServiceSql = "UPDATE service SET service_title = ?, service_bi = ?, category_id = ?, service_price = ?, service_discount = ?, service_detail = ? WHERE service_id = ?";
+        String updateImageSql = "UPDATE service_images SET image_link = ? WHERE service_id = ? AND type = 0";
 
-        try {;
-            connection.setAutoCommit(false); // Bắt đầu transaction
+        try {
+            connection.setAutoCommit(false);
 
-            // Cập nhật bảng service
-            String sqlService = "UPDATE service SET service_title = ?, service_bi = ?, service_created_date = ?, "
-                    + "category_id = ?, service_price = ?, service_discount = ?, service_detail = ?, "
-                    + "service_rateStar = ?, service_vote = ? WHERE service_id = ?";
-            stmtService = connection.prepareStatement(sqlService);
-            stmtService.setString(1, service.getServiceTitle());
-            stmtService.setString(2, service.getServiceBi());
-            stmtService.setInt(3, service.getCategoryId());
-            stmtService.setDouble(4, service.getServicePrice());
-            stmtService.setDouble(5, service.getServiceDiscount());
-            stmtService.setString(6, service.getServiceDetail());
-            stmtService.setDouble(7, service.getServiceRateStar());
-            stmtService.setInt(8, service.getServiceVote());
-            stmtService.setInt(9, service.getServiceId());
-            stmtService.executeUpdate();
+            try (PreparedStatement ps = connection.prepareStatement(updateServiceSql)) {
+                ps.setString(1, service.getServiceTitle());
+                ps.setString(2, service.getServiceBi());
+                ps.setInt(3, service.getCategoryId());
+                ps.setDouble(4, service.getServicePrice());
+                ps.setDouble(5, service.getServiceDiscount());
+                ps.setString(6, service.getServiceDetail());
+                ps.setInt(7, service.getServiceId());
+                int rowsAffected = ps.executeUpdate();
+                if (rowsAffected > 0) {
+                    success = true;
+                }
+            }
 
-            // Cập nhật bảng service_image nếu có image
             if (service.getServiceImage() != null && !service.getServiceImage().isEmpty()) {
-                // Kiểm tra xem đã có image cho service này chưa
-                String checkImageSql = "SELECT image_id FROM service_image WHERE service_id = ?";
-                try (PreparedStatement checkStmt = connection.prepareStatement(checkImageSql)) {
-                    checkStmt.setInt(1, service.getServiceId());
-                    ResultSet rs = checkStmt.executeQuery();
-                    if (rs.next()) {
-                        // Nếu đã có, cập nhật
-                        String updateImageSql = "UPDATE service_image SET image_link = ? WHERE service_id = ?";
-                        stmtImage = connection.prepareStatement(updateImageSql);
-                        stmtImage.setString(1, service.getServiceImage());
-                        stmtImage.setInt(2, service.getServiceId());
-                        stmtImage.executeUpdate();
-                    } else {
-                        // Nếu chưa có, thêm mới
-                        String insertImageSql = "INSERT INTO service_image (service_id, image_link, type) VALUES (?, ?, ?)";
-                        stmtImage = connection.prepareStatement(insertImageSql);
-                        stmtImage.setInt(1, service.getServiceId());
-                        stmtImage.setString(2, service.getServiceImage());
-                        stmtImage.setInt(3, 0); // Giả định type = 0
-                        stmtImage.executeUpdate();
-                    }
+                try (PreparedStatement ps = connection.prepareStatement(updateImageSql)) {
+                    ps.setString(1, service.getServiceImage());
+                    ps.setInt(2, service.getServiceId());
+                    ps.executeUpdate();
                 }
             }
 
-            connection.commit(); // Commit transaction
+            connection.commit();
         } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback(); // Rollback nếu có lỗi
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
             e.printStackTrace();
-            throw new RuntimeException("Error updating service: " + e.getMessage());
-        } finally {
-            try {
-                if (stmtService != null) {
-                    stmtService.close();
-                }
-                if (stmtImage != null) {
-                    stmtImage.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+        return success;
     }
 
-    public Service getServiceById(int serviceId) throws Exception {
-        try (Connection conn = getConnection()) {
-            String sql = "SELECT s.* FROM service s WHERE s.service_id = ?";
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, serviceId);
-                ResultSet rs = stmt.executeQuery();
+    public Service getServiceById(int serviceId) {
+        Service service = new Service();
+        String query = "SELECT s.*, ss.service_status AS serviceStatus, si.image_link AS serviceImage "
+                + "FROM service s "
+                + "LEFT JOIN service_status ss ON s.service_id = ss.service_id "
+                + "LEFT JOIN service_image si ON s.service_id = si.service_id AND si.type = 0 "
+                + "WHERE s.service_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, serviceId);
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    Service service = new Service();
                     service.setServiceId(rs.getInt("service_id"));
                     service.setServiceTitle(rs.getString("service_title"));
                     service.setServiceBi(rs.getString("service_bi"));
                     service.setServiceCreatedDate(rs.getDate("service_created_date"));
-                    service.setCategoryTitle(rs.getString("category_title"));
+                    service.setCategoryId(rs.getInt("category_id"));
                     service.setServicePrice(rs.getDouble("service_price"));
                     service.setServiceDiscount(rs.getDouble("service_discount"));
                     service.setServiceDetail(rs.getString("service_detail"));
                     service.setServiceRateStar(rs.getDouble("service_rateStar"));
                     service.setServiceVote(rs.getInt("service_vote"));
-
-                    String statusSql = "SELECT service_status FROM service_status WHERE service_id = ?";
-                    try (PreparedStatement statusStmt = conn.prepareStatement(statusSql)) {
-                        statusStmt.setInt(1, serviceId);
-                        ResultSet statusRs = statusStmt.executeQuery();
-                        if (statusRs.next()) {
-                            service.setServiceStatus(statusRs.getBoolean("service_status") ? 1 : 0);
-                        }
-                    }
-
-                    String imageSql = "SELECT image_link FROM service_image WHERE service_id = ? LIMIT 1";
-                    try (PreparedStatement imageStmt = conn.prepareStatement(imageSql)) {
-                        imageStmt.setInt(1, serviceId);
-                        ResultSet imageRs = imageStmt.executeQuery();
-                        if (imageRs.next()) {
-                            service.setServiceImage(imageRs.getString("image_link"));
-                        }
-                    }
-
-                    return service;
+                    service.setServiceStatus(rs.getInt("serviceStatus"));
+                    service.setServiceImage(rs.getString("serviceImage"));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Error retrieving service: " + e.getMessage());
         }
-        return null;
+        return service;
     }
 
     public Service getServiceVotebyId(int service_id) {
         Service service = null;
         String query = "SELECT service_rateStar, service_vote FROM service WHERE service_id = ?";
 
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(query)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, service_id);
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -765,7 +671,7 @@ public class ServiceDAO extends DBContext {
         String sql = "UPDATE service SET service_vote = ?, service_rateStar = ? WHERE service_id = ?";
         boolean isUpdated = false;
 
-        try (PreparedStatement preparedStatement = connectionection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, serviceVote);
             preparedStatement.setDouble(2, serviceRateStar);
             preparedStatement.setInt(3, serviceId);
@@ -776,5 +682,23 @@ public class ServiceDAO extends DBContext {
             e.printStackTrace();
         }
         return isUpdated;
+    }
+
+    public boolean updateServiceStatus(int serviceId, int newStatus) {
+        boolean success = false;
+        String queue = "UPDATE service_status SET service_status = ? WHERE service_id = ?";
+
+        try (
+                PreparedStatement ps = connection.prepareStatement(queue)) {
+            ps.setInt(1, newStatus);
+            ps.setInt(2, serviceId);
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                success = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return success;
     }
 }
