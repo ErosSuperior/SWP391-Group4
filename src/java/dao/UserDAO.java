@@ -123,7 +123,7 @@ public class UserDAO {
             ps.setString(1, fullname);
             ps.setBoolean(2, gender);
             ps.setString(3, address);
-            ps.setString(4, password); // Không sử dụng mã hóa mật khẩu
+            ps.setString(4, password); 
             ps.setString(5, email);
             ps.setString(6, phone);
             ps.setInt(7, roleId);

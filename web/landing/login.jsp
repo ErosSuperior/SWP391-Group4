@@ -65,10 +65,6 @@
                                     <div class="col-lg-12">
                                         <div class="d-flex justify-content-between">
                                             <div class="mb-3">
-                                                <div class="form-check">
-                                                    <input class="form-check-input align-middle" type="checkbox" value="true" id="remember-check" name="remember"/>
-                                                    <label class="form-check-label" for="remember-check">Remember me</label>
-                                                </div>
                                             </div>
                                             <a href="<%= request.getContextPath() %>/resetredirect" class="text-dark h6 mb-0">
                                                 Forgot password ?

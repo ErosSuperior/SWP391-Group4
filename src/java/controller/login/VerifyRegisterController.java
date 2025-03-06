@@ -59,7 +59,7 @@ public class VerifyRegisterController extends HttpServlet {
 
             if (verificationCode.equals(userRegister.getCode())) {
                 // Pass valid role_id (e.g., 1 for regular users)
-                userDao.register(username, true, address, password, email, phone, 1, true, phone);
+                userDao.register(username, true, address, password, email, phone, 4, true, phone);
                 response.sendRedirect("landing/login.jsp");
             } else {
                 request.setAttribute("error", "Incorrect verification code!");
