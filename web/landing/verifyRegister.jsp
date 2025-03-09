@@ -81,9 +81,6 @@
                                 </div>
                             </form>
                             
-                            <div class="text-center mt-3">
-                                <small>Didn't receive a code? <a href="#">Resend</a></small>
-                            </div>
                         </div><!-- end card-body -->
                     </div><!-- end card -->
                 </div> <!-- end col -->
