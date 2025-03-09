@@ -96,6 +96,7 @@ public class CheckoutController extends HttpServlet {
         String address = request.getParameter("address"); // Lấy dữ liệu từ JSP gửi xuống 
         String paymentMethod = request.getParameter("paymentMethod"); // Lấy dữ liệu từ JSP gửi xuống 
         String total = request.getParameter("total"); // Lấy dữ liệu từ JSP gửi xuống 
+        String note = request.getParameter("note"); // Lấy dữ liệu từ JSP gửi xuống 
 
         User account = (User) request.getSession().getAttribute("account"); // Lấy session để kiểm tra xem đăng nhập chưa
         int user_id = account.getUser_id(); // Lấy user_id
@@ -103,16 +104,18 @@ public class CheckoutController extends HttpServlet {
         ShopCartDAO d = new ShopCartDAO(); // Tạo đối tượng để sử dụng hàm của nó
 
         int reservationID = d.getReservationID(user_id); // Lấy reservationID của người dùng để lấy danh sách service người dùng chọn
-        List<ReservationDetail> listreservation = d.getReservationDetail(reservationID); // Lấy dánh sách service
-
-        boolean checkTime = checkReservationBeginTime(listreservation); // Gọi hàm kiểm tra thời gian 
-        if (!checkTime) { // Nếu có service đã hết hạn
+        List<ReservationDetail> listreservation = d.getReservationDetail(reservationID); // Lấy dánh sách service     
+        
+        boolean checkTime = d.checkReservationTime(reservationID); // Gọi hàm kiểm tra thời gian 
+        
+        if (checkTime) { // Nếu có service đã hết hạn
             response.sendRedirect(request.getContextPath() + "/error"); // Đẩy tới trang lỗi 
             return; // Ngăn chặn hành động 
         }
+        
         if (paymentMethod.equalsIgnoreCase("cod")) { // Nếu ko có service hết hạn và phương thức thanh toán COD
 
-            boolean result = d.checkoutService(total, name, phone, email, address, user_id); // Gọi hàm để cập nhật thông tin cho kahcs hàng
+            boolean result = d.checkoutService(total, note, name, phone, email, address, user_id); // Gọi hàm để cập nhật thông tin cho kahcs hàng
 
             if (result) { // Kiểm tra xem cập nhật thành công hay k 
                 response.sendRedirect(request.getContextPath() + "/cartcompletion"); // Neu có chuyển đến trang hoàn thành
@@ -122,20 +125,6 @@ public class CheckoutController extends HttpServlet {
         } else {
 // Phương thức thanh toán ONL
         }
-    }
-
-    public boolean checkReservationBeginTime(List<ReservationDetail> listreservation) { // Hàm check xem thời gian đặt lịch hẹn của khách hàng đã qua 
-        Date currentDate = new Date();  // Lấy thời gian hiện tại
-
-        for (ReservationDetail r : listreservation) {         // Lặp qua từng phần tử trong danh sách
-
-            if (r.getBegin_time().before(currentDate)) {             // Kiểm tra xem có service nào có lịch hẹn đã qua rồi không
-
-                return false;  // Nếu có phần tử trả về false
-            }
-        }
-
-        return true;  // Nếu không có phần tử nào trả về true
     }
 
     /**

@@ -164,12 +164,20 @@
                                                                                class="btn btn-icon btn-pills btn-soft-primary">
                                                                                 <i class="uil uil-pen"></i>
                                                                             </a>
+                                                                            <button class="btn btn-icon btn-pills btn-soft-danger"
+                                                                                    data-user-id="1"
+                                                                                    data-new-status="0"
+                                                                                    onclick="showConfirmationModal(${reservation.reservation_id})"
+                                                                                    type="button">
+                                                                                <i class="uil uil-times-circle"></i>
+                                                                            </button>
+
                                                                         </c:when>
-                                                                        
+
                                                                         <c:when test="${reservation.status == '4'}">
                                                                             <a href="${pageContext.request.contextPath}/customer/myreservationdetail?reservation_id=${reservation.reservation_id}&fix=1"
                                                                                >
-                                                                                
+
                                                                             </a>
                                                                         </c:when>
 
@@ -231,7 +239,29 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal for confirmation -->
+            <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmationModalLabel">Confirm Cancel</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to cancel the order?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button id="confirmAction" type="button" class="btn btn-primary">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section><!-- End Hero -->
+
+        <jsp:include page="../Footer.jsp"/>
 
         <!-- Back to top -->
         <a href="#" onclick="topFunction()" id="back-to-top" class="btn btn-icon btn-pills btn-primary back-to-top"><i data-feather="arrow-up" class="icons"></i></a>
@@ -248,5 +278,37 @@
         <!-- Main Js -->
         <script src="<%= request.getContextPath() %>/assets/js/app.js"></script>
 
+        <script>
+            let currentUserId;
+
+            function showConfirmationModal(reservationId) {
+                currentUserId = reservationId;
+                $('#confirmationModal').modal('show');
+            }
+
+            $('#confirmAction').click(function () {
+                updateStatus(currentUserId);
+                $('#confirmationModal').modal('hide'); // Hide modal after confirmation
+            });
+
+            function updateStatus(reservationId) {
+                console.log(reservationId);
+                $.ajax({
+                    url: '${pageContext.request.contextPath}/deleteReservation',
+                    type: 'POST',
+                    data: {
+                        delete_id: reservationId
+                    },
+                    success: function (response) {
+                        console.log("AJAX request successful. Page will reload.");
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', xhr.status, status, error);
+                        // Optionally show an error message in the modal or elsewhere
+                    }
+                });
+            }
+        </script>
     </body>
 </html>

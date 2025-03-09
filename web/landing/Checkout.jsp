@@ -82,14 +82,14 @@
                                 </span>
                             </div>
                             <ul class="list-group mb-3 border">
-<!--                                Set giá trị total = 0 để cộng vào -->
+                                <!--                                Set giá trị total = 0 để cộng vào -->
                                 <c:set var="total" value="0" />
                                 <c:forEach var="r" items="${listreservation}">
                                     <c:set var="total" value="${total + (r.price * r.quantity)}" />
                                     <li class="d-flex justify-content-between lh-sm p-3 border-bottom">
                                         <div>
                                             <h6 class="my-0">
-<!--                                                Title của service và các thuộc tính khác -->
+                                                <!--                                                Title của service và các thuộc tính khác -->
                                                 <span style="font-weight: bold; color: #333;">${r.service_title}</span>
                                             </h6>
                                             <small style="color: #333; font-weight: bold; margin-right: 10px;">Qty: ${r.quantity}</small>
@@ -98,7 +98,7 @@
 
                                         </div>
                                         <span class="text-muted">$ ${r.price*r.quantity}</span> 
-<!--                                        Total sản phâm-->
+                                        <!--                                        Total sản phâm-->
                                     </li>
                                 </c:forEach>
                                 <li class="d-flex justify-content-between bg-light p-3 border-bottom">
@@ -106,7 +106,7 @@
                                         <h5 class="my-0">Total (USD)</h5>
                                     </div>
                                     <span class="text-success"><h5>$${total}</h5></span>
-<!--                                    Tổng tất cả sản phẩm -->
+                                    <!--                                    Tổng tất cả sản phẩm -->
                                 </li>
                             </ul>
                         </div>
@@ -151,6 +151,10 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-12">
+                                        <label for="address" class="form-label">Note</label>
+                                        <textarea type="text" name="note" class="form-control" id="note" placeholder="..."></textarea>
+                                    </div>
                                 </div>
                                 <h5 class="mb-3 mt-4 pt-4 border-top">Payment</h5>
 

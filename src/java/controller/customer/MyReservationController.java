@@ -27,7 +27,7 @@ import model.User;
  * @author thang
  */
 @WebServlet(name = "MyReservationController", urlPatterns = {"/myReservationController", "/customer/myreservationlist", "/customer/myreservationdetail", "/customer/myreservationinfo",
-    "/reservation/reservationserviceedit", "/reservation/reservationserviceinfoedit"})
+    "/reservation/reservationserviceedit", "/reservation/reservationserviceinfoedit", "/deleteReservation"})
 public class MyReservationController extends HttpServlet {
 
     ReservationDAO reservationDao = new ReservationDAO();
@@ -108,6 +108,9 @@ public class MyReservationController extends HttpServlet {
                 break;
             case "/reservation/reservationserviceinfoedit":
                 handleEditReservationDetailInfo(request,response);
+                break;
+            case "/deleteReservation":
+                handleCancelReservation(request,response);
                 break;
         }
     }
@@ -269,6 +272,19 @@ public class MyReservationController extends HttpServlet {
         handleListReservation(request, response);
     }
     
+    public void handleCancelReservation(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+        String deleteId = request.getParameter("delete_id");
+        ShopCartDAO d = new ShopCartDAO();
+        boolean isDeleted = d.deleteAllService(deleteId);
+        int numofreservation = reservationDao.countServiceInReservation(Integer.parseInt(deleteId));
+        if(numofreservation == 0){
+            reservationDao.updateReservationStatus(Integer.parseInt(deleteId), 4);
+            handleListReservation(request, response);
+            return;
+        }
+        handleListReservation(request, response);
+    }
     @Override
     public String getServletInfo() {
         return "Short description";

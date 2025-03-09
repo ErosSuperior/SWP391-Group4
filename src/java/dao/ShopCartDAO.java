@@ -141,7 +141,7 @@ public class ShopCartDAO extends DBContext {
         return a; // Trả về tổng số lượng sản phẩm
     }
 
-    public boolean checkoutService(String total, String name, String phone, String email, String address, int user_id) { // Hàm update các thông tin ở trong reservation khi ng dùng check out
+    public boolean checkoutService(String total, String note, String name, String phone, String email, String address, int user_id) { // Hàm update các thông tin ở trong reservation khi ng dùng check out
         String sql = "UPDATE `reservation`\n" // Câu lệnh update thông tin
                 + "SET\n"
                 + "`total_price` = ?,\n"
@@ -150,7 +150,8 @@ public class ShopCartDAO extends DBContext {
                 + "`receiver_address` = ?,\n"
                 + "`receiver_number` = ?,\n"
                 + "`receiver_email` = ?,\n"
-                + "`receiver_name` = ?\n"
+                + "`receiver_name` = ?,\n"
+                + "`note` = ?\n"
                 + "WHERE `reservation_status` = 0 AND user_id = ?;";
 
         try {
@@ -160,7 +161,8 @@ public class ShopCartDAO extends DBContext {
             st.setString(3, phone);
             st.setString(4, email);
             st.setString(5, name);
-            st.setInt(6, user_id);
+            st.setString(6, note);
+            st.setInt(7, user_id);
             int rowsAffected = st.executeUpdate();
 
             if (rowsAffected > 0) {
@@ -184,6 +186,41 @@ public class ShopCartDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, delete_id);
             st.setInt(2, user_id);
+            int rowsAffected = st.executeUpdate();
+
+            if (rowsAffected > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+    
+    public boolean checkReservationTime(int reservationID) { // Hàm xóa service trong giỏ hàng của ng dùng
+        String sql = "SELECT * FROM reservation_detail \n"
+                + "WHERE begin_time < CURDATE() AND reservation_id = ? LIMIT 1;";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, reservationID);
+
+            ResultSet rs = st.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+    
+    public boolean deleteAllService(String delete_id) { // Hàm xóa service trong đơn hàng của ng dùng
+        String sql = "DELETE FROM reservation_detail WHERE reservation_id = ?";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, delete_id);
             int rowsAffected = st.executeUpdate();
 
             if (rowsAffected > 0) {
