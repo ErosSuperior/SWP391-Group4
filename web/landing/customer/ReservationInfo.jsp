@@ -99,6 +99,7 @@
 
                             <nav aria-label="breadcrumb" class="d-inline-block mt-3">
                                 <ul class="breadcrumb bg-light rounded mb-0 bg-transparent">
+                                    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/customer/myreservationlist">My Reservation</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Reservation Service</li>
                                 </ul>
                             </nav>
