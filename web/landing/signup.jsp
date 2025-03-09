@@ -33,7 +33,7 @@
 
     <!-- Back to home (nếu cần) -->
     <div class="back-to-home rounded d-none d-sm-block">
-        <a href="<%= request.getContextPath() %>/index.jsp" class="btn btn-icon btn-primary">
+        <a href="<%= request.getContextPath() %>/home" class="btn btn-icon btn-primary">
             <i data-feather="home" class="icons"></i>
         </a>
     </div>
@@ -129,8 +129,8 @@
                                     <div class="col-12 text-center">
                                         <p class="mb-0 mt-3">
                                             <small class="text-dark me-2">Already have an account?</small>
-                                            <a href="<%= request.getContextPath() %>/login.jsp" class="text-dark fw-bold">Login</a>
-                                        </p>
+                                            <a href="<%= request.getContextPath() %>/loginnavigation" class="text-dark fw-bold">Login</a>
+                                        </p>    
                                     </div>
                                 </div>
                             </form>

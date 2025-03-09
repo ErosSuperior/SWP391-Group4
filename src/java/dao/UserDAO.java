@@ -115,8 +115,8 @@ public class UserDAO {
             String email, String phone, int roleId, boolean status, String image) {
         Connection conn = null;
         PreparedStatement ps = null;
-        String sql = "INSERT INTO users (user_fullname, user_gender, user_address, user_password, user_email, user_phone, role_id, user_status, user_image) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (user_fullname, user_gender, user_address, user_password, user_email, user_phone, role_id, user_status) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
@@ -128,7 +128,6 @@ public class UserDAO {
             ps.setString(6, phone);
             ps.setInt(7, roleId);
             ps.setBoolean(8, status);
-            ps.setString(9, image);
 
             int rowsAffected = ps.executeUpdate();
 

@@ -30,7 +30,7 @@
 
     <!-- Back to home -->
     <div class="back-to-home rounded d-none d-sm-block">
-        <a href="<%= request.getContextPath() %>/index.jsp" class="btn btn-icon btn-primary">
+        <a href="<%= request.getContextPath() %>/home" class="btn btn-icon btn-primary">
             <i data-feather="home" class="icons"></i>
         </a>
     </div>
