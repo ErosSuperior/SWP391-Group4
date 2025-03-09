@@ -80,9 +80,9 @@ public class CustomerServiceController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = request.getServletPath();
-        switch(url){
+        switch (url) {
             case "/customer/service/updateRating":
-                handleUpdateFeedbackRating(request,response);
+                handleUpdateFeedbackRating(request, response);
                 break;
         }
     }
@@ -153,65 +153,70 @@ public class CustomerServiceController extends HttpServlet {
         request.getRequestDispatcher("/landing/customer/ServiceDetail.jsp").forward(request, response);
     }
 
-    private void handleAddtoCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void handleAddtoCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        // Check if user is logged in
+        PrintWriter out = response.getWriter();
         HttpSession session = request.getSession();
         User account = (User) session.getAttribute("account");
 
         if (account == null) {
-            // Redirect to login page if not logged in
-            response.sendRedirect(request.getContextPath() + "/loginnavigation");
+            out.print("{\"status\": \"error\", \"message\": \"Please log in to add items to your cart.\"}");
+            out.flush();
             return;
         }
-        boolean cartExist = reservationDao.checkCartExist(account.getUser_id());
-        try {
-            int quantity = Integer.parseInt(request.getParameter("quantity"));
 
+        try {
+            // Debugging: Print received parameters
+            System.out.println("Received Parameters:");
+            request.getParameterMap().forEach((key, value) -> System.out.println(key + ": " + String.join(",", value)));
+
+            // Validate and parse parameters safely
+            int quantity = parseInteger(request.getParameter("quantity"), 1);
+            int selectedStaffId = parseInteger(request.getParameter("selected_staff"), -1);
+            int serviceId = parseInteger(request.getParameter("serviceId"), -1);
             String reservationDate = request.getParameter("reservation_date");
 
+            if (serviceId == -1 || selectedStaffId == -1 || reservationDate == null || reservationDate.isEmpty()) {
+                throw new IllegalArgumentException("Missing or invalid parameters.");
+            }
+
+            // Parse reservation date
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date beginTime = new Date(format.parse(reservationDate).getTime());
 
-            Date utilDate = format.parse(reservationDate);
-
-            Date beginTime = new Date(utilDate.getTime());
-
-            int selectedStaffId = Integer.parseInt(request.getParameter("selected_staff"));
-
-            String serviceparam = request.getParameter("serviceId");
-            int serviceId = Integer.parseInt(serviceparam);
-            Service sv = serviceDAO.getServicebyId(serviceId);
-
-            if (!cartExist) {
-                boolean addcart = reservationDao.addCart(account.getUser_id()); // create a cart if not exist
+            // Ensure cart exists
+            if (!reservationDao.checkCartExist(account.getUser_id())) {
+                reservationDao.addCart(account.getUser_id());
             }
 
             int cartId = reservationDao.getCartByUserID(account.getUser_id());
-
             int curQuantity = reservationDao.getCartQuantity(cartId, serviceId);
 
+            Service sv = serviceDAO.getServicebyId(serviceId);
             if (curQuantity != 0) {
-                int newQuantity = curQuantity + quantity;
-
-                reservationDao.updateCartQuantity(cartId, serviceId, newQuantity); // If the cart already have the correnponding service, update the newquantity to the cart 
-
-                request.setAttribute("cartmessage", "SUCCESSFUL ADDED");
-
-                handleServiceDetail(request, response);
-
+                reservationDao.updateCartQuantity(cartId, serviceId, curQuantity + quantity);
             } else {
-
                 reservationDao.addToCart(cartId, serviceId, (float) (sv.getServicePrice() - sv.getServiceDiscount()), selectedStaffId, beginTime, quantity, sv.getCategoryId());
-
-                request.setAttribute("cartmessage", "SUCCESSFUL ADDED");
-
-                handleServiceDetail(request, response);
             }
 
+            out.print("{\"status\": \"success\", \"message\": \"Item successfully added to cart!\"}");
         } catch (Exception e) {
-            handleServiceList(request, response);
+            e.printStackTrace();
+            out.print("{\"status\": \"error\", \"message\": \"Failed to add item to cart. Error: " + e.getMessage() + "\"}");
+        } finally {
+            out.flush();
         }
+    }
 
+// Helper method to parse integers safely
+    private int parseInteger(String param, int defaultValue) {
+        try {
+            return (param != null && !param.isEmpty()) ? Integer.parseInt(param) : defaultValue;
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
     private void handleServiceFeedback(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -224,12 +229,12 @@ public class CustomerServiceController extends HttpServlet {
             request.setAttribute("loggedin", "no");
 
         }
-        if(account!=null){
-        boolean check = reservationDao.hasReservationWithService(account.getUser_id(), service_id);
+        if (account != null) {
+            boolean check = reservationDao.hasReservationWithService(account.getUser_id(), service_id);
 
-        if (check) {
-            request.setAttribute("purchased", "purchased");
-        }
+            if (check) {
+                request.setAttribute("purchased", "purchased");
+            }
         }
 
         String pageNoParam = request.getParameter("pageNo");
@@ -253,81 +258,80 @@ public class CustomerServiceController extends HttpServlet {
         String message = request.getParameter("message");
         HttpSession session = request.getSession();
         User account = (User) session.getAttribute("account");
-        
+
         Service vote = serviceDAO.getServiceVotebyId(serviceId);
-        
-        if (rating.equals("-1")&&!message.isEmpty()){
-            
+
+        if (rating.equals("-1") && !message.isEmpty()) {
+
             int rate = 0;
-            
+
             int addcheck = feedbackDao.addFeedback(account.getUser_id(), serviceId, message, account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
-            
+
             handleServiceFeedback(request, response);
-            
-        }else if(!rating.equals("-1")&&message.isEmpty()){
-            
+
+        } else if (!rating.equals("-1") && message.isEmpty()) {
+
             int rate = Integer.parseInt(rating);
-            
+
             int oldrate = feedbackDao.getUserLatestVote(account.getUser_id());
-            
+
             double serviceavg = vote.getServiceRateStar();
-            
+
             int votenum = vote.getServiceVote();
-            
-            if(oldrate==-1){
-                double newavg = ((serviceavg*votenum)+rate)/(votenum+1);
-                
-                int newvote = votenum+1;
-                
+
+            if (oldrate == -1) {
+                double newavg = ((serviceavg * votenum) + rate) / (votenum + 1);
+
+                int newvote = votenum + 1;
+
                 serviceDAO.updateServiceVoteAndRate(serviceId, newvote, newavg);
-                
+
                 feedbackDao.addFeedback(account.getUser_id(), serviceId, "I have paid for the service(default comment)", account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
-                
+
                 handleServiceFeedback(request, response);
                 return;
             }
-            
-            double newavg = ((serviceavg*votenum)-oldrate+rate)/votenum;
-            
+
+            double newavg = ((serviceavg * votenum) - oldrate + rate) / votenum;
+
             serviceDAO.updateServiceVoteAndRate(serviceId, votenum, newavg);
-            
+
             feedbackDao.addFeedback(account.getUser_id(), serviceId, "I have paid for the service(default comment)", account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
-            
+
             handleServiceFeedback(request, response);
-        }else{
+        } else {
             int rate = Integer.parseInt(rating);
-            
+
             int oldrate = feedbackDao.getUserLatestVote(account.getUser_id());
-            
+
             double serviceavg = vote.getServiceRateStar();
-            
+
             int votenum = vote.getServiceVote();
-            
-            if(oldrate==-1){
-                double newavg = ((serviceavg*votenum)+rate)/(votenum+1);
-                
-                int newvote = votenum+1;
-                
+
+            if (oldrate == -1) {
+                double newavg = ((serviceavg * votenum) + rate) / (votenum + 1);
+
+                int newvote = votenum + 1;
+
                 serviceDAO.updateServiceVoteAndRate(serviceId, newvote, newavg);
-                
+
                 feedbackDao.addFeedback(account.getUser_id(), serviceId, message, account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
-                
+
                 handleServiceFeedback(request, response);
                 return;
             }
-            
-            double newavg = ((serviceavg*votenum)-oldrate+rate)/votenum;
-            
+
+            double newavg = ((serviceavg * votenum) - oldrate + rate) / votenum;
+
             serviceDAO.updateServiceVoteAndRate(serviceId, votenum, newavg);
-            
+
             feedbackDao.addFeedback(account.getUser_id(), serviceId, message, account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
-            
+
             handleServiceFeedback(request, response);
         }
-        
-        
-        
+
     }
+
     @Override
     public String getServletInfo() {
         return "Short description";

@@ -90,44 +90,45 @@
 
     <section class="section">
         <div class="container">
-            <form action="${pageContext.request.contextPath}/customer/service/addToCart" method="get">
-                <input type="text" name="serviceId" value="${serviceId}" hidden>
-                <div class="row align-items-center">
-                    <div class="col-md-5">
-                        <div class="slider slider-for">
-                            <c:forEach var="image" items="${serviceImages}">
-                                <div><img src="${image}" class="img-fluid rounded" alt="Service Image"></div>
-                                </c:forEach>
-                        </div>
 
-                        <div class="slider slider-nav">
-                            <c:forEach var="image" items="${serviceImages}">
-                                <div><img src="${image}" class="img-fluid" alt="Service Thumbnail"></div>
-                                </c:forEach>
-                        </div>
+            <div class="row align-items-center">
+                <div class="col-md-5">
+                    <div class="slider slider-for">
+                        <c:forEach var="image" items="${serviceImages}">
+                            <div><img src="${image}" class="img-fluid rounded" alt="Service Image"></div>
+                            </c:forEach>
                     </div>
 
-                    <div class="col-md-7 mt-4 mt-sm-0 pt-2 pt-sm-0">
-                        <div class="section-title ms-md-4">
-                            <h4 class="title">${highlightedService.serviceTitle}</h4>
-                            <h5 class="text-muted">
-                                Original Price: <s class="text-danger">$${highlightedService.servicePrice}</s><br>
-                                Discount: <span class="text-danger"> $${highlightedService.serviceDiscount}</span><br>
-                                Final Price: <span class="text-success"> $${highlightedService.servicePrice - highlightedService.serviceDiscount}</span>
-                            </h5>
+                    <div class="slider slider-nav">
+                        <c:forEach var="image" items="${serviceImages}">
+                            <div><img src="${image}" class="img-fluid" alt="Service Thumbnail"></div>
+                            </c:forEach>
+                    </div>
+                </div>
 
-                            <ul class="list-unstyled text-warning h5 mb-0">
-                                <c:forEach var="i" begin="1" end="5">
-                                    <li class="list-inline-item">
-                                        <i class="mdi ${i <= highlightedService.serviceRateStar ? 'mdi-star' : 'mdi-star-outline'}"></i>
-                                    </li>
-                                </c:forEach>
-                                <li class="list-inline-item me-2 h6 text-muted">${highlightedService.serviceRateStar}(${highlightedService.serviceVote} Ratings)</li>
-                            </ul>
+                <div class="col-md-7 mt-4 mt-sm-0 pt-2 pt-sm-0">
+                    <div class="section-title ms-md-4">
+                        <h4 class="title">${highlightedService.serviceTitle}</h4>
+                        <h5 class="text-muted">
+                            Original Price: <s class="text-danger">$${highlightedService.servicePrice}</s><br>
+                            Discount: <span class="text-danger"> $${highlightedService.serviceDiscount}</span><br>
+                            Final Price: <span class="text-success"> $${highlightedService.servicePrice - highlightedService.serviceDiscount}</span>
+                        </h5>
 
-                            <h5 class="mt-4 py-2">Overview:</h5>
-                            <p class="text-muted">${highlightedService.serviceDetail}</p>
+                        <ul class="list-unstyled text-warning h5 mb-0">
+                            <c:forEach var="i" begin="1" end="5">
+                                <li class="list-inline-item">
+                                    <i class="mdi ${i <= highlightedService.serviceRateStar ? 'mdi-star' : 'mdi-star-outline'}"></i>
+                                </li>
+                            </c:forEach>
+                            <li class="list-inline-item me-2 h6 text-muted">${highlightedService.serviceRateStar}(${highlightedService.serviceVote} Ratings)</li>
+                        </ul>
 
+                        <h5 class="mt-4 py-2">Overview:</h5>
+                        <p class="text-muted">${highlightedService.serviceDetail}</p>
+
+                        <form id="addToCartForm" action="${pageContext.request.contextPath}/customer/service/addToCart" method="GET">
+                            <input type="text" name="serviceId" value="${serviceId}" hidden>
                             <div class="d-flex shop-list align-items-center">
                                 <h6 class="mb-0">Quantity:</h6>
                                 <div class="qty-icons ms-3">
@@ -169,18 +170,18 @@
 
 
                             <div class="mt-4 pt-2">
-                                <button type="submit" class="btn btn-primary">Add to Cart</button>
+                                <button type="submit" id="addToCartButton" class="btn btn-primary">Add to Cart</button>
                                 <button type="button" class="btn btn-soft-primary ms-2" 
                                         onclick="window.location.href = '${pageContext.request.contextPath}/customer/service/serviceFeedBack?service_id=${serviceId}'">
                                     Feedback & Rating
                                 </button>
 
                             </div>
-
-                        </div>
+                        </form>
                     </div>
-                </div><!--end row-->
-            </form>
+                </div>
+            </div><!--end row-->
+
         </div><!--end container-->
 
         <div class="container mt-100 mt-60">
@@ -298,5 +299,38 @@
             }
         });
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("addToCartForm").addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                let formData = new URLSearchParams(new FormData(this)).toString();
+                let url = this.action + "?" + formData;  // Use form's action attribute directly
+
+                console.log("Sending request to:", url); // Debugging: Check the URL being sent
+
+                fetch(url, {
+                    method: "GET"
+                })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Server response:", data); // Debugging: Check the server's response
+                            if (data.status === "success") {
+                                document.getElementById("exampleModal").querySelector(".modal-body p").textContent = data.message;
+                                new bootstrap.Modal(document.getElementById('exampleModal')).show();
+                            } else {
+                                alert("Failed to add to cart. " + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("An error occurred. Please try again.");
+                        });
+            });
+        });
+
+
+    </script>
+
 </body>
 </html>
