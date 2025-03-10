@@ -104,13 +104,13 @@ public class MyReservationController extends HttpServlet {
         String url = request.getServletPath();
         switch (url) {
             case "/reservation/reservationserviceedit":
-                handleEditReservationDetail(request,response);
+                handleEditReservationDetail(request, response);
                 break;
             case "/reservation/reservationserviceinfoedit":
-                handleEditReservationDetailInfo(request,response);
+                handleEditReservationDetailInfo(request, response);
                 break;
             case "/deleteReservation":
-                handleCancelReservation(request,response);
+                handleCancelReservation(request, response);
                 break;
         }
     }
@@ -174,10 +174,10 @@ public class MyReservationController extends HttpServlet {
         String fix = request.getParameter("fix");
 
         ShopCartDAO d = new ShopCartDAO();
-        
+
         int reservationID = Integer.parseInt(request.getParameter("reservation_id"));
         int numofreservation = reservationDao.countServiceInReservation(reservationID);
-        if(numofreservation == 0){
+        if (numofreservation == 0) {
             reservationDao.updateReservationStatus(reservationID, 4);
             handleListReservation(request, response);
             return;
@@ -199,10 +199,10 @@ public class MyReservationController extends HttpServlet {
             return; // Dừng thực hiện các lệnh tiếp theo
         }
         // Tiếp tục nếu đã đăng nhập
-        
+
         String fix = request.getParameter("fix");
         int reservation_id = Integer.parseInt(request.getParameter("reservation_id"));
-        
+
         String note = reservationDao.getReservationNote(reservation_id);
         ShopCartDAO d = new ShopCartDAO(); // Tạo đối tượng để sử dụng hàm của nó
         int totalservice = reservationDao.totalService(reservation_id); // Gọi hàm để tính tổng service khách chọn
@@ -230,10 +230,9 @@ public class MyReservationController extends HttpServlet {
         String reservation_detail_id = request.getParameter("detail_id");
         String delete_id = request.getParameter("delete_id"); // Lấy dữ liệu từ JSP gửi về 
         String reservation_id = request.getParameter("reservation_id");
-        
+
         User account = (User) request.getSession().getAttribute("account");  // Lấy session để kiểm tra xem đăng nhập chưa
 
-        
         if (delete_id != null && !delete_id.isEmpty()) { // Kiểm tra xem có delete_id gửi về hay k. Nếu có
             boolean nhom = reservationDao.deleteService(delete_id); // Gọi hàm xóa service khỏi giỏ hàng
             if (nhom) { //Xóa thành công
@@ -257,34 +256,52 @@ public class MyReservationController extends HttpServlet {
     }
 
     public void handleEditReservationDetailInfo(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
+            throws ServletException, IOException {
         String name = request.getParameter("name");
-        String phone = request.getParameter("phone"); 
+        String phone = request.getParameter("phone");
         String email = request.getParameter("email");
-        String address = request.getParameter("address");  
-        String paymentMethod = request.getParameter("paymentMethod"); 
-        String total = request.getParameter("total"); 
+        String address = request.getParameter("address");
+        String paymentMethod = request.getParameter("paymentMethod");
+        String total = request.getParameter("total");
         String note = request.getParameter("note");
         String reservation_id = request.getParameter("reservation_id");
-        
+
         reservationDao.updateReservation(reservation_id, note, address, phone, email, name, total);
-        
+
         handleListReservation(request, response);
     }
-    
-    public void handleCancelReservation(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
+
+    protected void handleCancelReservation(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String deleteId = request.getParameter("delete_id");
         ShopCartDAO d = new ShopCartDAO();
-        boolean isDeleted = d.deleteAllService(deleteId);
-        int numofreservation = reservationDao.countServiceInReservation(Integer.parseInt(deleteId));
-        if(numofreservation == 0){
-            reservationDao.updateReservationStatus(Integer.parseInt(deleteId), 4);
-            handleListReservation(request, response);
-            return;
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+
+        try {
+            if (reservationDao.checkReservationStatus(Integer.parseInt(deleteId)) != 1) {
+                // Send a JSON response indicating failure
+                out.print("{\"success\": false, \"message\": \"The reservation is already confirmed and cannot be canceled.\"}");
+                out.flush();
+                return;
+            }
+
+            boolean isDeleted = d.deleteAllService(deleteId);
+            int numOfReservation = reservationDao.countServiceInReservation(Integer.parseInt(deleteId));
+
+            if (numOfReservation == 0) {
+                reservationDao.updateReservationStatus(Integer.parseInt(deleteId), 4);
+            }
+
+            // Send a success response
+            out.print("{\"success\": true}");
+            out.flush();
+        } catch (Exception e) {
+            out.print("{\"success\": false, \"message\": \"An error occurred while processing the request.\"}");
+            out.flush();
         }
-        handleListReservation(request, response);
     }
+
     @Override
     public String getServletInfo() {
         return "Short description";

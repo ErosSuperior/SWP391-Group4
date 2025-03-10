@@ -506,7 +506,7 @@ public class ReservationDAO extends DBContext {
             st.setString(3, receiver_number);
             st.setString(4, receiver_email);
             st.setString(5, receiver_name);
-            st.setString(6, total_price); 
+            st.setString(6, total_price);
             st.setString(7, reservation_id);
 
             return st.executeUpdate() > 0; // Returns true if the update was successful
@@ -517,10 +517,10 @@ public class ReservationDAO extends DBContext {
     }
 
     public boolean hasReservationWithService(int userId, String serviceId) {
-        String sql = "SELECT COUNT(*) FROM reservation r " +
-                     "JOIN reservation_detail rd ON r.reservation_id = rd.reservation_id " +
-                     "WHERE r.user_id = ? AND rd.service_id = ? AND r.reservation_status = 3";
-        
+        String sql = "SELECT COUNT(*) FROM reservation r "
+                + "JOIN reservation_detail rd ON r.reservation_id = rd.reservation_id "
+                + "WHERE r.user_id = ? AND rd.service_id = ? AND r.reservation_status = 3";
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.setString(2, serviceId);
@@ -533,5 +533,20 @@ public class ReservationDAO extends DBContext {
         }
         return false; // Default return false if no match found
     }
-    
+
+    public int checkReservationStatus(int reservationId) {
+        String sql = "SELECT reservation_status FROM reservation WHERE reservation_id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, reservationId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("reservation_status");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1; // Return -1 if no reservation found or an error occurs
+    }
+
 }

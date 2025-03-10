@@ -259,6 +259,24 @@
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header border-bottom p-3">
+                            <h5 class="modal-title" id="exampleModalLabel">Error</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="location.reload();">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </section><!-- End Hero -->
 
         <jsp:include page="../Footer.jsp"/>
@@ -292,7 +310,6 @@
             });
 
             function updateStatus(reservationId) {
-                console.log(reservationId);
                 $.ajax({
                     url: '${pageContext.request.contextPath}/deleteReservation',
                     type: 'POST',
@@ -300,15 +317,26 @@
                         delete_id: reservationId
                     },
                     success: function (response) {
+                        if (!response.success) {
+                            showErrorModal(response.message);
+                            return;
+                        }
                         console.log("AJAX request successful. Page will reload.");
                         location.reload();
                     },
                     error: function (xhr, status, error) {
                         console.error('AJAX Error:', xhr.status, status, error);
-                        // Optionally show an error message in the modal or elsewhere
+                        showErrorModal("An unexpected error occurred. Please try again.");
                     }
                 });
             }
+
+            function showErrorModal(message) {
+                $('#exampleModal .modal-body').text(message);
+                $('#exampleModal').modal('show');
+            }
+
         </script>
+
     </body>
 </html>
