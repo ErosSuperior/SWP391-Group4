@@ -47,12 +47,12 @@
                         <ul class="list-unstyled footer-list mt-4">
                             <li class="d-flex align-items-center">
                                 <i data-feather="mail" class="fea icon-sm text-foot align-middle"></i>
-                                <a href="mailto:contact@example.com" class="text-foot ms-2">contact@example.com</a>
+                                <a href="mailto:contact@example.com" class="text-foot ms-2">lucnbhe187315@.fpt.edu.vn</a>
                             </li>
 
                             <li class="d-flex align-items-center">
                                 <i data-feather="phone" class="fea icon-sm text-foot align-middle"></i>
-                                <a href="tel:+152534-468-854" class="text-foot ms-2">+152 534-468-854</a>
+                                <a href="tel:+152534-468-854" class="text-foot ms-2">+84967838699</a>
                             </li>
 
                             <li class="d-flex align-items-center">

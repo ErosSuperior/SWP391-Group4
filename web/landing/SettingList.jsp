@@ -43,7 +43,7 @@
 
         <div class="page-wrapper doctris-theme toggled">
             <jsp:include page="AdminSidebar.jsp"/>
-            
+
             <!-- sidebar-wrapper  -->
 
             <!-- Start Page Content -->
@@ -55,7 +55,11 @@
                         <div class="d-md-flex justify-content-between">
                             <div class="col-md-6">
                                 <h5 class="mb-0">Setting List</h5>
+                                <a href="${pageContext.request.contextPath}/adminaddsetting" class="btn btn-primary"style="margin-top:20px">
+                                                <i class="uil uil-plus"></i> Add Setting
+                                            </a>
                             </div>
+                           
                             <div style="margin-right: 50%;"class="col-lg-6 col-md-5 ms-auto">
                                 <!--                                Hiển thị thông báo cho ng dùng nếu tìm thấy-->
                                 <c:if test="${not empty sessionScope.delete}">

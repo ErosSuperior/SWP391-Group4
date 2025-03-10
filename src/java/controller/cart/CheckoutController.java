@@ -98,6 +98,10 @@ public class CheckoutController extends HttpServlet {
         String total = request.getParameter("total"); // Lấy dữ liệu từ JSP gửi xuống 
         String note = request.getParameter("note"); // Lấy dữ liệu từ JSP gửi xuống 
 
+        if(note==null && note.isEmpty()){
+            note = "(default note)";
+        }
+        
         User account = (User) request.getSession().getAttribute("account"); // Lấy session để kiểm tra xem đăng nhập chưa
         int user_id = account.getUser_id(); // Lấy user_id
 
@@ -118,7 +122,7 @@ public class CheckoutController extends HttpServlet {
             boolean result = d.checkoutService(total, note, name, phone, email, address, user_id); // Gọi hàm để cập nhật thông tin cho kahcs hàng
 
             if (result) { // Kiểm tra xem cập nhật thành công hay k 
-                response.sendRedirect(request.getContextPath() + "/cartcompletion"); // Neu có chuyển đến trang hoàn thành
+                response.sendRedirect(request.getContextPath() + "/home"); // Neu có chuyển đến trang hoàn thành
             } else {
                 response.sendRedirect(request.getContextPath() + "/error"); // Không chuyển đến trang lỗi
             }

@@ -88,25 +88,7 @@
         <jsp:include page="CustomerNavbar.jsp"/>
         <!-- Navbar End -->
 
-        <!-- Hero Start -->
-        <section class="bg-half-170 d-table w-100 bg-light">
-            <div class="container">
-                <div class="row mt-5 justify-content-center">
-                    <div class="col-12">
-                        <div class="section-title text-center">
-                            <h3 class="sub-title mb-4">Shop Cart</h3>
-                            <p class="para-desc mx-auto text-muted">Excellent service if you need immediate and effective assistance, emergency care, or a simple consultation for your family member.</p>
-
-                            <nav aria-label="breadcrumb" class="d-inline-block mt-3">
-                                <ul class="breadcrumb bg-light rounded mb-0 bg-transparent">
-                                    <li class="breadcrumb-item active" aria-current="page">Shop Cart</li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div><!--end col-->
-                </div><!--end row-->
-            </div><!--end container-->
-        </section><!--end section-->
+        
         <div class="position-relative">
             <div class="shape overflow-hidden text-white">
                 <svg viewBox="0 0 2880 48" fill="none" xmlns="http://www.w3.org/2000/svg">

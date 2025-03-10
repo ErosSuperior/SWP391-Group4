@@ -40,7 +40,7 @@
                                     <div class="p-4 border-bottom">
                                         <div class="d-flex justify-content-between">
                                             <h5 class="mb-0">User List</h5>
-                                            <a href="${pageContext.request.contextPath}/admin/adduser" class="btn btn-primary">
+                                            <a href="${pageContext.request.contextPath}/admin/adduser" class="btn btn-primary" >
                                                 <i class="uil uil-plus"></i> Add User
                                             </a>
                                         </div>
@@ -53,7 +53,7 @@
                                                     <label class="form-label">Role</label>
                                                     <select name="status" class="form-control">
                                                         <option value="-1">All Roles</option>
-                                                        <option value="1" ${param.role_id=='1' ? 'selected' : ''}>Admin</option>
+                                                        
                                                         <option value="3" ${param.role_id=='3' ? 'selected' : ''}>Staff</option>
                                                         <option value="2" ${param.role_id=='2' ? 'selected' : ''}>Manager</option>
                                                         <option value="4" ${param.role_id=='4' ? 'selected' : ''}>Customer</option>

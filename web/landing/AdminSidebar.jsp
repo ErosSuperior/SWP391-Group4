@@ -40,7 +40,7 @@
                 <div class="sidebar-submenu">
                     <ul>
                         <li><a href="${pageContext.request.contextPath}/adminsettinglist">Settings</a></li>
-                        <li><a href="${pageContext.request.contextPath}/adminaddsetting">Add Setting</a></li>
+                        
                     </ul>
                 </div>
             </li>

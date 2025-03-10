@@ -1,4 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+m<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -17,6 +17,8 @@
         <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/images/favicon.ico.png">
         <!-- Bootstrap -->
         <link href="${pageContext.request.contextPath}/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- simplebar -->
+        <link href="<%= request.getContextPath() %>/assets/css/simplebar.css" rel="stylesheet" type="text/css" />
         <!-- Icons -->
         <link href="${pageContext.request.contextPath}/assets/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
         <link href="${pageContext.request.contextPath}/assets/css/remixicon.css" rel="stylesheet" type="text/css" />
@@ -41,25 +43,7 @@
         <!-- Navbar End -->
 
         <!-- Hero Start -->
-        <section class="bg-half-170 d-table w-100 bg-light">
-            <div class="container">
-                <div class="row mt-5 justify-content-center">
-                    <div class="col-12">
-                        <div class="section-title text-center">
-                            <h3 class="sub-title mb-4">Checkout</h3>
-                            <p class="para-desc mx-auto text-muted">Excellent service if you need immediate and effective assistance, emergency care, or a simple consultation for your family member.</p>
 
-                            <nav aria-label="breadcrumb" class="d-inline-block mt-3">
-                                <ul class="breadcrumb bg-light rounded mb-0 bg-transparent">
-                                    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/mycart">Shop Cart</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Checkout</li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div><!--end col-->
-                </div><!--end row-->
-            </div><!--end container-->
-        </section><!--end section-->
         <div class="position-relative">
             <div class="shape overflow-hidden text-white">
                 <svg viewBox="0 0 2880 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -73,6 +57,11 @@
         <section class="section">
             <div class="container">
                 <div class="row">
+                    <div class="col-lg-8 col-md-6 mt-4 pt-2">
+                        <a href="/SWP391-Group4/mycart" class="btn btn-sm btn-primary" style="margin-bottom:20px">
+                            Back
+                        </a>
+                    </div>
                     <div class="col-md-5 col-lg-4 order-md-last">
                         <div class="card rounded shadow p-4 border-0">
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -80,7 +69,7 @@
                                 <span class="badge bg-primary rounded-pill">
                                     <a href="${pageContext.request.contextPath}/mycart" class="text-white">${totalservice}</a>
                                 </span>
-                            </div>
+                            </div>    
                             <ul class="list-group mb-3 border">
                                 <!--                                Set giá trị total = 0 để cộng vào -->
                                 <c:set var="total" value="0" />
@@ -178,97 +167,7 @@
             </div><!--end container-->
         </section><!--end section-->
         <!-- End -->
-
-        <!-- Start -->
-        <footer class="bg-footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-5 col-lg-4 mb-0 mb-md-4 pb-0 pb-md-2">
-                        <a href="#" class="logo-footer">
-                            <img src="${pageContext.request.contextPath}/assets/images/logo-light.png" height="22" alt="">
-                        </a>
-                        <p class="mt-4 me-xl-5">Great doctor if you need your family member to get effective immediate assistance, emergency treatment or a simple consultation.</p>
-                    </div><!--end col-->
-
-                    <div class="col-xl-7 col-lg-8 col-md-12">
-                        <div class="row">
-                            <div class="col-md-4 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0">
-                                <h5 class="text-light title-dark footer-head">Company</h5>
-                                <ul class="list-unstyled footer-list mt-4">
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> About us</a></li>
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Services</a></li>
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Team</a></li>
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Project</a></li>
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Blog</a></li>
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Login</a></li>
-                                </ul>
-                            </div><!--end col-->
-
-                            <div class="col-md-4 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0">
-                                <h5 class="text-light title-dark footer-head">Departments</h5>
-                                <ul class="list-unstyled footer-list mt-4">
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Eye Care</a></li>
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Psychotherapy</a></li>
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Dental Care</a></li>
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Orthopedic</a></li>
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Cardiology</a></li>
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Gynecology</a></li>
-                                    <li><a href="#" class="text-foot"><i class="mdi mdi-chevron-right me-1"></i> Neurology</a></li>
-                                </ul>
-                            </div><!--end col-->
-
-                            <div class="col-md-4 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0">
-                                <h5 class="text-light title-dark footer-head">Contact us</h5>
-                                <ul class="list-unstyled footer-list mt-4">
-                                    <li class="d-flex align-items-center">
-                                        <i data-feather="mail" class="fea icon-sm text-foot align-middle"></i>
-                                        <a href="mailto:contact@example.com" class="text-foot ms-2">contact@example.com</a>
-                                    </li>
-
-                                    <li class="d-flex align-items-center">
-                                        <i data-feather="phone" class="fea icon-sm text-foot align-middle"></i>
-                                        <a href="tel:+152534-468-854" class="text-foot ms-2">+152 534-468-854</a>
-                                    </li>
-
-                                    <li class="d-flex align-items-center">
-                                        <i data-feather="map-pin" class="fea icon-sm text-foot align-middle"></i>
-                                        <a href="javascript:void(0)" class="video-play-icon text-foot ms-2">View on Google map</a>
-                                    </li>
-                                </ul>
-
-                                <ul class="list-unstyled social-icon footer-social mb-0 mt-4">
-                                    <li class="list-inline-item"><a href="#" class="rounded-pill"><i data-feather="facebook" class="fea icon-sm fea-social"></i></a></li>
-                                    <li class="list-inline-item"><a href="#" class="rounded-pill"><i data-feather="instagram" class="fea icon-sm fea-social"></i></a></li>
-                                    <li class="list-inline-item"><a href="#" class="rounded-pill"><i data-feather="twitter" class="fea icon-sm fea-social"></i></a></li>
-                                    <li class="list-inline-item"><a href="#" class="rounded-pill"><i data-feather="linkedin" class="fea icon-sm fea-social"></i></a></li>
-                                </ul><!--end icon-->
-                            </div><!--end col-->
-                        </div><!--end row-->
-                    </div><!--end col-->
-                </div><!--end row-->
-            </div><!--end container-->
-
-            <div class="container mt-5">
-                <div class="pt-4 footer-bar">
-                    <div class="row align-items-center">
-                        <div class="col-sm-6">
-                            <div class="text-sm-start text-center">
-                                <p class="mb-0"><script>document.write(new Date().getFullYear())</script> © Doctris. Design with <i class="mdi mdi-heart text-danger"></i> by <a href="${pageContext.request.contextPath}/${pageContext.request.contextPath}/${pageContext.request.contextPath}/index.html" target="_blank" class="text-reset">Shreethemes</a>.</p>
-                            </div>
-                        </div><!--end col-->
-
-                        <div class="col-sm-6 mt-4 mt-sm-0">
-                            <ul class="list-unstyled footer-list text-sm-end text-center mb-0">
-                                <li class="list-inline-item"><a href="terms.html" class="text-foot me-2">Terms</a></li>
-                                <li class="list-inline-item"><a href="privacy.html" class="text-foot me-2">Privacy</a></li>
-                                <li class="list-inline-item"><a href="aboutus.html" class="text-foot me-2">About</a></li>
-                                <li class="list-inline-item"><a href="contact.html" class="text-foot me-2">Contact</a></li>
-                            </ul>
-                        </div><!--end col-->
-                    </div><!--end row-->
-                </div>
-            </div><!--end container-->
-        </footer><!--end footer-->
+        <jsp:include page="Footer.jsp"/>
         <!-- End -->
 
         <!-- Back to top -->

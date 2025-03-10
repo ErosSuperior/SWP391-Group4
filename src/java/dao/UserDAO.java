@@ -68,7 +68,7 @@ public class UserDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            String hashPassword =  HashPassword.hashPassword(password);
+            String hashPassword = HashPassword.hashPassword(password);
             String sql = "SELECT * FROM users WHERE user_email = ? AND user_password = ?";
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
@@ -120,13 +120,13 @@ public class UserDAO {
         String sql = "INSERT INTO users (user_fullname, user_gender, user_address, user_password, user_email, user_phone, role_id, user_status) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
-            String hashPassword =  HashPassword.hashPassword(password);
+            String hashPassword = HashPassword.hashPassword(password);
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
             ps.setString(1, fullname);
             ps.setBoolean(2, gender);
             ps.setString(3, address);
-            ps.setString(4, hashPassword); 
+            ps.setString(4, hashPassword);
             ps.setString(5, email);
             ps.setString(6, phone);
             ps.setInt(7, roleId);
@@ -160,7 +160,7 @@ public class UserDAO {
 
     public void changePassword(String user_email, String newpassword) {
         try {
-            String hashPassword =  HashPassword.hashPassword(newpassword);
+            String hashPassword = HashPassword.hashPassword(newpassword);
             String sql = "UPDATE users SET user_password = ? WHERE user_email = ?";
             Connection conn = new DBContext().getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -177,7 +177,7 @@ public class UserDAO {
         String query = "SELECT * FROM users WHERE role_id = 2 AND user_status != 3";
 
         try {
-            
+
             Connection conn = new DBContext().getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
@@ -207,7 +207,8 @@ public class UserDAO {
         StringBuilder query = new StringBuilder("SELECT u.*, r.role_name "
                 + "FROM users u "
                 + "LEFT JOIN role r ON u.role_id = r.role_id "
-                + "WHERE 1=1 ");
+                + "WHERE 1=1 "
+                + "AND u.role_id != 1 ");
 
         if (nameOrId != null && !nameOrId.isEmpty()) {
             query.append(" AND (u.user_fullname LIKE ? OR u.user_id = ?)");
@@ -291,7 +292,8 @@ public class UserDAO {
         StringBuilder query = new StringBuilder("SELECT COUNT(*) "
                 + "FROM users u "
                 + "LEFT JOIN role r ON u.role_id = r.role_id "
-                + "WHERE 1=1 ");
+                + "WHERE 1=1 "
+                + "AND u.role_id != 1 ");
 
         if (nameOrId != null && !nameOrId.isEmpty()) {
             query.append(" AND (u.user_fullname LIKE ? OR u.user_id = ?)");
@@ -361,7 +363,7 @@ public class UserDAO {
         String sql = "INSERT INTO users (user_fullname, user_gender, user_address, user_password, user_email, user_phone, role_id, user_status, user_image) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
-            String hashPassword =  HashPassword.hashPassword(password);
+            String hashPassword = HashPassword.hashPassword(password);
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
             ps.setString(1, fullname);
