@@ -489,46 +489,45 @@ public class ServiceDAO extends DBContext {
     
     
 
-    public int countAllServices(String nameOrId, int categoryId, int status) {
-        int total = 0;
-        if (connection == null) {
-            return total;
+    public int countService(String nameOrId, int categoryId) {
+        int count = 0;
+        StringBuilder query = new StringBuilder("SELECT COUNT(*) "
+                + "FROM service s "
+                + "LEFT JOIN service_image si ON s.service_id = si.service_id "
+                + "LEFT JOIN service_status ss ON s.service_id = ss.service_id "
+                + "LEFT JOIN category c ON s.category_id = c.category_id "
+                + "WHERE 1=1 ");
+        if (nameOrId != null && !nameOrId.isEmpty()) {
+            query.append(" AND (s.service_title LIKE ? OR s.service_id = ?)");
         }
 
-        StringBuilder query = new StringBuilder("SELECT COUNT(*) FROM service s LEFT JOIN service_status ss ON s.service_id = ss.service_id WHERE 1=1 ");
-
-        if (nameOrId != null && !nameOrId.trim().isEmpty()) {
-            query.append(" AND (s.service_title LIKE ? OR s.service_id = ?) ");
-        }
         if (categoryId != -1) {
-            query.append(" AND s.category_id = ? ");
+            query.append(" AND (s.category_id = ?)");
         }
-        if (status != -1) {
-            query.append(" AND ss.service_status = ? ");
+
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return 0; // Return empty list if connection failed
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
             int index = 1;
-            if (nameOrId != null && !nameOrId.trim().isEmpty()) {
+            if (nameOrId != null && !nameOrId.isEmpty()) {
                 preparedStatement.setString(index++, "%" + nameOrId + "%");
                 preparedStatement.setString(index++, nameOrId);
             }
             if (categoryId != -1) {
                 preparedStatement.setInt(index++, categoryId);
             }
-            if (status != -1) {
-                preparedStatement.setInt(index++, status);
-            }
 
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                total = rs.getInt(1);
+                count = rs.getInt(1);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
-
-        return total;
+        return count;
     }
 
     // Cập nhật trạng thái dịch vụ trong bảng service_status
@@ -700,5 +699,68 @@ public class ServiceDAO extends DBContext {
             e.printStackTrace();
         }
         return success;
+    }
+    
+    public List<Service> getService(int offset, int limit, String nameOrId, int categoryId, String sortBy, String sortDir) {
+        List<Service> services = new ArrayList<>();
+        StringBuilder query = new StringBuilder("SELECT s.*, si.image_link AS serviceImage, ss.service_status AS serviceStatus, c.category_name AS categoryName "
+                + "FROM service s "
+                + "LEFT JOIN service_image si ON s.service_id = si.service_id "
+                + "LEFT JOIN service_status ss ON s.service_id = ss.service_id "
+                + "LEFT JOIN category c ON s.category_id = c.category_id "
+                + "WHERE 1=1 "
+                + "AND si.type = 0 ");
+
+        if (nameOrId != null && !nameOrId.isEmpty()) {
+            query.append(" AND (s.service_title LIKE ? OR s.service_id = ?)");
+        }
+
+        if (categoryId != -1) {
+            query.append(" AND (s.category_id = ?)");
+        }
+
+        query.append(" ORDER BY ").append(sortBy).append(" ").append(sortDir.equalsIgnoreCase("ASC") ? "ASC" : "DESC");
+        query.append(" LIMIT ? OFFSET ?");
+
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return services; // Return empty list if connection failed
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
+            int index = 1;
+            if (nameOrId != null && !nameOrId.isEmpty()) {
+                preparedStatement.setString(index++, "%" + nameOrId + "%");
+                preparedStatement.setString(index++, nameOrId);
+            }
+
+            if (categoryId != -1) {
+                preparedStatement.setInt(index++, categoryId);
+            }
+
+            preparedStatement.setInt(index++, limit);
+            preparedStatement.setInt(index++, offset);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Service s = new Service();
+                s.setServiceId(rs.getInt("service_id"));
+                s.setServiceTitle(rs.getString("service_title"));
+                s.setServiceBi(rs.getString("service_bi"));
+                s.setCategoryId(rs.getInt("category_id"));
+                s.setServicePrice(rs.getDouble("service_price"));
+                s.setServiceDiscount(rs.getDouble("service_discount"));
+                s.setServiceDetail(rs.getString("service_detail"));
+                s.setServiceRateStar(rs.getDouble("service_rateStar"));
+                s.setServiceVote(rs.getInt("service_vote"));
+                s.setServiceImage(rs.getString("serviceImage"));
+                s.setCategoryTitle(rs.getString("categoryName"));
+                s.setServiceStatus(rs.getInt("serviceStatus"));
+                services.add(s);
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return services;
     }
 }

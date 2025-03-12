@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import model.SearchResponse;
 import model.Service;
 
 @WebServlet(name = "ServiceManagerController", urlPatterns = {
@@ -87,39 +88,38 @@ public class ServiceManagerController extends HttpServlet {
 
     private void handleServiceList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String pageNoParam = request.getParameter("pageNo");
+        int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
+        int pageSize = 4;
         String nameOrId = request.getParameter("nameOrId");
-        String statusParam = request.getParameter("status");
-        String pageParam = request.getParameter("page");
-        String sortBy = request.getParameter("sortBy");
-        String sortDir = request.getParameter("sortDir");
-
-        int status = (statusParam != null) ? Integer.parseInt(statusParam) : -1;
-        int page = (pageParam != null) ? Integer.parseInt(pageParam) : 1;
-        int limit = 3; // Số bản ghi mỗi trang
-        int offset = (page - 1) * limit;
-
-        if (sortBy == null || sortBy.isEmpty()) {
-            sortBy = "title";
+        int categoryId = -1; // Default value
+        String sortDir = "ASC";
+        String sortBy = "service_id";
+        try {
+            String sortByparam = request.getParameter("sortvalue");
+            if (sortByparam != null && !sortByparam.isEmpty()){
+                 sortBy = request.getParameter("sortvalue");
+            }
+            
+            String sortDirparam = request.getParameter("sortdir");
+            if (sortDirparam != null && !sortDirparam.trim().isEmpty()){
+                sortDir = sortDirparam;
+            }
+            String categoryIdParam = request.getParameter("categoryId");
+            if (categoryIdParam != null && !categoryIdParam.trim().isEmpty()) {
+                categoryId = Integer.parseInt(categoryIdParam);
+            }
+            
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid categoryId: " + e.getMessage());
         }
-        if (sortDir == null || sortDir.isEmpty()) {
-            sortDir = "asc";
-        }
+        SearchResponse<Service> searchResponse = serviceInit.getService(pageNo, pageSize, nameOrId, categoryId, sortDir, sortBy);
 
-        List<Service> services = serviceDAO.getAllService(offset, limit, nameOrId, -1, status, sortBy, sortDir);
-
-        int totalRecords = serviceDAO.countAllServices(nameOrId, -1, status);
-        int totalPages = (int) Math.ceil((double) totalRecords / limit);
-
-        request.setAttribute("services", services);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("nameOrId", nameOrId);
-        request.setAttribute("status", status);
-        request.setAttribute("sortBy", sortBy);
-        request.setAttribute("sortDir", sortDir);
-
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/landing/manager/ServiceManager.jsp");
-        dispatcher.forward(request, response);
+        request.setAttribute("allblogs", searchResponse.getContent());
+        request.setAttribute("totalElements", searchResponse.getTotalElements());
+        request.setAttribute("pageNo", pageNo);
+        request.setAttribute("pageSize", pageSize);
+        request.getRequestDispatcher("/landing/manager/ServiceManager.jsp").forward(request, response);
     }
 
     private void showAddForm(HttpServletRequest request, HttpServletResponse response)
