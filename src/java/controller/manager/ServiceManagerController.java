@@ -92,6 +92,7 @@ public class ServiceManagerController extends HttpServlet {
         int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
         int pageSize = 4;
         String nameOrId = request.getParameter("nameOrId");
+        int status = -1;
         int categoryId = -1; // Default value
         String sortDir = "ASC";
         String sortBy = "service_id";
@@ -110,10 +111,14 @@ public class ServiceManagerController extends HttpServlet {
                 categoryId = Integer.parseInt(categoryIdParam);
             }
             
+            String statusparam = request.getParameter("status");
+            if (statusparam != null && !statusparam.isEmpty()){
+                status = Integer.parseInt(statusparam);
+            }
         } catch (NumberFormatException e) {
             System.err.println("Invalid categoryId: " + e.getMessage());
         }
-        SearchResponse<Service> searchResponse = serviceInit.getService(pageNo, pageSize, nameOrId, categoryId, sortDir, sortBy);
+        SearchResponse<Service> searchResponse = serviceInit.getService(pageNo, pageSize, nameOrId, categoryId, status, sortDir, sortBy);
 
         request.setAttribute("allblogs", searchResponse.getContent());
         request.setAttribute("totalElements", searchResponse.getTotalElements());

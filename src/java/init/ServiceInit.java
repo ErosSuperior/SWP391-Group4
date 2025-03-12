@@ -23,9 +23,9 @@ public class ServiceInit {
         return new SearchResponse<>(totalElements, users, pageNo, pageSize);
     }
     
-    public SearchResponse<Service> getService(int pageNo, int pageSize, String nameOrId , int categoryId, String sortDir, String sortBy) {
+    public SearchResponse<Service> getService(int pageNo, int pageSize, String nameOrId , int categoryId, int status, String sortDir, String sortBy) {
         int offset = pageNo * pageSize;
-        List<Service> users = serviceDAO.getService(offset, pageSize, nameOrId,categoryId ,sortBy, sortDir);
+        List<Service> users = serviceDAO.getService(offset, pageSize, nameOrId,categoryId , status ,sortBy, sortDir);
         int totalElements = serviceDAO.countService(nameOrId, categoryId);
         return new SearchResponse<>(totalElements, users, pageNo, pageSize);
     }

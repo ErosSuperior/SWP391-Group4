@@ -701,7 +701,7 @@ public class ServiceDAO extends DBContext {
         return success;
     }
     
-    public List<Service> getService(int offset, int limit, String nameOrId, int categoryId, String sortBy, String sortDir) {
+    public List<Service> getService(int offset, int limit, String nameOrId, int categoryId, int status, String sortBy, String sortDir) {
         List<Service> services = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT s.*, si.image_link AS serviceImage, ss.service_status AS serviceStatus, c.category_name AS categoryName "
                 + "FROM service s "
@@ -717,6 +717,10 @@ public class ServiceDAO extends DBContext {
 
         if (categoryId != -1) {
             query.append(" AND (s.category_id = ?)");
+        }
+        
+        if (status != -1) {
+            query.append(" AND (ss.service_status = ?)");
         }
 
         query.append(" ORDER BY ").append(sortBy).append(" ").append(sortDir.equalsIgnoreCase("ASC") ? "ASC" : "DESC");
@@ -736,6 +740,10 @@ public class ServiceDAO extends DBContext {
 
             if (categoryId != -1) {
                 preparedStatement.setInt(index++, categoryId);
+            }
+            
+            if (status != -1) {
+                preparedStatement.setInt(index++, status);
             }
 
             preparedStatement.setInt(index++, limit);

@@ -48,12 +48,7 @@ public class maintest {
 //            System.out.println(a.getFeedbackId());
 //        }
 //        
-        List<Service> s = svd.getService(0, 10, "", -1, "serviceStatus", "ASC");
-        for(Service ss : s){
-            System.out.println(ss.getServiceId());
-            System.out.println(ss.getCategoryTitle());
-            System.out.println(ss.getServiceDetail());
-        }
+        
     }
 
 }
