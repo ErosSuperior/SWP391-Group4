@@ -131,6 +131,9 @@ public class MyReservationController extends HttpServlet {
         String monthParam = request.getParameter("month");
         String yearParam = request.getParameter("year");
 
+        String sortDir = "ASC";
+        String sortBy = "created_date";
+
         // Retrieve request parameters
         String pageNoParam = request.getParameter("pageNo");
         int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
@@ -150,7 +153,18 @@ public class MyReservationController extends HttpServlet {
         if (yearParam != null && !yearParam.isEmpty()) {
             year = Integer.parseInt(yearParam);
         }
-        SearchResponse<Reservation> searchResponse = reserInit.getReservation(pageNo, pageSize, nameOrId, account.getUser_id(), day, month, year);
+        
+        String sortDirparam = request.getParameter("sortdir");
+        if (sortDirparam != null && !sortDirparam.isEmpty()) {
+            sortDir = sortDirparam;
+        }
+
+        String sortByparam = request.getParameter("sortvalue");
+        if (sortByparam != null && !sortByparam.isEmpty()) {
+            sortBy = sortByparam;
+        }
+
+        SearchResponse<Reservation> searchResponse = reserInit.getReservation(pageNo, pageSize, nameOrId, account.getUser_id(), day, month, year, sortBy, sortDir);
         // Set attributes for JSP
         request.setAttribute("reservations", searchResponse.getContent());
         request.setAttribute("selectedDay", day);

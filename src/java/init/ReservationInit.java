@@ -14,9 +14,9 @@ import model.SearchResponse;
  */
 public class ReservationInit {
     ReservationDAO reservationDao = new ReservationDAO();
-    public SearchResponse<Reservation> getReservation(int pageNo, int pageSize, String nameOrId , int userId , int day, int month , int year) {
+    public SearchResponse<Reservation> getReservation(int pageNo, int pageSize, String nameOrId , int userId , int day, int month , int year, String sortBy, String sortDir) {
         int offset = pageNo * pageSize;
-        List<Reservation> users = reservationDao.getReservation(offset, pageSize, nameOrId, userId , day, month , year ,"created_date", "ASC");
+        List<Reservation> users = reservationDao.getReservation(offset, pageSize, nameOrId, userId , day, month , year ,sortBy, sortDir);
         int totalElements = reservationDao.countReservation(nameOrId,userId,day, month , year );
         return new SearchResponse<>(totalElements, users, pageNo, pageSize);
     }

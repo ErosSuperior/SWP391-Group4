@@ -98,7 +98,7 @@ public class CheckoutController extends HttpServlet {
         String total = request.getParameter("total"); // Lấy dữ liệu từ JSP gửi xuống 
         String note = request.getParameter("note"); // Lấy dữ liệu từ JSP gửi xuống 
 
-        if(note==null && note.isEmpty()){
+        if(note==null || note.isEmpty()){
             note = "(default note)";
         }
         

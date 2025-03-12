@@ -35,6 +35,14 @@
         <link href="https://unicons.iconscout.com/release/v3.0.6/css/line.css"  rel="stylesheet">
         <!-- Css -->
         <link href="<%= request.getContextPath() %>/assets/css/style.min.css" rel="stylesheet" type="text/css" id="theme-opt" />
+        
+        <style>
+            th span {
+                color: #aaa;
+                font-size: 0.8em;
+                margin-left: 5px;
+            }
+        </style>
     </head>
     <body>
         <!-- Loader -->
@@ -67,18 +75,29 @@
                                     </ul>
                                 </nav>  
 
-                                <div class="col-12">
-                                    <div class="col-md-4 mt-3">
+                                <div class="col-4">
+                                    <div class="col-md-12 mt-3">
                                         <label class="form-label">Search</label>
                                         <div class="input-group">
                                             <input type="text" name="nameOrId" class="form-control"
-                                                   placeholder="Search by name or ID" value="${param.nameOrId}">
+                                                   placeholder="Search by note or ID" value="${param.nameOrId}">
                                             <button class="btn btn-primary" type="submit">Search</button>
                                             <button class="btn btn-primary ms-2" type="button"
                                                     onclick="window.location.href = '${pageContext.request.contextPath}/customer/myreservationlist'">
                                                 <i class="uil uil-redo"></i>
                                             </button>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <div class="mt-3">
+                                        <label class="form-label">Sort</label>
+                                        <select name="sortdir" class="form-control">
+                                            <option value="ASC" ${param.sortdir=='ASC' ? 'selected' : '' }>Ascend
+                                            </option>
+                                            <option value="DESC" ${param.sortdir=='DESC' ? 'selected' : '' }>Descend
+                                            </option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -123,11 +142,11 @@
                                         <table class="table mb-0 table-center">
                                             <thead>
                                                 <tr>
-                                                    <th class="border-bottom p-3">#</th>
-                                                    <th class="border-bottom p-3">Note</th>     
-                                                    <th class="border-bottom p-3">Submit Date</th>
-                                                    <th class="border-bottom p-3" style="width:240px">State</th>
-                                                    <th class="border-bottom p-3">Total Price</th>
+                                                    <th class="border-bottom p-3" onclick="submitSort('reservation_id')"># <span>⇅</span></th>
+                                                    <th class="border-bottom p-3" onclick="submitSort('note')">Note <span>⇅</span></th>     
+                                                    <th class="border-bottom p-3" onclick="submitSort('created_date')">Submit Date <span>⇅</span></th>
+                                                    <th class="border-bottom p-3" style="width:240px" onclick="submitSort('reservation_status')">State <span>⇅</span></th>
+                                                    <th class="border-bottom p-3" onclick="submitSort('total_price')">Total Price <span>⇅</span></th>
                                                     <th class="border-bottom p-3 text-center">Actions</th>
                                                 </tr>
                                             </thead>
@@ -337,6 +356,28 @@
             }
 
         </script>
+        <script>
+            function submitSort(sortValue) {
+                const form = document.querySelector('form');
+                const sortInput = document.createElement('input');
+                sortInput.type = 'hidden';
+                sortInput.name = 'sortvalue';
+                sortInput.value = sortValue;
+                form.appendChild(sortInput);
+                form.submit();
+            }
+        </script>
+        <script>
+            // Get the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const sortValue = urlParams.get('sortvalue');
 
+            // Highlight the matched th
+            document.querySelectorAll('th[onclick]').forEach(th => {
+                if (th.getAttribute('onclick').includes(sortValue)) {
+                    th.style.color = 'blue';
+                }
+            });
+        </script>
     </body>
 </html>
