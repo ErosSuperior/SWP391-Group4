@@ -23,9 +23,9 @@ public class FeedbackInit {
         return new SearchResponse<>(totalElements, users, pageNo, pageSize);
     }
     
-    public SearchResponse<Feedback> getAllServiceFeedback(int pageNo, int pageSize, String nameOrId , int serviceId, int status, int ratestar) {
+    public SearchResponse<Feedback> getAllServiceFeedback(int pageNo, int pageSize, String nameOrId , int serviceId, int status, int ratestar, String sortBy, String sortDir) {
         int offset = pageNo * pageSize;
-        List<Feedback> users = feedbackDao.getAllServiceFeedback(offset, pageSize, nameOrId,serviceId,  status,  ratestar,"created_date", "ASC");
+        List<Feedback> users = feedbackDao.getAllServiceFeedback(offset, pageSize, nameOrId,serviceId,  status,  ratestar,sortBy, sortDir);
         int totalElements = feedbackDao.countAllServiceFeedback(nameOrId,serviceId,  status,  ratestar);
         return new SearchResponse<>(totalElements, users, pageNo, pageSize);
     }

@@ -111,6 +111,8 @@ public class FeedbackController extends HttpServlet {
         int serviceId = -1;
         int status = -1;
         int rateStar = -1;
+        String sortDir = "ASC";
+        String sortBy = "feedback_id";
 
         try {
             String statusparam = request.getParameter("status");
@@ -127,12 +129,22 @@ public class FeedbackController extends HttpServlet {
             if (serviceIdparam != null && !serviceIdparam.trim().isEmpty()) {
                 serviceId = Integer.parseInt(serviceIdparam);
             }
+            
+            String sortDirparam = request.getParameter("sortdir");
+            if (sortDirparam != null && !sortDirparam.isEmpty()){
+                sortDir = sortDirparam;
+            }
+            
+            String sortByparam = request.getParameter("sortvalue");
+            if (sortByparam != null && !sortByparam.isEmpty()){
+                sortBy = sortByparam;
+            }
         } catch (NumberFormatException e) {
             System.err.println("Invalid parameter: " + e.getMessage());
         }
 
         List<Service> serviceinfo = reservationDao.getAllServiceInfo();
-        SearchResponse<Feedback> searchResponse = feedbackInit.getAllServiceFeedback(pageNo, pageSize, nameOrId, serviceId, status, rateStar);
+        SearchResponse<Feedback> searchResponse = feedbackInit.getAllServiceFeedback(pageNo, pageSize, nameOrId, serviceId, status, rateStar, sortBy, sortDir);
 
         request.setAttribute("allblogs", searchResponse.getContent());
         request.setAttribute("serviceinfo", serviceinfo);

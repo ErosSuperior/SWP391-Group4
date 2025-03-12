@@ -27,7 +27,15 @@
         <link href="https://unicons.iconscout.com/release/v3.0.6/css/line.css"  rel="stylesheet">
         <!-- Css -->
         <link href="<%= request.getContextPath() %>/assets/css/style.min.css" rel="stylesheet" type="text/css" id="theme-opt" />
-
+        
+        <style>
+            th span {
+                color: #aaa;
+                font-size: 0.8em;
+                margin-left: 5px;
+            }
+        </style>
+        
     </head>
     <body>
         <!-- Loader -->
@@ -96,6 +104,17 @@
                                     </div>
                                 </div>
 
+                                <div class="col-md-2">
+                                    <div class="mt-3">
+                                        <label class="form-label">Sort</label>
+                                        <select name="sortdir" class="form-control">
+                                            <option value="ASC" ${param.sortdir=='ASC' ? 'selected' : '' }>Ascend
+                                            </option>
+                                            <option value="DESC" ${param.sortdir=='DESC' ? 'selected' : '' }>Descend
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
 
                                 <div class="col-md-4">
                                     <div class="mt-3">
@@ -113,22 +132,24 @@
                                 </div>
 
 
+
+
                                 <!-- User List Table -->
                                 <div class="col-12 mt-4">
                                     <div class="table-responsive shadow rounded">
                                         <table class="table table-center bg-white mb-0">
                                             <thead>
                                                 <tr>
-                                                    <th class="border-bottom p-3" style="min-width: 50px;">Id
+                                                    <th class="border-bottom p-3" style="min-width: 50px;" onclick="submitSort('feedback_id')">Id <span>⇅</span>
                                                     </th>
-                                                    <th class="border-bottom p-3" style="min-width: 180px;">Content
+                                                    <th class="border-bottom p-3" style="min-width: 180px;" onclick="submitSort('content')">Content <span>⇅</span>
                                                     </th>
-                                                    <th class="border-bottom p-3" style="min-width: 150px;">
-                                                        Author
+                                                    <th class="border-bottom p-3" style="min-width: 150px;" onclick="submitSort('name')">
+                                                        Author <span>⇅</span>
                                                     </th>
-                                                    <th class="border-bottom p-3">Service</th>
-                                                    <th class="border-bottom p-3">Rate Star</th>
-                                                    <th class="border-bottom p-3">Status</th>
+                                                    <th class="border-bottom p-3" onclick="submitSort('s.service_title')">Service <span>⇅</span></th>
+                                                    <th class="border-bottom p-3" onclick="submitSort('rate_Star')">Rate Star <span>⇅</span></th>
+                                                    <th class="border-bottom p-3" onclick="submitSort('status')">Status <span>⇅</span></th>
                                                     <th class="border-bottom p-3" style="min-width: 150px;">
                                                     </th>
                                                 </tr>
@@ -348,71 +369,93 @@
         <script>
                                                                             let currentUserId, currentStatus;
                                                                             function showConfirmationModal(userId, newStatus) {
-                                                                            currentUserId = userId;
-                                                                            currentStatus = newStatus;
-                                                                            $('#confirmationModal').modal('show');
+                                                                                currentUserId = userId;
+                                                                                currentStatus = newStatus;
+                                                                                $('#confirmationModal').modal('show');
                                                                             }
 
                                                                             $('#confirmAction').click(function () {
-                                                                            updateStatus(currentUserId, currentStatus);
-                                                                            $('#confirmationModal').modal('hide'); // Hide modal after confirmation
+                                                                                updateStatus(currentUserId, currentStatus);
+                                                                                $('#confirmationModal').modal('hide'); // Hide modal after confirmation
                                                                             });
                                                                             function updateStatus(userId, newStatus) {
-                                                                            console.log(userId);
-                                                                            console.log(newStatus);
-                                                                            $.ajax({
-                                                                            url: '${pageContext.request.contextPath}/manager/updatefeedbackstatus',
+                                                                                console.log(userId);
+                                                                                console.log(newStatus);
+                                                                                $.ajax({
+                                                                                    url: '${pageContext.request.contextPath}/manager/updatefeedbackstatus',
                                                                                     type: 'POST',
                                                                                     data: {
-                                                                                    feedbackId: userId,
-                                                                                            status: newStatus
+                                                                                        feedbackId: userId,
+                                                                                        status: newStatus
                                                                                     },
                                                                                     success: function (response) {
-                                                                                    console.log("AJAX request successful. Page will reload.");
-                                                                                    location.reload();
+                                                                                        console.log("AJAX request successful. Page will reload.");
+                                                                                        location.reload();
                                                                                     },
                                                                                     error: function (xhr, status, error) {
-                                                                                    console.error('AJAX Error:', xhr.status, status, error);
-                                                                                    // Optionally show an error message in the modal or elsewhere
+                                                                                        console.error('AJAX Error:', xhr.status, status, error);
+                                                                                        // Optionally show an error message in the modal or elsewhere
                                                                                     }
-                                                                            });
+                                                                                });
                                                                             }
 
-                                                                            
 
-    </script>
-    <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const feedbackModal = document.getElementById("viewappointment");
 
-    document.querySelectorAll(".view-feedback-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            const userImage = this.getAttribute("data-user-image");
-            const userName = this.getAttribute("data-user-name");
-            const email = this.getAttribute("data-user-email");
-            const mobile = this.getAttribute("data-user-mobile");
-            const serviceTitle = this.getAttribute("data-service-title");
-            const rating = this.getAttribute("data-rate-star");
-            const status = this.getAttribute("data-status") === "1" ? "Active" : "Inactive";
-            const date = this.getAttribute("data-created-date");
-            const content = this.getAttribute("data-content");
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const feedbackModal = document.getElementById("viewappointment");
 
-            document.getElementById("feedbackUserImage").src = userImage ? userImage : "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-image-icon-default-avatar-profile-icon-social-media-user-vector-image-209162840.jpg";
-            document.getElementById("feedbackUserName").innerText = userName;
-            document.getElementById("feedbackEmail").innerText = email;
-            document.getElementById("feedbackMobile").innerText = mobile;
-            document.getElementById("feedbackService").innerText = serviceTitle;
-            document.getElementById("feedbackRating").innerText = rating ? rating + "⭐" : "No Rating";
-            document.getElementById("feedbackStatus").innerText = status;
-            document.getElementById("feedbackDate").innerText = date;
-            document.getElementById("feedbackContent").innerText = content;
+                document.querySelectorAll(".view-feedback-btn").forEach(button => {
+                    button.addEventListener("click", function () {
+                        const userImage = this.getAttribute("data-user-image");
+                        const userName = this.getAttribute("data-user-name");
+                        const email = this.getAttribute("data-user-email");
+                        const mobile = this.getAttribute("data-user-mobile");
+                        const serviceTitle = this.getAttribute("data-service-title");
+                        const rating = this.getAttribute("data-rate-star");
+                        const status = this.getAttribute("data-status") === "1" ? "Active" : "Inactive";
+                        const date = this.getAttribute("data-created-date");
+                        const content = this.getAttribute("data-content");
 
-            // Show the modal
-            new bootstrap.Modal(feedbackModal).show();
-        });
-    });
-});
-</script>
+                        document.getElementById("feedbackUserImage").src = userImage ? userImage : "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-image-icon-default-avatar-profile-icon-social-media-user-vector-image-209162840.jpg";
+                        document.getElementById("feedbackUserName").innerText = userName;
+                        document.getElementById("feedbackEmail").innerText = email;
+                        document.getElementById("feedbackMobile").innerText = mobile;
+                        document.getElementById("feedbackService").innerText = serviceTitle;
+                        document.getElementById("feedbackRating").innerText = rating ? rating + "⭐" : "No Rating";
+                        document.getElementById("feedbackStatus").innerText = status;
+                        document.getElementById("feedbackDate").innerText = date;
+                        document.getElementById("feedbackContent").innerText = content;
 
-</body>
+                        // Show the modal
+                        new bootstrap.Modal(feedbackModal).show();
+                    });
+                });
+            });
+        </script>
+        <script>
+            function submitSort(sortValue) {
+                const form = document.querySelector('form');
+                const sortInput = document.createElement('input');
+                sortInput.type = 'hidden';
+                sortInput.name = 'sortvalue';
+                sortInput.value = sortValue;
+                form.appendChild(sortInput);
+                form.submit();
+            }
+        </script>
+        <script>
+            // Get the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const sortValue = urlParams.get('sortvalue');
+
+            // Highlight the matched th
+            document.querySelectorAll('th[onclick]').forEach(th => {
+                if (th.getAttribute('onclick').includes(sortValue)) {
+                    th.style.color = 'blue';
+                }
+            });
+        </script>
+    </body>
 </html>
