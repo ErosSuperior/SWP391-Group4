@@ -38,7 +38,7 @@
                                 <div class="card border-0 p-4 rounded shadow">
                                     <form class="mt-4" method="post" onsubmit="return validateForm()">
                                         <c:if test="${not empty service.serviceId}">
-                                            <form action="${pageContext.request.contextPath}/manager/ServiceList/Update" method="post">
+                                            <form action="${pageContext.request.contextPath}/manager/ServiceList/Detail" method="post">
                                                 <input type="hidden" name="serviceId" value="${service.serviceId}">
                                             </c:if>
                                             <c:if test="${empty service.serviceId}">
@@ -120,7 +120,7 @@
                                                             <div class="alert alert-danger" style="margin-top: 10px;">${error}</div>
                                                         </c:if>
                                                     </div>
-                                                    <div class="col-md-4">
+<!--                                                    <div class="col-md-4">
                                                         <div class="mb-3">
                                                             <label class="form-label">Status</label>
                                                             <select name="status" id="status" class="form-control">
@@ -128,7 +128,7 @@
                                                                 <option value="0" ${service.serviceStatus == 0 ? 'selected' : ''}>Disabled</option>
                                                             </select>
                                                         </div>
-                                                    </div>    
+                                                    </div>    -->
                                                 </div>
                                             </form>
                                             </div>

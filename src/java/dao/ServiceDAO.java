@@ -356,13 +356,12 @@ public class ServiceDAO extends DBContext {
 
         return bestServices;
     }
-    
-    // Thêm một dịch vụ mới vào bảng service và các bảng liên quan
+
     public boolean addService(Service service) {
-        String query = "INSERT INTO service (service_title, service_bi, service_created_date, category_id, "
+        String query = "INSERT INTO Service (service_title, service_bi, service_created_date, category_id, "
                 + "service_price, service_discount, service_detail) "
                 + "VALUES (?, ?, CURDATE(), ?, ?, ?, ?)";
-
+        
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, service.getServiceTitle());
             preparedStatement.setString(2, service.getServiceBi());
@@ -370,10 +369,13 @@ public class ServiceDAO extends DBContext {
             preparedStatement.setDouble(4, service.getServicePrice());
             preparedStatement.setDouble(5, service.getServiceDiscount());
             preparedStatement.setString(6, service.getServiceDetail());
+//            preparedStatement.setInt(7, service.getServiceStatus());
+//            preparedStatement.setString(7, service.getServiceImage());
 
             int rowsInserted = preparedStatement.executeUpdate();
             return rowsInserted > 0;
-        } catch (SQLException e) {
+        }
+       catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -486,8 +488,6 @@ public class ServiceDAO extends DBContext {
         }
         return services;
     }
-    
-    
 
     public int countService(String nameOrId, int categoryId) {
         int count = 0;
@@ -531,46 +531,42 @@ public class ServiceDAO extends DBContext {
     }
 
     // Cập nhật trạng thái dịch vụ trong bảng service_status
-    public void updateStatus(int serviceId, int status) {
-        String sql = "UPDATE service_status SET service_status = ? WHERE service_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setBoolean(1, status == 1); // Chuyển đổi int thành boolean
-            stmt.setInt(2, serviceId);
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected == 0) {
-                // Nếu không có bản ghi nào được cập nhật, có thể cần thêm bản ghi mới
-                insertStatus(serviceId, status);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error updating service status: " + e.getMessage());
-        }
-    }
-
-    // Phương thức hỗ trợ để thêm trạng thái nếu chưa tồn tại
-    private void insertStatus(int serviceId, int status) throws SQLException {
-        String sql = "INSERT INTO service_status (service_id, service_status) VALUES (?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, serviceId);
-            stmt.setBoolean(2, status == 1);
-            stmt.executeUpdate();
-        }
-    }
-
-    
-
-    private void insertServiceStatus(int serviceId, int status) throws SQLException {
-        String query = "INSERT INTO service_status (service_id, service_status) VALUES (?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
+//    public void updateStatus(int serviceId, int status) {
+//        String sql = "UPDATE service_status SET service_status = ? WHERE service_id = ?";
+//        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+//            stmt.setBoolean(1, status == 1); // Chuyển đổi int thành boolean
+//            stmt.setInt(2, serviceId);
+//            int rowsAffected = stmt.executeUpdate();
+//            if (rowsAffected == 0) {
+//                // Nếu không có bản ghi nào được cập nhật, có thể cần thêm bản ghi mới
+//                insertStatus(serviceId, status);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException("Error updating service status: " + e.getMessage());
+//        }
+//    }
+//    // Phương thức hỗ trợ để thêm trạng thái nếu chưa tồn tại
+//    private void insertStatus(int serviceId, int status) throws SQLException {
+//        String sql = "INSERT INTO service_status (service_id, service_status) VALUES (?, ?)";
+//        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+//            stmt.setInt(1, serviceId);
+//            stmt.setBoolean(2, status == 1);
+//            stmt.executeUpdate();
+//        }
+//    }
+    public void insertServiceStatus(int serviceId, int status) throws SQLException {
+        String queryStatus = "INSERT INTO service_status (service_id, service_status) VALUES (?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(queryStatus)) {
             ps.setInt(1, serviceId);
             ps.setInt(2, status);
             ps.executeUpdate();
         }
     }
 
-    private void insertServiceImage(int serviceId, String imageLink) throws SQLException {
-        String query = "INSERT INTO service_image (service_id, image_link, type) VALUES (?, ?, 0)"; // Assuming type 0 is for thumbnail
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
+    public void insertServiceImage(int serviceId, String imageLink) throws SQLException {
+        String queryImage = "INSERT INTO service_image (service_id, image_link, type) VALUES (?, ?, 0)"; // Assuming type 0 is for thumbnail
+        try (PreparedStatement ps = connection.prepareStatement(queryImage)) {
             ps.setInt(1, serviceId);
             ps.setString(2, imageLink);
             ps.executeUpdate();
@@ -581,7 +577,7 @@ public class ServiceDAO extends DBContext {
     public boolean updateService(Service service) {
         boolean success = false;
         String updateServiceSql = "UPDATE service SET service_title = ?, service_bi = ?, category_id = ?, service_price = ?, service_discount = ?, service_detail = ? WHERE service_id = ?";
-        String updateImageSql = "UPDATE service_images SET image_link = ? WHERE service_id = ? AND type = 0";
+        String updateImageSql = "UPDATE service_image SET image_link = ? WHERE service_id = ? AND type = 0";
 
         try {
             connection.setAutoCommit(false);
@@ -700,7 +696,7 @@ public class ServiceDAO extends DBContext {
         }
         return success;
     }
-    
+
     public List<Service> getService(int offset, int limit, String nameOrId, int categoryId, int status, String sortBy, String sortDir) {
         List<Service> services = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT s.*, si.image_link AS serviceImage, ss.service_status AS serviceStatus, c.category_name AS categoryName "
@@ -718,7 +714,7 @@ public class ServiceDAO extends DBContext {
         if (categoryId != -1) {
             query.append(" AND (s.category_id = ?)");
         }
-        
+
         if (status != -1) {
             query.append(" AND (ss.service_status = ?)");
         }
@@ -741,7 +737,7 @@ public class ServiceDAO extends DBContext {
             if (categoryId != -1) {
                 preparedStatement.setInt(index++, categoryId);
             }
-            
+
             if (status != -1) {
                 preparedStatement.setInt(index++, status);
             }
@@ -771,4 +767,21 @@ public class ServiceDAO extends DBContext {
         }
         return services;
     }
+
+    public int getLatestService() {
+        int id = -1;
+        String sql = "SELECT service_id FROM service ORDER BY service_created_date DESC LIMIT 1";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("service_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return id;
+    }
+
 }

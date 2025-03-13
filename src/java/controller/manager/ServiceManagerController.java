@@ -1,176 +1,111 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.manager;
 
 import dao.ServiceDAO;
 import init.ServiceInit;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
 import model.SearchResponse;
 import model.Service;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @WebServlet(name = "ServiceManagerController", urlPatterns = {
-    "/manager/ServiceList",
-    "/manager/ServiceList/Add",
-    "/manager/ServiceList/Edit",
-    "/manager/ServiceList/Update",
-    "/manager/ServiceList/Delete"
+        "/manager/ServiceList", "/manager/ServiceList/Add", "/manager/ServiceList/Detail", "/manager/ServiceList/UpdateStatus"
 })
 public class ServiceManagerController extends HttpServlet {
-
     private ServiceDAO serviceDAO;
     private ServiceInit serviceInit;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         serviceDAO = new ServiceDAO();
         serviceInit = new ServiceInit();
     }
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ServiceController</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ServiceController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        switch (request.getServletPath()) {
+            case "/manager/ServiceList" -> handleServiceList(request, response);
+            case "/manager/ServiceList/Add" -> showAddForm(request, response);
+            case "/manager/ServiceList/Detail" -> showEditForm(request, response);
         }
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String url = request.getServletPath();
-        switch (url) {
-            case "/manager/ServiceList":
-                handleServiceList(request, response);
-                break;
-            case "/manager/ServiceList/Add":
-                showAddForm(request, response);
-                break;
-            case "/manager/ServiceList/Update":
-                showEditForm(request, response);
-                break;
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        switch (request.getServletPath()) {
+            case "/manager/ServiceList/Add" -> addService(request, response);
+            case "/manager/ServiceList/Detail" -> updateService(request, response);
+            case "/manager/ServiceList/UpdateStatus" -> updateServiceStatus(request, response);
         }
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String url = request.getServletPath();
-        switch (url) {
-            case "/manager/ServiceList/Add":
-                addService(request, response);
-                break;
-            case "/manager/ServiceList/Update":
-                updateService(request, response);
-                break;
-//            case "/manager/UpdateServiceStatus":
-//                updateServiceStatus(request, response);
-//                break;
-        }
-    }
-
-    private void handleServiceList(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String pageNoParam = request.getParameter("pageNo");
-        int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
-        int pageSize = 4;
-        String nameOrId = request.getParameter("nameOrId");
-        int status = -1;
-        int categoryId = -1; // Default value
-        String sortDir = "ASC";
-        String sortBy = "service_id";
+    private void handleServiceList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            String sortByparam = request.getParameter("sortvalue");
-            if (sortByparam != null && !sortByparam.isEmpty()){
-                 sortBy = request.getParameter("sortvalue");
-            }
-            
-            String sortDirparam = request.getParameter("sortdir");
-            if (sortDirparam != null && !sortDirparam.trim().isEmpty()){
-                sortDir = sortDirparam;
-            }
-            String categoryIdParam = request.getParameter("categoryId");
-            if (categoryIdParam != null && !categoryIdParam.trim().isEmpty()) {
-                categoryId = Integer.parseInt(categoryIdParam);
-            }
-            
-            String statusparam = request.getParameter("status");
-            if (statusparam != null && !statusparam.isEmpty()){
-                status = Integer.parseInt(statusparam);
-            }
+            int pageNo = parseIntOrDefault(request.getParameter("pageNo"), 0);
+            int pageSize = 4;
+            String nameOrId = request.getParameter("nameOrId");
+            int categoryId = parseIntOrDefault(request.getParameter("categoryId"), -1);
+            int status = parseIntOrDefault(request.getParameter("status"), -1);
+            String sortBy = request.getParameter("sortvalue") != null ? request.getParameter("sortvalue") : "service_id";
+            String sortDir = request.getParameter("sortdir") != null ? request.getParameter("sortdir") : "ASC";
+
+            SearchResponse<Service> searchResponse = serviceInit.getService(pageNo, pageSize, nameOrId, categoryId, status, sortDir, sortBy);
+            request.setAttribute("allblogs", searchResponse.getContent());
+            request.setAttribute("totalElements", searchResponse.getTotalElements());
+            request.setAttribute("pageNo", pageNo);
+            request.setAttribute("pageSize", pageSize);
+            request.getRequestDispatcher("/landing/manager/ServiceManager.jsp").forward(request, response);
         } catch (NumberFormatException e) {
-            System.err.println("Invalid categoryId: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid input parameters");
         }
-        SearchResponse<Service> searchResponse = serviceInit.getService(pageNo, pageSize, nameOrId, categoryId, status, sortDir, sortBy);
-
-        request.setAttribute("allblogs", searchResponse.getContent());
-        request.setAttribute("totalElements", searchResponse.getTotalElements());
-        request.setAttribute("pageNo", pageNo);
-        request.setAttribute("pageSize", pageSize);
-        request.getRequestDispatcher("/landing/manager/ServiceManager.jsp").forward(request, response);
     }
 
-    private void showAddForm(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<Service> categories = serviceDAO.getActiveCategory();
-        request.setAttribute("categories", categories);
+    private void showAddForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("categories", serviceDAO.getActiveCategory());
+        request.setAttribute("action", "add");
         request.getRequestDispatcher("/landing/manager/ServiceDetail.jsp").forward(request, response);
     }
 
-    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int serviceId = Integer.parseInt(request.getParameter("serviceId"));
-        Service service = serviceDAO.getServiceById(serviceId);
-        List<Service> categories = serviceDAO.getActiveCategory();
-        request.setAttribute("service", service);
-        request.setAttribute("categories", categories);
+        request.setAttribute("service", serviceDAO.getServiceById(serviceId));
+        request.setAttribute("categories", serviceDAO.getActiveCategory());
         request.getRequestDispatcher("/landing/manager/ServiceDetail.jsp").forward(request, response);
     }
 
-    private void addService(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    private void addService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             Service service = mapRequestToService(request);
-            boolean success = serviceDAO.addService(service);
-
-            if (success) {
-                response.sendRedirect(request.getContextPath() + "/manager/ServiceList");
+            if (serviceDAO.addService(service)) {
+                service.setServiceId(serviceDAO.getLatestService());
+                service.setServiceImage(request.getParameter("image"));
+                service.setServiceStatus(1);
+                serviceDAO.insertServiceImage(service.getServiceId(), service.getServiceImage());
+                serviceDAO.insertServiceStatus(service.getServiceId(), service.getServiceStatus());
+                handleServiceList(request, response);
             } else {
                 request.setAttribute("error", "Failed to add service");
                 showAddForm(request, response);
             }
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "Invalid number format");
+        } catch (IllegalArgumentException | SQLException e) {
+            request.setAttribute("error", e.getMessage());
             showAddForm(request, response);
         }
     }
 
-    private void updateService(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    private void updateService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             Service service = mapRequestToService(request);
             service.setServiceId(Integer.parseInt(request.getParameter("serviceId")));
-
-            boolean success = serviceDAO.updateService(service);
-            if (success) {
-                response.sendRedirect(request.getContextPath() + "/manager/ServiceList");
+            if (serviceDAO.updateService(service)) {
+                handleServiceList(request, response);
             } else {
                 request.setAttribute("error", "Failed to update service");
                 showEditForm(request, response);
@@ -181,60 +116,39 @@ public class ServiceManagerController extends HttpServlet {
         }
     }
 
-    private void updateServiceStatus(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    private void updateServiceStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            int serviceId = Integer.parseInt(request.getParameter("serviceId"));
-            int newStatus = Integer.parseInt(request.getParameter("newStatus"));
-
-            serviceDAO.updateServiceStatus(serviceId, newStatus);
+            serviceDAO.updateServiceStatus(
+                    Integer.parseInt(request.getParameter("serviceId")),
+                    Integer.parseInt(request.getParameter("serviceStatus"))
+            );
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
-    private Service mapRequestToService(HttpServletRequest request) throws IllegalArgumentException {
+    private Service mapRequestToService(HttpServletRequest request) {
         Service service = new Service();
-        String title = request.getParameter("title");
-        if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("Service title is required");
-        }
-        service.setServiceTitle(title);
-
-        String bi = request.getParameter("bi");
-        service.setServiceBi(bi != null ? bi : "");
-
-        String categoryIdStr = request.getParameter("categoryId");
-        if (categoryIdStr == null || categoryIdStr.trim().isEmpty()) {
-            throw new IllegalArgumentException("Category is required");
-        }
-        service.setCategoryId(Integer.parseInt(categoryIdStr));
-
-        String priceStr = request.getParameter("price");
-        if (priceStr == null || priceStr.trim().isEmpty()) {
-            throw new IllegalArgumentException("Price is required");
-        }
-        double price = Double.parseDouble(priceStr);
-        if (price < 0) {
-            throw new IllegalArgumentException("Price cannot be negative");
-        }
-        service.setServicePrice(price);
-
-        String discountStr = request.getParameter("discount");
-        service.setServiceDiscount(discountStr != null && !discountStr.trim().isEmpty() ? Double.parseDouble(discountStr) : 0.0);
-
-        String detail = request.getParameter("detail");
-        service.setServiceDetail(detail != null ? detail : "");
-
-        String image = request.getParameter("image");
-        service.setServiceImage(image != null ? image : "");
-
+        service.setServiceTitle(validateNotEmpty(request.getParameter("title"), "Service title is required"));
+        service.setServiceBi(request.getParameter("bi"));
+        service.setCategoryId(Integer.parseInt(validateNotEmpty(request.getParameter("categoryId"), "Category is required")));
+        service.setServicePrice(Double.parseDouble(validateNotEmpty(request.getParameter("price"), "Price is required")));
+        service.setServiceDiscount(parseDoubleOrDefault(request.getParameter("discount"), 0.0));
+        service.setServiceDetail(request.getParameter("detail"));
         return service;
     }
 
-    @Override
-    public String getServletInfo() {
-        return "Servlet for managing services in the child management system";
+    private String validateNotEmpty(String value, String errorMessage) {
+        if (value == null || value.trim().isEmpty()) throw new IllegalArgumentException(errorMessage);
+        return value;
+    }
+
+    private int parseIntOrDefault(String value, int defaultValue) {
+        try { return Integer.parseInt(value); } catch (NumberFormatException e) { return defaultValue; }
+    }
+
+    private double parseDoubleOrDefault(String value, double defaultValue) {
+        try { return Double.parseDouble(value); } catch (NumberFormatException e) { return defaultValue; }
     }
 }

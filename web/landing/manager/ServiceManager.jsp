@@ -97,7 +97,7 @@
                                 </div>
                                 <div class="col-md-1 d-flex align-items-end justify-content-end" style="margin-left: 275px">
                                     <button class="btn btn-primary btn-md"
-                                            onclick="window.location.href = '${pageContext.request.contextPath}/manager/manageraddBlog'"
+                                            onclick="window.location.href = '${pageContext.request.contextPath}/manager/ServiceList/Add'"
                                             type="button">
                                         <i class="uil uil-plus"></i>
                                     </button>   
@@ -161,7 +161,7 @@
                                                             </c:choose>
                                                         </td>
                                                         <td class="p-3">
-                                                            <a href="${pageContext.request.contextPath}/manager/managereditBlog?blog_id=${d.serviceId}"
+                                                            <a href="${pageContext.request.contextPath}/manager/ServiceList/Detail?serviceId=${d.serviceId}"
                                                                class="btn btn-icon btn-pills btn-soft-primary">
                                                                 <i class="uil uil-pen"></i>
                                                             </a>
@@ -310,7 +310,7 @@
                                                                                 console.log(userId);
                                                                                 console.log(newStatus);
                                                                                 $.ajax({
-                                                                                    url: '${pageContext.request.contextPath}/manager/managerupdatestatusBlog',
+                                                                                    url: '${pageContext.request.contextPath}/manager/ServiceList/UpdateStatus',
                                                                                     type: 'POST',
                                                                                     data: {
                                                                                         serviceId: userId,
