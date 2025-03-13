@@ -138,8 +138,10 @@ public class UserManagerController extends HttpServlet {
         try {
             String userIdParam = request.getParameter("userId");
             int userId = Integer.parseInt(userIdParam);
+
             String statusParam = request.getParameter("status");
-            boolean status = Boolean.parseBoolean(statusParam);
+            boolean status = "1".equals(statusParam); // Convert "1" to true, "0" to false
+
             userDao.deleteUser(userId, status); // This method actually updates status
             handleUserList(request, response);
         } catch (NumberFormatException e) {

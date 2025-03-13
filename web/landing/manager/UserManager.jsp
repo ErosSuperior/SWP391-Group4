@@ -53,7 +53,7 @@
                                                     <label class="form-label">Role</label>
                                                     <select name="status" class="form-control">
                                                         <option value="-1">All Roles</option>
-                                                        
+
                                                         <option value="3" ${param.role_id=='3' ? 'selected' : ''}>Staff</option>
                                                         <option value="2" ${param.role_id=='2' ? 'selected' : ''}>Manager</option>
                                                         <option value="4" ${param.role_id=='4' ? 'selected' : ''}>Customer</option>
@@ -144,11 +144,28 @@
                                                                    class="btn btn-icon btn-pills btn-soft-primary" title="Edit">
                                                                     <i class="uil uil-pen"></i>
                                                                 </a>
-                                                                <a href="${pageContext.request.contextPath}/admin/updatestatus?userId=${user.user_id}&status=${!user.user_status}"
-                                                                   class="btn btn-icon btn-pills btn-soft-${user.user_status ? 'danger' : 'success'}"
-                                                                   title="${user.user_status ? 'Deactivate' : 'Activate'}">
-                                                                    <i class="uil ${user.user_status ? 'uil-ban' : 'uil-check'}"></i>
-                                                                </a>
+                                                                <c:choose>
+                                                                    <c:when test="${user.user_status}">
+                                                                        <button
+                                                                            class="btn btn-icon btn-pills btn-soft-danger"
+                                                                            data-user-id="${user.user_id}"
+                                                                            data-new-status="0"
+                                                                            onclick="showConfirmationModal(${user.user_id}, 0)"
+                                                                            type="button">
+                                                                            <i class="uil uil-times-circle"></i>
+                                                                        </button>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <button
+                                                                            class="btn btn-icon btn-pills btn-soft-success"
+                                                                            data-user-id="${user.user_id}"
+                                                                            data-new-status="1"
+                                                                            onclick="showConfirmationModal(${user.user_id}, 1)"
+                                                                            type="button">
+                                                                            <i class="uil uil-check-circle"></i>
+                                                                        </button>
+                                                                    </c:otherwise>
+                                                                </c:choose>
 
                                                             </td>
                                                         </tr>
@@ -183,7 +200,28 @@
                         </div>
                     </div>
                 </div>
+
             </main>
+        </div>
+
+        <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmationModalLabel">Confirm Status Change</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to change the status?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button id="confirmAction" type="button" class="btn btn-primary">Confirm</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
@@ -191,18 +229,60 @@
         <script src="${pageContext.request.contextPath}/assets/js/select2.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
+        <script src="https://cdn.datatables.net/2.1.6/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/2.1.6/js/dataTables.bootstrap5.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                                                                let currentUserId, newStatus;
+                                                                                let currentUserId, currentStatus;
 
-                                                                function confirmStatusChange(userId, status) {
-                                                                    currentUserId = userId;
-                                                                    newStatus = status;
-                                                                    const action = status ? 'activate' : 'deactivate';
-                                                                    document.getElementById('statusConfirmMessage').textContent =
-                                                                            'Are you sure you want to ' + action + ' this user?';
-                                                                    new bootstrap.Modal(document.getElementById('statusModal')).show();
-                                                                }
+                                                                                function showConfirmationModal(userId, newStatus) {
+                                                                                    currentUserId = userId;
+                                                                                    currentStatus = newStatus;
+                                                                                    $('#confirmationModal').modal('show');
+                                                                                }
 
+                                                                                $('#confirmAction').click(function () {
+                                                                                    updateStatus(currentUserId, currentStatus);
+                                                                                    $('#confirmationModal').modal('hide'); // Hide modal after confirmation
+                                                                                });
+
+                                                                                function updateStatus(userId, newStatus) {
+                                                                                    console.log(userId);
+                                                                                    console.log(newStatus);
+                                                                                    $.ajax({
+                                                                                        url: '${pageContext.request.contextPath}/admin/updatestatus',
+                                                                                        type: 'GET',
+                                                                                        data: {
+                                                                                            userId: userId,
+                                                                                            status: newStatus
+                                                                                        },
+                                                                                        success: function (response) {
+                                                                                            console.log("AJAX request successful. Page will reload.");
+                                                                                            location.reload();
+                                                                                        },
+                                                                                        error: function (xhr, status, error) {
+                                                                                            console.error('AJAX Error:', xhr.status, status, error);
+                                                                                            // Optionally show an error message in the modal or elsewhere
+                                                                                        }
+                                                                                    });
+                                                                                }
+
+                                                                                document.addEventListener("DOMContentLoaded", function () {
+                                                                                    document.querySelectorAll("[data-bs-target='#exampleModal']").forEach(button => {
+                                                                                        button.addEventListener("click", function () {
+                                                                                            let imageUrl = this.getAttribute("data-detail"); // Get image URL from data attribute
+                                                                                            let modalImage = document.getElementById("modalServiceDetail");
+
+                                                                                            if (imageUrl) {
+                                                                                                modalImage.src = imageUrl;
+                                                                                                modalImage.style.display = "block"; // Show image
+                                                                                            } else {
+                                                                                                modalImage.style.display = "none"; // Hide if no image
+                                                                                            }
+                                                                                        });
+                                                                                    });
+                                                                                });
         </script>
     </body>
 </html>
