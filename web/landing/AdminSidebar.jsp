@@ -40,6 +40,8 @@
                 <div class="sidebar-submenu">
                     <ul>
                         <li><a href="${pageContext.request.contextPath}/adminsettinglist">Settings</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/categoryList">Category Management</a></li>
+                        <li><a href="${pageContext.request.contextPath}/admin/roleList">Role Management</a></li>
                         
                     </ul>
                 </div>
