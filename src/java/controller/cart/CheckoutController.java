@@ -122,7 +122,7 @@ public class CheckoutController extends HttpServlet {
             boolean result = d.checkoutService(total, note, name, phone, email, address, user_id); // Gọi hàm để cập nhật thông tin cho kahcs hàng
 
             if (result) { // Kiểm tra xem cập nhật thành công hay k 
-                response.sendRedirect(request.getContextPath() + "/home"); // Neu có chuyển đến trang hoàn thành
+                response.sendRedirect(request.getContextPath() + "/nav/success"); // Neu có chuyển đến trang hoàn thành
             } else {
                 response.sendRedirect(request.getContextPath() + "/error"); // Không chuyển đến trang lỗi
             }
