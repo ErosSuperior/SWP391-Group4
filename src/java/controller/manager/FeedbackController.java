@@ -14,10 +14,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Feedback;
 import model.SearchResponse;
 import model.Service;
+import model.User;
 
 /**
  *
@@ -68,6 +70,10 @@ public class FeedbackController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop further processing if user is not logged in
+        }
         String url = request.getServletPath();
         switch (url) {
             case "/manager/feedbackList":
@@ -88,6 +94,10 @@ public class FeedbackController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop further processing if user is not logged in
+        }
         String url = request.getServletPath();
         switch (url) {
             case "/manager/updatefeedbackstatus":
@@ -129,12 +139,12 @@ public class FeedbackController extends HttpServlet {
             if (serviceIdparam != null && !serviceIdparam.trim().isEmpty()) {
                 serviceId = Integer.parseInt(serviceIdparam);
             }
-            
+
             String sortDirparam = request.getParameter("sortdir");
             if (sortDirparam != null && !sortDirparam.isEmpty()){
                 sortDir = sortDirparam;
             }
-            
+
             String sortByparam = request.getParameter("sortvalue");
             if (sortByparam != null && !sortByparam.isEmpty()){
                 sortBy = sortByparam;
@@ -155,7 +165,7 @@ public class FeedbackController extends HttpServlet {
     }
 
     private void updateStatus(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException { 
         String userIdParam = request.getParameter("feedbackId");
         int userId = Integer.parseInt(userIdParam);
         String statusParam = request.getParameter("status");
@@ -163,7 +173,19 @@ public class FeedbackController extends HttpServlet {
         feedbackDao.updateFeedbackStatus(userId, status);
 
     }
-    
+
+    private User checkSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+
+        if (account == null || account.getRole_id() != 2) {
+            response.sendRedirect(request.getContextPath() + "/nav/error");
+            return null;  // Stop further processing
+        }
+
+        return account;
+    }
+
     @Override
     public String getServletInfo() {
         return "Short description";

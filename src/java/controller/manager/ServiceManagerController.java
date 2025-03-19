@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.SearchResponse;
 import model.Service;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.User;
 
 @WebServlet(name = "ServiceManagerController", urlPatterns = {
         "/manager/ServiceList", "/manager/ServiceList/Add", "/manager/ServiceList/Detail", "/manager/ServiceList/UpdateStatus"
@@ -30,6 +32,10 @@ public class ServiceManagerController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop further processing if user is not logged in
+        }
         switch (request.getServletPath()) {
             case "/manager/ServiceList" -> handleServiceList(request, response);
             case "/manager/ServiceList/Add" -> showAddForm(request, response);
@@ -39,6 +45,10 @@ public class ServiceManagerController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop further processing if user is not logged in
+        }
         switch (request.getServletPath()) {
             case "/manager/ServiceList/Add" -> addService(request, response);
             case "/manager/ServiceList/Detail" -> updateService(request, response);
@@ -150,5 +160,17 @@ public class ServiceManagerController extends HttpServlet {
 
     private double parseDoubleOrDefault(String value, double defaultValue) {
         try { return Double.parseDouble(value); } catch (NumberFormatException e) { return defaultValue; }
+    }
+    
+    private User checkSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+
+        if (account == null || account.getRole_id() != 2) {
+            response.sendRedirect(request.getContextPath() + "/nav/error");
+            return null;  // Stop further processing
+        }
+
+        return account;
     }
 }

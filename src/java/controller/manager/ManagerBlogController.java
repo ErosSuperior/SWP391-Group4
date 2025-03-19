@@ -15,7 +15,9 @@ import model.Blog;
 import model.SearchResponse;
 import dao.BlogDAO;
 import init.BlogInit;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.User;
 
 
 @WebServlet(name = "ManagerBlogController", urlPatterns = {"/manager/managerlistBlog", "/manager/manageraddBlog", "/manager/managereditBlog", "/manager/managerupdatestatusBlog", "/manager/manageredits"})
@@ -62,6 +64,10 @@ public class ManagerBlogController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop further processing if user is not logged in
+        }
         String url = request.getServletPath();
         List<Blog> category = blogDao.getActiveCategory();
         List<Blog> author = blogDao.getAllAuthor();
@@ -98,6 +104,10 @@ public class ManagerBlogController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop further processing if user is not logged in
+        }
         String url = request.getServletPath();
         switch (url) {
             case "/manager/managerupdatestatusBlog":
@@ -253,6 +263,18 @@ public class ManagerBlogController extends HttpServlet {
 //        request.getRequestDispatcher("/test.jsp").forward(request, response);
 //    }
 
+    private User checkSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+
+        if (account == null || account.getRole_id() != 2) {
+            response.sendRedirect(request.getContextPath() + "/nav/error");
+            return null;  // Stop further processing
+        }
+
+        return account;
+    }
+    
     @Override
     public String getServletInfo() {
         return "Short description";

@@ -45,7 +45,7 @@
                     <div class="col-lg-7 col-md-10 text-center">
                         <img src="${pageContext.request.contextPath}/assets/images/svg/error.svg" class="img-fluid" alt="">
                         <h3 class="mb-4">Page Not Found</h3>
-                        <p class="text-muted para-desc mx-auto">Explore and learn more about everything from machine learning and global payments to  scaling your team.</p>
+                        <p class="text-muted para-desc mx-auto">You might not have the authorities to enter this page</p>
                         <a href="${pageContext.request.contextPath}/home" class="btn btn-primary mt-2">Go To Home</a>
                     </div><!--end col-->
                 </div><!--end row-->

@@ -14,6 +14,7 @@ import model.SearchResponse;
 import dao.UserDAO;
 import init.UserInit;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpSession;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.User;
@@ -33,6 +34,10 @@ public class UserManagerController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop further processing if user is not logged in
+        }
         String url = request.getServletPath();
         switch (url) {
             case "/admin/adminList":
@@ -62,6 +67,10 @@ public class UserManagerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop further processing if user is not logged in
+        }
         String url = request.getServletPath();
         switch (url) {
 
@@ -215,5 +224,17 @@ public class UserManagerController extends HttpServlet {
             request.setAttribute("message", "Invalid input data");
             request.getRequestDispatcher("/landing/manager/UserManagerDetail.jsp").forward(request, response);
         }
+    }
+    
+    private User checkSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+
+        if (account == null || account.getRole_id() != 1) {
+            response.sendRedirect(request.getContextPath() + "/nav/error");
+            return null;  // Stop further processing
+        }
+
+        return account;
     }
 }
