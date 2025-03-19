@@ -27,24 +27,17 @@ public class Blog {
     public Blog() {
     }
 
-    public Blog(int blogId, int blogUserId, String blogTitle, String blogBi, Date blogCreatedDate, int blogCategory, String blogDetail, String blogImage, int blogStatus, String authorName) {
+    public Blog(int blogId, int blogUserId, String blogTitle, String blogBi, Date blogCreatedDate, int blogCategory, String blogCategoryName, String blogDetail, String blogImage, int blogStatus, String authorName) {
         this.blogId = blogId;
         this.blogUserId = blogUserId;
         this.blogTitle = blogTitle;
         this.blogBi = blogBi;
         this.blogCreatedDate = blogCreatedDate;
         this.blogCategory = blogCategory;
+        this.blogCategoryName = blogCategoryName;
         this.blogDetail = blogDetail;
         this.blogImage = blogImage;
         this.blogStatus = blogStatus;
-        this.authorName = authorName;
-    }
-    
-    public String getAuthorName() {
-        return authorName;
-    }
-
-    public void setAuthorName(String authorName) {
         this.authorName = authorName;
     }
 
@@ -127,6 +120,14 @@ public class Blog {
     public void setBlogStatus(int blogStatus) {
         this.blogStatus = blogStatus;
     }
-    
-    
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+
+
 }

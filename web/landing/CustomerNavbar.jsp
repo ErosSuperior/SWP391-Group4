@@ -79,7 +79,7 @@
                 </li>
 
                 <li class="has-submenu parent-menu-item">
-                    <a href="#">Blogs</a><span class="sub-menu-item"></span>
+                    <a href="blogs">Blogs</a><span class="sub-menu-item"></span>
                 </li>
 
                 <li class="has-submenu parent-menu-item">
