@@ -11,6 +11,7 @@ import java.util.Date;
  * @author thang
  */
 public class Reservation {
+
     private int reservation_id;
     private int user_id;
     private float total_price;
@@ -27,7 +28,26 @@ public class Reservation {
     private int children_id;
     private int staff_id;
     private int payment_status;
+    private String receiver_address;
+    private String receiver_number;
+    private String receiver_email;
+    private String receiver_name;
+
     public Reservation() {
+    }
+
+    public Reservation(int reservation_id, int user_id, float total_price, String note, int status, int payment_status, Date created_date, String receiver_address, String receiver_number, String receiver_email, String receiver_name) {
+        this.reservation_id = reservation_id;
+        this.user_id = user_id;
+        this.total_price = total_price;
+        this.note = note;
+        this.status = status;
+        this.payment_status = payment_status;
+        this.created_date = created_date;
+        this.receiver_address = receiver_address;
+        this.receiver_number = receiver_number;
+        this.receiver_email = receiver_email;
+        this.receiver_name = receiver_name;
     }
 
     public Reservation(int reservation_id, int user_id, float total_price, String note, int status, Date created_date) {
@@ -58,8 +78,6 @@ public class Reservation {
         this.detail_id = detail_id;
     }
 
-    
-    
     public int getReservation_id() {
         return reservation_id;
     }
@@ -179,5 +197,45 @@ public class Reservation {
     public void setStaff_id(int staff_id) {
         this.staff_id = staff_id;
     }
-    
+
+    public int getPayment_status() {
+        return payment_status;
+    }
+
+    public void setPayment_status(int payment_status) {
+        this.payment_status = payment_status;
+    }
+
+    public String getReceiver_address() {
+        return receiver_address;
+    }
+
+    public void setReceiver_address(String receiver_address) {
+        this.receiver_address = receiver_address;
+    }
+
+    public String getReceiver_number() {
+        return receiver_number;
+    }
+
+    public void setReceiver_number(String receiver_number) {
+        this.receiver_number = receiver_number;
+    }
+
+    public String getReceiver_email() {
+        return receiver_email;
+    }
+
+    public void setReceiver_email(String receiver_email) {
+        this.receiver_email = receiver_email;
+    }
+
+    public String getReceiver_name() {
+        return receiver_name;
+    }
+
+    public void setReceiver_name(String receiver_name) {
+        this.receiver_name = receiver_name;
+    }
+
 }

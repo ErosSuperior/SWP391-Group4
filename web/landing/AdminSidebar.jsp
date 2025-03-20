@@ -31,6 +31,7 @@
             <li><a href="${pageContext.request.contextPath}/manager/ServiceList"><i class="uil uil-apps me-2 d-inline-block"></i>Service Management</a></li>
             
             <li><a href="${pageContext.request.contextPath}/manager/feedbackList"><i class="uil uil-apps me-2 d-inline-block"></i>Feedback Management</a></li>
+            <li><a href="${pageContext.request.contextPath}/admin/reservationList"><i class="uil uil-apps me-2 d-inline-block"></i>Reservation Management</a></li>
             </c:if>
             
             <c:if test="${sessionScope.account.role_id == 1}">

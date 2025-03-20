@@ -548,5 +548,149 @@ public class ReservationDAO extends DBContext {
         }
         return -1; // Return -1 if no reservation found or an error occurs
     }
+// Hàm lấy chi tiết Reservation theo reservation_id
 
+    public Reservation getReservationById(int reservationId) {
+        String sql = "SELECT reservation_id, user_id, total_price, note, reservation_status, payment_status, created_date, "
+                + "receiver_address, receiver_number, receiver_email, receiver_name "
+                + "FROM reservation WHERE reservation_id = ?";
+
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return null;
+        }
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, reservationId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Reservation(
+                            rs.getInt("reservation_id"),
+                            rs.getInt("user_id"),
+                            rs.getFloat("total_price"),
+                            rs.getString("note"),
+                            rs.getInt("reservation_status"),
+                            rs.getInt("payment_status"),
+                            rs.getTimestamp("created_date"),
+                            rs.getString("receiver_address"),
+                            rs.getString("receiver_number"),
+                            rs.getString("receiver_email"),
+                            rs.getString("receiver_name")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Hàm lấy danh sách Reservation với phân trang và lọc
+    public List<Reservation> getAllReservations(int offset, int limit, String search, int status, int paymentStatus) {
+        List<Reservation> reservations = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT reservation_id, user_id, total_price, note, reservation_status, payment_status, created_date, "
+                + "receiver_address, receiver_number, receiver_email, receiver_name "
+                + "FROM reservation WHERE 1=1"
+        );
+
+        if (search != null && !search.isEmpty()) {
+            sql.append(" AND (receiver_name LIKE ? OR reservation_id = ?)");
+        }
+        if (status != -1) {
+            sql.append(" AND reservation_status = ?");
+        }
+        if (paymentStatus != -1) {
+            sql.append(" AND payment_status = ?");
+        }
+        sql.append(" ORDER BY reservation_id ASC LIMIT ? OFFSET ?");
+
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return reservations;
+        }
+
+        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+            int index = 1;
+
+            if (search != null && !search.isEmpty()) {
+                ps.setString(index++, "%" + search + "%");
+                ps.setString(index++, search);
+            }
+            if (status != -1) {
+                ps.setInt(index++, status);
+            }
+            if (paymentStatus != -1) {
+                ps.setInt(index++, paymentStatus);
+            }
+            ps.setInt(index++, limit);
+            ps.setInt(index++, offset);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Reservation r = new Reservation(
+                            rs.getInt("reservation_id"),
+                            rs.getInt("user_id"),
+                            rs.getFloat("total_price"),
+                            rs.getString("note"),
+                            rs.getInt("reservation_status"),
+                            rs.getInt("payment_status"),
+                            rs.getTimestamp("created_date"),
+                            rs.getString("receiver_address"),
+                            rs.getString("receiver_number"),
+                            rs.getString("receiver_email"),
+                            rs.getString("receiver_name")
+                    );
+                    reservations.add(r);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reservations;
+    }
+
+    // Hàm đếm tổng số Reservation theo điều kiện tìm kiếm
+    public int countAllReservations(String search, int status, int paymentStatus) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM reservation WHERE 1=1");
+
+        if (search != null && !search.isEmpty()) {
+            sql.append(" AND (receiver_name LIKE ? OR reservation_id = ?)");
+        }
+        if (status != -1) {
+            sql.append(" AND reservation_status = ?");
+        }
+        if (paymentStatus != -1) {
+            sql.append(" AND payment_status = ?");
+        }
+
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return 0;
+        }
+
+        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+            int index = 1;
+
+            if (search != null && !search.isEmpty()) {
+                ps.setString(index++, "%" + search + "%");
+                ps.setString(index++, search);
+            }
+            if (status != -1) {
+                ps.setInt(index++, status);
+            }
+            if (paymentStatus != -1) {
+                ps.setInt(index++, paymentStatus);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
