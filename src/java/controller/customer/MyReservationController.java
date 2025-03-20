@@ -27,7 +27,7 @@ import model.User;
  * @author thang
  */
 @WebServlet(name = "MyReservationController", urlPatterns = {"/myReservationController", "/customer/myreservationlist", "/customer/myreservationdetail", "/customer/myreservationinfo",
-    "/reservation/reservationserviceedit", "/reservation/reservationserviceinfoedit", "/deleteReservation"})
+    "/reservation/reservationserviceedit", "/reservation/reservationserviceinfoedit", "/deleteReservation", "/checkoutReservationConfirmed"})
 public class MyReservationController extends HttpServlet {
 
     ReservationDAO reservationDao = new ReservationDAO();
@@ -85,6 +85,10 @@ public class MyReservationController extends HttpServlet {
             case "/customer/myreservationinfo":
                 handleListReservationInfo(request, response);
                 break;
+            case "/checkoutReservationConfirmed":
+                request.setAttribute("totalFinal", 5);
+                request.setAttribute("formattedtotalFinal", 5);
+                request.getRequestDispatcher("landing/vnPay.jsp").forward(request, response);
 
         }
 

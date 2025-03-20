@@ -35,7 +35,7 @@
         <link href="https://unicons.iconscout.com/release/v3.0.6/css/line.css"  rel="stylesheet">
         <!-- Css -->
         <link href="<%= request.getContextPath() %>/assets/css/style.min.css" rel="stylesheet" type="text/css" id="theme-opt" />
-        
+
         <style>
             th span {
                 color: #aaa;
@@ -169,6 +169,9 @@
                                                                         <c:when test="${reservation.status == '4'}">
                                                                             <span class="badge bg-soft-danger">Cancelled</span> 
                                                                         </c:when>
+                                                                        <c:when test="${reservation.status == '5'}">
+                                                                            <span class="badge bg-soft-danger">Operating</span> 
+                                                                        </c:when>
                                                                         <c:otherwise>
                                                                             <span class="badge bg-soft-success">Confirmed </span> <span class="badge bg-soft-success">Operated</span>
                                                                         </c:otherwise>
@@ -193,6 +196,19 @@
 
                                                                         </c:when>
 
+                                                                        <c:when test="${reservation.status == '2'}">
+                                                                            <a href="${pageContext.request.contextPath}/checkoutReservationConfirmed" 
+                                                                               class="btn btn-icon btn-pills btn-warning view-invoice-btn">
+                                                                                <i class="uil uil-bag"></i>
+                                                                            </a>
+
+
+                                                                            <a href="${pageContext.request.contextPath}/customer/myreservationdetail?reservation_id=${reservation.reservation_id}" 
+                                                                               class="btn btn-icon btn-pills btn-soft-primary view-invoice-btn">
+                                                                                <i class="uil uil-eye"></i>
+                                                                            </a>
+                                                                        </c:when>
+
                                                                         <c:when test="${reservation.status == '4'}">
                                                                             <a href="${pageContext.request.contextPath}/customer/myreservationdetail?reservation_id=${reservation.reservation_id}&fix=1"
                                                                                >
@@ -207,6 +223,7 @@
                                                                             </a>
                                                                         </c:otherwise>
                                                                     </c:choose>
+
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>

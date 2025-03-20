@@ -5,6 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -101,7 +103,12 @@
                     <i class="custom-checkmark">✓</i>
                 </div>
                 <h1 class="custom-title">Success</h1>
+                <c:if test="${empty successmess}">
                 <p class="custom-text">We received your purchase request;<br/> we'll be in touch shortly!</p>
+                </c:if>
+                <c:if test="${not empty successmess}">
+                <p class="custom-text">Payment Success<br/> thank you for using our service</p>
+                </c:if>
                 <div class="mt-4">
                     <a href="<%= request.getContextPath() %>/home" class="custom-button">Go to Home</a>
                     <a href="<%= request.getContextPath() %>/customer/myreservationlist" class="custom-button">View Orders</a>
