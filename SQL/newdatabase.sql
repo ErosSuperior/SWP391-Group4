@@ -21,14 +21,15 @@ CREATE TABLE users (
     role_id INT DEFAULT NULL,
     user_status BOOLEAN DEFAULT NULL,
     user_image TEXT DEFAULT NULL,
+	created_date datetime DEFAULT current_timestamp,
     FOREIGN KEY (role_id) REFERENCES role(role_id)
 );
 INSERT INTO users (user_fullname, user_gender, user_address, user_password, user_email, user_phone, role_id, user_status, user_image) VALUES
-('Nguyen Van An', 1, '123 Le Loi, Hanoi', 'password123', 'an.nguyen@example.com', '0912345678', 1, 1, 'an_image.jpg'),
-('Tran Thi Bich', 0, '45 Tran Phu, HCMC', 'pass456', 'bich.tran@example.com', '0987654321', 2, 1, 'bich_image.jpg'),
-('Le Van Cuong', 1, '78 Nguyen Trai, Da Nang', 'cuong789', 'cuong.le@example.com', '0935123456', 3, 1, 'cuong_image.jpg'),
-('Pham Thi Dung', 0, '12 Pham Ngoc Thach, Hanoi', 'dung101', 'dung.pham@example.com', '0909123456', 4, 1, 'dung_image.jpg'),
-('Hoang Van Nam', 1, '56 Hoang Hoa Tham, HCMC', 'nam202', 'nam.hoang@example.com', '0978123456', 4, 1, 'nam_image.jpg');
+('Nguyen Van An', 1, '123 Le Loi, Hanoi', 'e26f7cd7501ceedc694e7ea7cb267041', 'an.nguyen@example.com', '0912345678', 1, 1, 'https://yt3.googleusercontent.com/c-Z7mIlntSpG6VyQ5ZqaPggqkZRhaySr-H5ZEazFN2iR1pP4eD1UGekwu0y--c4CSVhJJ1A4QT8=s900-c-k-c0x00ffffff-no-rj'),
+('Tran Thi Bich', 0, '45 Tran Phu, HCMC', 'e26f7cd7501ceedc694e7ea7cb267041', 'bich.tran@example.com', '0987654321', 2, 1, 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2024/10/11/x/T/I/D/1728642676654.png'),
+('Le Van Cuong', 1, '78 Nguyen Trai, Da Nang', 'e26f7cd7501ceedc694e7ea7cb267041', 'cuong.le@example.com', '0935123456', 3, 1, 'https://static-images.vnncdn.net/vps_images_publish/000001/000003/2025/1/20/ngan-ngam-thay-ca-si-jack-j97-72911.jpg?width=0&s=OQaz1tZ-7uFLA8UTXffWFQ'),
+('Pham Thi Dung', 0, '12 Pham Ngoc Thach, Hanoi', 'e26f7cd7501ceedc694e7ea7cb267041', 'dung.pham@example.com', '0909123456', 4, 1, 'https://file.hstatic.net/200000053174/article/z5205193519599_e0f8ece2760430e82bdfb035f1c41195_32b6407b54694c76b0402e85cc232180.jpg'),
+('Hoang Van Nam', 1, '56 Hoang Hoa Tham, HCMC', 'e26f7cd7501ceedc694e7ea7cb267041', 'nam.hoang@example.com', '0978123456', 4, 1, 'https://gamek.mediacdn.vn/133514250583805952/2024/9/24/yasuo-skin-1-1727148942603165090057.jpg');
 
 
 -- Tạo bảng category và thêm dữ liệu
@@ -38,11 +39,11 @@ CREATE TABLE category (
     icon TEXT
 );
 INSERT INTO category (category_name, icon) VALUES
-('Nutrition', 'nutrition_icon.png'),
-('Health Check', 'health_icon.png'),
-('Education', 'education_icon.png'),
-('Vaccination', 'vaccine_icon.png'),
-('Play Therapy', 'play_icon.png');
+('Nutrition', 'https://i.fbcd.co/products/resized/resized-750-500/2201-m05-i039-n065-mainpreview-676835ae7dc10d2ea587a4499817ab6f0b636e71ba020c43b9563b9ac5a3bf1f.jpg'),
+('Health Check', 'https://arogyanidhihospital.com/wp-content/uploads/2022/11/image-1.jpg'),
+('Education', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwuNwBCP_4zPThX2IVGut1_NUhxMFamnrhUA&s'),
+('Vaccination', 'https://images.squarespace-cdn.com/content/v1/56f01377c2ea5144e9b7cbfb/1627547641100-651Y0U5ADHVQYQY0O7T7/Image+1.jpg'),
+('Play Therapy', 'https://corekidstherapy.com.au/wp-content/uploads/2023/06/Play-Therapy-image-1-scaled.jpg');
 -- Tạo bảng blogs và thêm dữ liệu
 CREATE TABLE blogs (
     blog_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,11 +59,11 @@ CREATE TABLE blogs (
     FOREIGN KEY (category_id) REFERENCES category(category_id)
 );
 INSERT INTO blogs (user_id, title, bi, blog_created_date, category_id, detail, blog_image, view_able) VALUES
-(1, 'Top 5 Healthy Foods for Kids', 'Nutrition tips', '2025-01-10', 1, 'Detailed guide on healthy eating for children.', 'food_image.jpg', 1),
-(2, 'Why Regular Health Checks Matter', 'Health insights', '2025-01-15', 2, 'Importance of regular checkups for kids.', 'checkup_image.jpg', 1),
-(3, 'Fun Learning Activities', 'Education fun', '2025-02-01', 3, 'Creative ways to teach kids.', 'learning_image.jpg', 1),
-(4, 'Vaccination Schedule for Toddlers', 'Vaccine guide', '2025-02-10', 4, 'Complete vaccination timeline.', 'vaccine_image.jpg', 1),
-(5, 'Benefits of Play Therapy', 'Therapy benefits', '2025-03-01', 5, 'How play helps child development.', 'play_image.jpg', 1);
+(1, 'Top 5 Healthy Foods for Kids', 'Nutrition tips', '2025-01-10', 1, 'Detailed guide on healthy eating for children.', 'https://i.fbcd.co/products/resized/resized-750-500/2201-m05-i039-n065-mainpreview-676835ae7dc10d2ea587a4499817ab6f0b636e71ba020c43b9563b9ac5a3bf1f.jpg', 1),
+(2, 'Why Regular Health Checks Matter', 'Health insights', '2025-01-15', 2, 'Importance of regular checkups for kids.', 'https://arogyanidhihospital.com/wp-content/uploads/2022/11/image-1.jpg', 1),
+(3, 'Fun Learning Activities', 'Education fun', '2025-02-01', 3, 'Creative ways to teach kids.', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwuNwBCP_4zPThX2IVGut1_NUhxMFamnrhUA&s', 1),
+(4, 'Vaccination Schedule for Toddlers', 'Vaccine guide', '2025-02-10', 4, 'Complete vaccination timeline.', 'https://images.squarespace-cdn.com/content/v1/56f01377c2ea5144e9b7cbfb/1627547641100-651Y0U5ADHVQYQY0O7T7/Image+1.jpg', 1),
+(5, 'Benefits of Play Therapy', 'Therapy benefits', '2025-03-01', 5, 'How play helps child development.', 'https://corekidstherapy.com.au/wp-content/uploads/2023/06/Play-Therapy-image-1-scaled.jpg', 1);
 
 
 -- Tạo bảng children và thêm dữ liệu
@@ -81,21 +82,6 @@ INSERT INTO children (user_id, children_name, children_gender, children_age) VAL
 (5, 'Hoang Minh Duc', 1, 4),
 (4, 'Pham Ngoc Mai', 0, 6);
 
--- Tạo bảng comments và thêm dữ liệu
-CREATE TABLE comments (
-    comment_id INT AUTO_INCREMENT PRIMARY KEY,
-    comment_content VARCHAR(500),
-    comment_date DATE,
-    comment_createByUser INT,
-    FOREIGN KEY (comment_createByUser) REFERENCES users(user_id)
-);
-INSERT INTO comments (comment_content, comment_date, comment_createByUser) VALUES
-('Great article on nutrition!', '2025-01-11', 4),
-('Very helpful vaccination info.', '2025-02-11', 5),
-('My kids love these activities!', '2025-02-02', 4),
-('Thanks for the health tips.', '2025-01-16', 5),
-('Play therapy really works!', '2025-03-02', 4);
-
 -- Tạo bảng reservation và thêm dữ liệu
 CREATE TABLE reservation (
     reservation_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -109,6 +95,7 @@ CREATE TABLE reservation (
     receiver_number varchar(100),
     receiver_email varchar(100),
     receiver_name varchar(100),
+    expiredin datetime default null,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 INSERT INTO reservation (user_id, total_price, note, reservation_status, payment_status, created_date, receiver_address, receiver_number, receiver_email, receiver_name) VALUES
@@ -173,11 +160,11 @@ CREATE TABLE service_image (
     FOREIGN KEY (service_id) REFERENCES service(service_id)
 );
 INSERT INTO service_image (service_id, image_link, type) VALUES
-(1, 'nutrition_image1.jpg', 1),
-(2, 'checkup_image1.jpg', 1),
-(3, 'workshop_image1.jpg', 1),
-(4, 'vaccine_image1.jpg', 1),
-(5, 'playtherapy_image1.jpg', 1);
+(1, 'https://i.fbcd.co/products/resized/resized-750-500/2201-m05-i039-n065-mainpreview-676835ae7dc10d2ea587a4499817ab6f0b636e71ba020c43b9563b9ac5a3bf1f.jpg', 0),
+(2, 'https://arogyanidhihospital.com/wp-content/uploads/2022/11/image-1.jpg', 0),
+(3, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwuNwBCP_4zPThX2IVGut1_NUhxMFamnrhUA&s', 0),
+(4, 'https://images.squarespace-cdn.com/content/v1/56f01377c2ea5144e9b7cbfb/1627547641100-651Y0U5ADHVQYQY0O7T7/Image+1.jpg', 0),
+(5, 'https://corekidstherapy.com.au/wp-content/uploads/2023/06/Play-Therapy-image-1-scaled.jpg', 0);
 
 -- Tạo bảng service_status và thêm dữ liệu
 CREATE TABLE service_status (
@@ -207,11 +194,11 @@ CREATE TABLE slider (
     FOREIGN KEY (service_id) REFERENCES service(service_id)
 );
 INSERT INTO slider (slider_title, category_id, slider_status, service_id, notes, image) VALUES
-('Healthy Kids Start Here', 1, 1, 1, 'Nutrition promo', 'slider1.jpg'),
-('Checkup Deals', 2, 1, 2, 'Health check discount', 'slider2.jpg'),
-('Learn with Fun', 3, 1, 3, 'Workshop promo', 'slider3.jpg'),
-('Vaccination Now', 4, 1, 4, 'Vaccine campaign', 'slider4.jpg'),
-('Play and Grow', 5, 1, 5, 'Therapy promo', 'slider5.jpg');
+('Healthy Kids Start Here', 1, 1, 1, 'Nutrition promo', 'https://i.fbcd.co/products/resized/resized-750-500/2201-m05-i039-n065-mainpreview-676835ae7dc10d2ea587a4499817ab6f0b636e71ba020c43b9563b9ac5a3bf1f.jpg'),
+('Checkup Deals', 2, 1, 2, 'Health check discount', 'https://arogyanidhihospital.com/wp-content/uploads/2022/11/image-1.jpg'),
+('Learn with Fun', 3, 1, 3, 'Workshop promo', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwuNwBCP_4zPThX2IVGut1_NUhxMFamnrhUA&s'),
+('Vaccination Now', 4, 1, 4, 'Vaccine campaign', 'https://images.squarespace-cdn.com/content/v1/56f01377c2ea5144e9b7cbfb/1627547641100-651Y0U5ADHVQYQY0O7T7/Image+1.jpg'),
+('Play and Grow', 5, 1, 5, 'Therapy promo', 'https://corekidstherapy.com.au/wp-content/uploads/2023/06/Play-Therapy-image-1-scaled.jpg');
 
 -- Tạo bảng slider_services và thêm dữ liệu
 CREATE TABLE slider_services (
@@ -227,49 +214,6 @@ INSERT INTO slider_services (slider_id, service_id) VALUES
 (3, 3),
 (4, 4),
 (5, 5);
--- Tạo bảng categoryMedicine và thêm dữ liệu
-CREATE TABLE categoryMedicine (
-    cateMedicine_id INT AUTO_INCREMENT PRIMARY KEY,
-    cateMedicine_name VARCHAR(255)
-);
-INSERT INTO categoryMedicine (cateMedicine_name) VALUES
-('Vitamins'),
-('Antibiotics'),
-('Pain Relief'),
-('Vaccines'),
-('Supplements');
-
--- Tạo bảng medicine_unit và thêm dữ liệu
-CREATE TABLE medicine_unit (
-    unit_id INT AUTO_INCREMENT PRIMARY KEY,
-    unit_name VARCHAR(255)
-);
-INSERT INTO medicine_unit (unit_name) VALUES
-('Tablet'),
-('Syrup'),
-('Injection'),
-('Capsule'),
-('Drop');
-
--- Tạo bảng medicine và thêm dữ liệu
-CREATE TABLE medicine (
-    medicine_id INT AUTO_INCREMENT PRIMARY KEY,
-    medicine_name VARCHAR(255),
-    medicine_image Text,
-    medicine_price DECIMAL(10, 2),
-    medicine_unit INT,
-    medicine_quantity INT,
-    medicine_detail TEXT,
-    medicine_cateId INT,
-    FOREIGN KEY (medicine_cateId) REFERENCES categoryMedicine(cateMedicine_id),
-    FOREIGN KEY (medicine_unit) REFERENCES medicine_unit(unit_id)
-);
-INSERT INTO medicine (medicine_name, medicine_image, medicine_price, medicine_unit, medicine_quantity, medicine_detail, medicine_cateId) VALUES
-('Vitamin C', 'vitc_image.jpg', 10.00, 1, 100, 'Boosts immunity.', 1),
-('Amoxicillin', 'amox_image.jpg', 15.00, 2, 50, 'Treats infections.', 2),
-('Paracetamol', 'para_image.jpg', 5.00, 2, 200, 'Pain relief for kids.', 3),
-('Flu Vaccine', 'flu_image.jpg', 20.00, 3, 30, 'Prevents flu.', 4),
-('Calcium Syrup', 'calcium_image.jpg', 12.00, 2, 80, 'Bone health support.', 5);
 -- Tạo bảng reservation_detail và thêm dữ liệu
 CREATE TABLE reservation_detail (
     reservation_detail_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -294,38 +238,7 @@ INSERT INTO reservation_detail (reservation_id, service_id, price, quantity, cat
 (3, 5, 70.00, 1, 5, 3, '2025-02-16', 3, 2),
 (4, 2, 100.00, 1, 2, 3, '2025-03-02', 1, 4),
 (5, 1, 50.00, 1, 1, 3, '2025-03-04', 2, 1);
--- Tạo bảng reservation_medical và thêm dữ liệu
-CREATE TABLE reservation_medical (
-    medical_id INT AUTO_INCREMENT PRIMARY KEY,
-    reservation_detail_id INT,
-    diagnosis TEXT,
-    created_date DATE,
-    staff_id INT,
-    FOREIGN KEY (reservation_detail_id) REFERENCES reservation_detail(reservation_detail_id),
-    FOREIGN KEY (staff_id) REFERENCES users(user_id)
-);
-INSERT INTO reservation_medical (reservation_detail_id, diagnosis, created_date, staff_id) VALUES
-(1, 'Healthy, no issues', '2025-01-21', 3),
-(2, 'Vaccinated successfully', '2025-02-06', 3),
-(3, 'Improved behavior', '2025-02-16', 3),
-(4, 'Minor cold detected', '2025-03-02', 3),
-(5, 'Good nutrition status', '2025-03-04', 3);
--- Tạo bảng prescription_details và thêm dữ liệu
-CREATE TABLE prescription_details (
-    prescription_details_id INT AUTO_INCREMENT PRIMARY KEY,
-    medical_id INT,
-    medicine_id INT,
-    quantity INT,
-    price DECIMAL(10, 2),
-    FOREIGN KEY (medical_id) REFERENCES reservation_medical(medical_id),
-    FOREIGN KEY (medicine_id) REFERENCES medicine(medicine_id)
-);
-INSERT INTO prescription_details (medical_id, medicine_id, quantity, price) VALUES
-(1, 1, 10, 10.00),
-(2, 4, 1, 20.00),
-(3, 5, 5, 12.00),
-(4, 3, 15, 5.00),
-(5, 1, 20, 10.00);
+
 -- Tạo bảng setting và thêm dữ liệu
 CREATE TABLE setting (
     setting_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -344,3 +257,12 @@ INSERT INTO setting (setting_type, setting_name, setting_value, setting_descript
 ('Account', 'Allow Guest Login', 'No', 'Allow guest users to log in without an account', 'Active'),
 ('Email', 'Email Expiration Time', '30 days', 'Expiration period for temporary emails', 'Active'),
 ('General', 'Language', 'English', 'Default system language', 'Active');
+
+CREATE TABLE specialization (
+    specialization_id INT AUTO_INCREMENT PRIMARY KEY,
+    userid INT,
+    categoryid INT
+);
+
+insert into specialization (userid, categoryid) value
+(3,1),(3,2),(3,3),(3,4),(3,5);

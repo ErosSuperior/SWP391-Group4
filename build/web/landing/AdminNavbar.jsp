@@ -1,8 +1,4 @@
-<%-- 
-    Document   : AdminNavbar
-    Created on : Feb 8, 2025, 1:27:07 AM
-    Author     : thang
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <div class="top-header">

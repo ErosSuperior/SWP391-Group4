@@ -469,7 +469,7 @@ public class ReservationDAO extends DBContext {
             e.printStackTrace(); // Print error details for debugging
         }
     }
-    
+
     public void updateReservationPaymentStatus(int reservation_id, int status) {
         String sql = "UPDATE reservation SET payment_status = ? WHERE reservation_id = ?;";
 
@@ -706,4 +706,19 @@ public class ReservationDAO extends DBContext {
         }
         return 0;
     }
+
+    public int calculateNetRevenue() {
+        String sql = "SELECT SUM(total_price) AS net_revenue FROM reservation WHERE payment_status = 1";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("net_revenue");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0; // Return 0 if no payments found or an error occurs
+    }
+
 }

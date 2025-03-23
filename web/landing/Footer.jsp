@@ -1,8 +1,3 @@
-<%--
-    Document   : Footer
-    Created on : Jan 31, 2025, 9:17:24 AM
-    Author     : thang
---%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <footer class="bg-footer">

@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.navigation;
+package controller.manager;
 
+import dao.ReservationDAO;
+import init.ReservationInit;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,14 +13,20 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.Reservation;
+import model.SearchResponse;
 
 /**
  *
- * @author thang
+ * @author ADMIN
  */
-@WebServlet(name = "HomeNavController", urlPatterns = {"/nav/homepage", "/nav/dashboard", "/nav/success", "/nav/error", "/nav/managerdashboard"})
-public class HomeNavController extends HttpServlet {
+@WebServlet(name = "ManagerDashboardController", urlPatterns = {"/ManagerDashboardController"})
+public class ManagerDashboardController extends HttpServlet {
 
+    ReservationInit resInit = new ReservationInit();
+    ReservationDAO resDao = new ReservationDAO();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -36,10 +44,10 @@ public class HomeNavController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HomeNavController</title>");            
+            out.println("<title>Servlet ManagerDashboardController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HomeNavController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ManagerDashboardController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,24 +65,8 @@ public class HomeNavController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String url = request.getServletPath();
-        switch(url) {
-            case "/nav/homepage":
-                request.getRequestDispatcher("/landing/HomePage.jsp").forward(request, response);
-                break;
-            case "/nav/dashboard":
-                request.getRequestDispatcher("/landing/DashBoard.jsp").forward(request, response);
-                break;
-            case "/nav/success":
-                request.getRequestDispatcher("/landing/Success.jsp").forward(request, response);
-                break;
-            case "/nav/error":
-                request.getRequestDispatcher("/landing/Error.jsp").forward(request, response);
-                break;
-            case "/nav/managerdashboard":
-                request.getRequestDispatcher("/landing/manager/ManagerDashboard.jsp").forward(request, response);
-                break;
-        }
+        
+
     }
 
     /**
@@ -91,6 +83,28 @@ public class HomeNavController extends HttpServlet {
         processRequest(request, response);
     }
 
+    private void handleManagerDashboard(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String pageNoParam = request.getParameter("pageNo");
+        int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
+        int pageSize = 4;
+        int netRevenue = resDao.calculateNetRevenue();
+        String reservationId = request.getParameter("nameOrId");
+        SearchResponse<Reservation> searchResponse;
+        try {
+            
+            searchResponse = resInit.getAllReservation(pageNo, pageSize, reservationId, 1, 0);
+            request.setAttribute("allblogs", searchResponse.getContent());
+            request.setAttribute("totalElements", searchResponse.getTotalElements());
+            request.setAttribute("pageNo", pageNo);
+            request.setAttribute("pageSize", pageSize);
+            request.setAttribute("netrevenue", netRevenue);
+            
+            request.getRequestDispatcher("/landing/manager/PostManager.jsp").forward(request, response);
+        } catch (Exception ex) {
+        }
+    }
+    
     /**
      * Returns a short description of the servlet.
      *
