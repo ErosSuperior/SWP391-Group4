@@ -65,10 +65,10 @@
                         <h5 class="mb-0 pb-2">Payment</h5>
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp1v7T287-ikP1m7dEUbs2n1SbbLEqkMd1ZA&s"/>
                         <form action="vnpay" id="frmCreateOrder" method="post">
-                            <input type="text" value="${totalFinal*25000}" name="amount" hidden/>
+                            <input type="text" value="${finalvnpay}" name="amount" hidden/>
                             <div class="rounded shadow mt-4">
                                 <div class="p-4 border-bottom">
-                                    <h5 class="mb-0">Total Amount: ${totalFinal}US / ${totalFinal*25000}VND</h5>
+                                    <h5 class="mb-0">Total Amount: ${totalFinal}US / ${totalFinalVND}VND</h5>
                                 </div>
                             </div>
 

@@ -86,10 +86,20 @@ public class MyReservationController extends HttpServlet {
                 handleListReservationInfo(request, response);
                 break;
             case "/checkoutReservationConfirmed":
-                request.setAttribute("totalFinal", 5);
-                request.setAttribute("formattedtotalFinal", 5);
-                request.getRequestDispatcher("landing/vnPay.jsp").forward(request, response);
+                String reservation_id = request.getParameter("reservation_id");
+                try {
+                    int resId = Integer.parseInt(reservation_id);
+                    Reservation r = reservationDao.getReservationById(resId);
+                    request.getSession().setAttribute("reservationId", r.getReservation_id());
 
+                    request.setAttribute("totalFinal", r.getTotal_price());
+                    request.setAttribute("totalFinalVND", String.format("%,d", (long) (r.getTotal_price() * 25000)));
+                    request.setAttribute("finalvnpay",  (long) (r.getTotal_price() * 25000));
+                    request.getRequestDispatcher("landing/vnPay.jsp").forward(request, response);
+                } catch (NumberFormatException e) {
+                    System.out.println("Error at payment");
+                }
+                break;
         }
 
     }
@@ -157,7 +167,7 @@ public class MyReservationController extends HttpServlet {
         if (yearParam != null && !yearParam.isEmpty()) {
             year = Integer.parseInt(yearParam);
         }
-        
+
         String sortDirparam = request.getParameter("sortdir");
         if (sortDirparam != null && !sortDirparam.isEmpty()) {
             sortDir = sortDirparam;
@@ -318,6 +328,11 @@ public class MyReservationController extends HttpServlet {
             out.print("{\"success\": false, \"message\": \"An error occurred while processing the request.\"}");
             out.flush();
         }
+    }
+
+    protected void handlePayReservation(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
     }
 
     @Override

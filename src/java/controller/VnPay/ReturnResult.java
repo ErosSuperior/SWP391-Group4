@@ -4,6 +4,7 @@
  */
 package controller.VnPay;
 
+import dao.ReservationDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -27,6 +28,8 @@ import java.util.concurrent.Executors;
  */
 @WebServlet(name = "ReturnResult", urlPatterns = {"/result"})
 public class ReturnResult extends HttpServlet {
+
+    ReservationDAO rsdao = new ReservationDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -112,8 +115,21 @@ public class ReturnResult extends HttpServlet {
         }
 
         if (status == 0) {
-            request.setAttribute("successmess", "1");
-            request.getRequestDispatcher("landing/Success.jsp").forward(request, response);
+            int reservationId = 0;
+
+            Object reservationIdObj = request.getSession().getAttribute("reservationId");
+            if (reservationIdObj != null) {
+                reservationId = (int) reservationIdObj;
+            }
+            if (reservationId != 0) {
+                rsdao.updateReservationPaymentStatus(reservationId, 1);
+                request.setAttribute("successmess", "1");
+                request.getRequestDispatcher("landing/Success.jsp").forward(request, response);
+            }else{
+                request.setAttribute("status", errorMessage);
+                request.getRequestDispatcher("landing/PaymentFail.jsp").forward(request, response);
+            }
+
         } else {
             request.setAttribute("status", errorMessage);
             request.getRequestDispatcher("landing/PaymentFail.jsp").forward(request, response);

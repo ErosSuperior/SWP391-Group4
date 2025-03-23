@@ -79,7 +79,7 @@
                 </li>
 
                 <li class="has-submenu parent-menu-item">
-                    <a href="blogs">Blogs</a><span class="sub-menu-item"></span>
+                    <a href="${pageContext.request.contextPath}/blogs">Blogs</a><span class="sub-menu-item"></span>
                 </li>
 
                 <li class="has-submenu parent-menu-item">
@@ -87,8 +87,8 @@
                 </li>
 
                 <c:if test="${sessionScope.account.role_id <= 3}">
-                    <li> <a href="${pageContext.request.contextPath}/nav/dashboard" class="sub-menu-item"">Admin</a></li>
-                    </c:if>
+                    <li> <a href="${pageContext.request.contextPath}/nav/dashboard" class="sub-menu-item">Admin</a></li>
+                </c:if>
 
             </ul><!--end navigation menu-->
         </div><!--end navigation-->

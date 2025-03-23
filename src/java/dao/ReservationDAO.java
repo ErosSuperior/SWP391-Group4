@@ -201,6 +201,7 @@ public class ReservationDAO extends DBContext {
                 s.setStatus(rs.getInt("reservation_status"));
                 s.setNote(rs.getString("note"));
                 s.setTotal_price(rs.getFloat("total_price"));
+                s.setPayment_status(rs.getInt("payment_status"));
                 reservations.add(s);
             }
         } catch (Exception e) {
@@ -459,6 +460,18 @@ public class ReservationDAO extends DBContext {
 
     public void updateReservationStatus(int reservation_id, int status) {
         String sql = "UPDATE reservation SET reservation_status = ? WHERE reservation_id = ?;";
+
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setInt(1, status);
+            st.setInt(2, reservation_id);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace(); // Print error details for debugging
+        }
+    }
+    
+    public void updateReservationPaymentStatus(int reservation_id, int status) {
+        String sql = "UPDATE reservation SET payment_status = ? WHERE reservation_id = ?;";
 
         try (PreparedStatement st = connection.prepareStatement(sql)) {
             st.setInt(1, status);

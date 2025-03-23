@@ -176,6 +176,7 @@
                                                                             <span class="badge bg-soft-success">Confirmed </span> <span class="badge bg-soft-success">Operated</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
+                                                                        <c:if test="${reservation.payment_status == 1}"><span class="badge bg-soft-success">Paid </span></c:if>
                                                                 </td>
 
                                                                 <td class="p-3">$${reservation.total_price}</td>
@@ -196,8 +197,8 @@
 
                                                                         </c:when>
 
-                                                                        <c:when test="${reservation.status == '2'}">
-                                                                            <a href="${pageContext.request.contextPath}/checkoutReservationConfirmed" 
+                                                                        <c:when test="${reservation.status == '2' && reservation.payment_status!= '1'}">
+                                                                            <a href="${pageContext.request.contextPath}/checkoutReservationConfirmed?reservation_id=${reservation.reservation_id}" 
                                                                                class="btn btn-icon btn-pills btn-warning view-invoice-btn">
                                                                                 <i class="uil uil-bag"></i>
                                                                             </a>
