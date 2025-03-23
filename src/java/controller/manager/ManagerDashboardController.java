@@ -5,6 +5,7 @@
 package controller.manager;
 
 import dao.ReservationDAO;
+import dao.UserDAO;
 import init.ReservationInit;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,11 +23,13 @@ import model.SearchResponse;
  *
  * @author ADMIN
  */
-@WebServlet(name = "ManagerDashboardController", urlPatterns = {"/ManagerDashboardController"})
+@WebServlet(name = "ManagerDashboardController", urlPatterns = {"/ManagerDashboardController", "/dashboardReservationStatuschange"})
 public class ManagerDashboardController extends HttpServlet {
 
     ReservationInit resInit = new ReservationInit();
     ReservationDAO resDao = new ReservationDAO();
+    UserDAO uDao = new UserDAO();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -65,7 +68,26 @@ public class ManagerDashboardController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        String url = request.getServletPath();
+        switch (url) {
+            case "/ManagerDashboardController":
+                try {
+                handleManagerDashboard(request, response);
+                    } catch (Exception ex) {
+                Logger.getLogger(ManagerDashboardController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            break;
+            case "/dashboardReservationStatuschange":
+            {
+                try {
+                    handleChangeStatusReservation(request, response);
+                } catch (Exception ex) {
+                    Logger.getLogger(ManagerDashboardController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+                break;
+
+        }
 
     }
 
@@ -80,31 +102,70 @@ public class ManagerDashboardController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String url = request.getServletPath();
+        switch (url) {
+            case "/dashboardReservationStatuschange":
+            {
+                try {
+                    handleChangeStatusReservation(request, response);
+                } catch (Exception ex) {
+                    Logger.getLogger(ManagerDashboardController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+                break;
+
+        }
     }
 
     private void handleManagerDashboard(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         String pageNoParam = request.getParameter("pageNo");
         int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
         int pageSize = 4;
         int netRevenue = resDao.calculateNetRevenue();
+        int staffCount = uDao.countUser("", 3, -1);
+        int numReservation = resDao.countAllReservations("", 3, 1);
+        int numPending = resDao.countAllReservations("", 2, 0);
+        int numCanceled = resDao.countAllReservations("", 4, -1);
         String reservationId = request.getParameter("nameOrId");
         SearchResponse<Reservation> searchResponse;
         try {
-            
+
             searchResponse = resInit.getAllReservation(pageNo, pageSize, reservationId, 1, 0);
             request.setAttribute("allblogs", searchResponse.getContent());
             request.setAttribute("totalElements", searchResponse.getTotalElements());
             request.setAttribute("pageNo", pageNo);
             request.setAttribute("pageSize", pageSize);
             request.setAttribute("netrevenue", netRevenue);
-            
-            request.getRequestDispatcher("/landing/manager/PostManager.jsp").forward(request, response);
+            request.setAttribute("numberofres", numReservation);
+            request.setAttribute("pendingcount", numPending);
+            request.setAttribute("cancelcount", numCanceled);
+            request.setAttribute("staffcount", staffCount);
+
+            request.getRequestDispatcher("/landing/manager/ManagerDashboard.jsp").forward(request, response);
         } catch (Exception ex) {
         }
     }
-    
+
+    private void handleChangeStatusReservation(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, Exception {
+        String reservationId = request.getParameter("resId");
+        String newStatus = request.getParameter("resStatus");
+        System.out.println(reservationId);
+        System.out.println(newStatus);
+        try{
+            int oldStatus = resDao.checkReservationStatus(Integer.parseInt(reservationId));
+            if(oldStatus==1){
+                resDao.updateReservationStatus(Integer.parseInt(reservationId), Integer.parseInt(newStatus));
+                handleManagerDashboard(request, response);
+            }else{
+                handleManagerDashboard(request, response);
+                response.getWriter().write("notchanged");
+            }
+        }catch(NumberFormatException e){
+            response.getWriter().write("error");
+        }
+    }
     /**
      * Returns a short description of the servlet.
      *

@@ -20,7 +20,7 @@
             </c:if>
             
             <c:if test="${sessionScope.account.role_id == 2}">
-            <li><a href="${pageContext.request.contextPath}/nav/managerdashboard"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>    
+            <li><a href="${pageContext.request.contextPath}/ManagerDashboardController"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>    
                 
             <li><a href="${pageContext.request.contextPath}/manager/managerlistBlog"><i class="uil uil-apps me-2 d-inline-block"></i>Post Management</a></li>
 

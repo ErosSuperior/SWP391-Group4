@@ -123,7 +123,7 @@ CREATE TABLE service (
 INSERT INTO service (service_title, service_bi, service_created_date, category_id, service_price, service_discount, service_detail, service_rateStar, service_vote) VALUES
 ('Nutrition Consultation', 'Diet plan for kids', '2025-01-01', 1, 50.00, 5.00, 'Personalized nutrition advice.', 4.5, 10),
 ('Health Checkup', 'Full body check', '2025-01-01', 2, 100.00, 10.00, 'Comprehensive health screening.', 4.8, 15),
-('Learning Workshop', 'Fun education', '2025-01-01', 3, 80.00, 0.00, 'Interactive learning for kids.', 4.2, 8),
+('Learning Workshop', 'Fun education', '2025-01-01', 3, 80.00, 0.00, 'Interactive learning for kids.', 4.2, 10),
 ('Vaccination Package', 'Essential vaccines', '2025-01-01', 4, 150.00, 20.00, 'Complete vaccine set.', 4.9, 20),
 ('Play Therapy Session', 'Therapeutic play', '2025-01-01', 5, 70.00, 5.00, 'Play-based therapy for kids.', 4.7, 12);
 

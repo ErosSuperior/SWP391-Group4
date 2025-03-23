@@ -61,43 +61,71 @@
                     <div class="layout-specing">
                         <h5 class="mb-0">Dashboard</h5>
 
-                        <div class="row">
-                            <div class="col-xl-2 col-lg-4 col-md-4 mt-4">
+                        <div class="row" style=" margin-right: 13px">
+                            <div class="col-xl-4 col-lg-4 col-md-4 mt-4">
                                 <div class="card features feature-primary rounded border-0 shadow p-4">
                                     <div class="d-flex align-items-center">
                                         <div class="icon text-center rounded-md">
                                             <i class="uil uil-bed h3 mb-0"></i>
                                         </div>
                                         <div class="flex-1 ms-2">
-                                            <h5 class="mb-0">558</h5>
-                                            <p class="text-muted mb-0">Reservation</p>
+                                            <h5 class="mb-0">${numberofres}</h5>
+                                            <p class="text-muted mb-0">Reservation Completed</p>
                                         </div>
                                     </div>
                                 </div>
                             </div><!--end col-->
 
-                            <div class="col-xl-2 col-lg-4 col-md-4 mt-4">
+                            <div class="col-xl-4 col-lg-4 col-md-4 mt-4">
+                                <div class="card features feature-primary rounded border-0 shadow p-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon text-center rounded-md">
+                                            <i class="uil uil-medical-drip h3 mb-0"></i>
+                                        </div>
+                                        <div class="flex-1 ms-2">
+                                            <h5 class="mb-0">${pendingcount}</h5>
+                                            <p class="text-muted mb-0">Reservation Pending</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!--end col-->
+
+                            <div class="col-xl-4 col-lg-4 col-md-4 mt-4">
+                                <div class="card features feature-primary rounded border-0 shadow p-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon text-center rounded-md">
+                                            <i class="uil uil-times-circle h3 mb-0"></i>
+                                        </div>
+                                        <div class="flex-1 ms-2">
+                                            <h5 class="mb-0">${cancelcount}</h5>
+                                            <p class="text-muted mb-0">Reservation Canceled</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!--end col-->
+
+                            <div class="col-xl-4 col-lg-4 col-md-4 mt-4">
                                 <div class="card features feature-primary rounded border-0 shadow p-4">
                                     <div class="d-flex align-items-center">
                                         <div class="icon text-center rounded-md">
                                             <i class="uil uil-file-medical-alt h3 mb-0"></i>
                                         </div>
                                         <div class="flex-1 ms-2">
-                                            <h5 class="mb-0">$2164</h5>
-                                            <p class="text-muted mb-0">Avg Net</p>
+                                            <h5 class="mb-0">$${netrevenue}</h5>
+                                            <p class="text-muted mb-0">Avg Net Revenue</p>
                                         </div>
                                     </div>
                                 </div>
                             </div><!--end col-->
 
-                            <div class="col-xl-2 col-lg-4 col-md-4 mt-4">
+                            <div class="col-xl-4 col-lg-4 col-md-4 mt-4">
                                 <div class="card features feature-primary rounded border-0 shadow p-4">
                                     <div class="d-flex align-items-center">
                                         <div class="icon text-center rounded-md">
                                             <i class="uil uil-social-distancing h3 mb-0"></i>
                                         </div>
                                         <div class="flex-1 ms-2">
-                                            <h5 class="mb-0">112</h5>
+                                            <h5 class="mb-0">${staffcount}</h5>
                                             <p class="text-muted mb-0">Staff Members</p>
                                         </div>
                                     </div>
@@ -108,11 +136,24 @@
 
                         <div class="row">
                             <!-- Combined Filter and Pagination Form -->
-                            <form action="${pageContext.request.contextPath}/manager/managerlistBlog" method="GET"
+                            <form action="${pageContext.request.contextPath}/ManagerDashboardController" method="GET"
                                   class="row">
                                 <!-- Filters -->
 
-                                
+                                <div class="col-md-4">
+                                    <div class="mt-3">
+                                        <label class="form-label">Search</label>
+                                        <div class="input-group">
+                                            <input type="text" name="nameOrId" class="form-control"
+                                                   placeholder="Search by name or ID" value="${param.nameOrId}">
+                                            <button class="btn btn-primary" type="submit">Search</button>
+                                            <button class="btn btn-primary ms-2" type="button"
+                                                    onclick="window.location.href = '${pageContext.request.contextPath}/ManagerDashboardController'">
+                                                <i class="uil uil-redo"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <!-- User List Table -->
                                 <div class="col-12 mt-4">
@@ -130,70 +171,48 @@
                                                     <th class="border-bottom p-3">Total Price</th>
                                                     <th class="border-bottom p-3">Status</th>
                                                     <th class="border-bottom p-3" style="min-width: 150px;">
+                                                        Action
                                                     </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            <c:forEach items="${requestScope.allblogs}" var="d">
-                                                <tr>
-                                                    <th class="p-3">${d.blogId}</th>
-                                                    <td class="py-3">
-                                                        <a href="#" class="text-dark">
-                                                            <div class="d-flex align-items-center">
-                                                                <span class="ms-2">${d.blogTitle}</span>
-                                                            </div>
-                                                        </a>
-                                                    </td>
-                                                    <td class="p-3">${d.authorName}</td>
-                                                    <td class="p-3">${d.blogCategoryName    }</td>
+                                                <c:forEach items="${requestScope.allblogs}" var="d">
+                                                    <tr>
+                                                        <th class="p-3">${d.reservation_id}</th>
+                                                        <td class="py-3">
+                                                            <a href="#" class="text-dark">
+                                                                <div class="d-flex align-items-center">
+                                                                    <span class="ms-2">${d.note}</span>
+                                                                </div>
+                                                            </a>
+                                                        </td>
+                                                        <td class="p-3">${d.receiver_name}</td>
+                                                        <td class="p-3">${d.total_price}</td>
 
-                                                    <td class="p-3">
-                                                <c:choose>
-                                                    <c:when test="${d.blogStatus == '1'}">
-                                                        <span
-                                                            class="badge bg-soft-success">Active</span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span
-                                                            class="badge bg-soft-danger">Inactive</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                                </td>
-                                                <td class="p-3">
-                                                    <a href="${pageContext.request.contextPath}/manager/managereditBlog?blog_id=${d.blogId}&selectedCategoryId=${d.blogCategory}&blog_title=${d.blogTitle}&selectedAuthor=${d.blogUserId}&detail=${d.blogDetail}&image=${d.blogImage}"
-                                                       class="btn btn-icon btn-pills btn-soft-primary">
-                                                        <i class="uil uil-pen"></i>
-                                                    </a>
-                                                <c:choose>
-                                                    <c:when test="${d.blogStatus == '1'}">
-                                                        <button
-                                                            class="btn btn-icon btn-pills btn-soft-danger"
-                                                            data-user-id="${d.blogId}"
-                                                            data-new-status="0"
-                                                            onclick="showConfirmationModal(${d.blogId}, 0)"
-                                                            type="button">
-                                                            <i class="uil uil-times-circle"></i>
-                                                        </button>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <button
-                                                            class="btn btn-icon btn-pills btn-soft-success"
-                                                            data-user-id="${d.blogId}"
-                                                            data-new-status="1"
-                                                            onclick="showConfirmationModal(${d.blogId}, 1)"
-                                                            type="button">
-                                                            <i class="uil uil-check-circle"></i>
-                                                        </button>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                                <a href="javascript:void(0)" class="btn btn-icon btn-pills btn-soft-primary" 
-                                                   data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                                   data-detail="${d.blogImage}">
-                                                    <i data-feather="eye" class="icons"></i>
-                                                </a>
-                                                </td>
-                                                </tr>
-                                            </c:forEach>
+                                                        <td class="p-3">
+                                                            <c:choose>
+                                                                <c:when test="${d.status == '1'}">
+                                                                    <span
+                                                                        class="badge bg-soft-danger">Not Yet</span>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <span
+                                                                        class="badge bg-soft-danger">Inactive</span>
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </td>
+                                                        <td class="p-3">
+                                                            <button
+                                                                class="btn btn-icon btn-pills btn-soft-success"
+                                                                data-user-id="${d.reservation_id}"
+                                                                data-new-status="2"
+                                                                onclick="showConfirmationModal(${d.reservation_id}, 2)"
+                                                                type="button">
+                                                                <i class="uil uil-check-circle"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
                                             </tbody>
                                         </table>
                                     </div>
@@ -238,6 +257,26 @@
             </main>
             <!--End page-content" -->
         </div>
+        <!-- Modal for confirmation -->
+        <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmationModalLabel">Confirm/Cancel Reservation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to confirm/cancel the order?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button id="confirmAction" type="button" class="btn btn-primary">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- javascript -->
         <script src="<%= request.getContextPath() %>/assets/js/bootstrap.bundle.min.js"></script>
         <!-- simplebar -->
@@ -249,5 +288,62 @@
         <script src="<%= request.getContextPath() %>/assets/js/feather.min.js"></script>
         <!-- Main Js -->
         <script src="<%= request.getContextPath() %>/assets/js/app.js"></script>
+
+        <script src="https://cdn.datatables.net/2.1.6/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/2.1.6/js/dataTables.bootstrap5.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+        <script>
+                                                                    let currentUserId, currentStatus;
+
+                                                                    function showConfirmationModal(userId, newStatus) {
+                                                                        currentUserId = userId;
+                                                                        currentStatus = newStatus;
+                                                                        $('#confirmationModal').modal('show');
+                                                                    }
+
+                                                                    $('#confirmAction').click(function () {
+                                                                        updateStatus(currentUserId, currentStatus);
+                                                                        $('#confirmationModal').modal('hide'); // Hide modal after confirmation
+                                                                    });
+
+                                                                    function updateStatus(userId, newStatus) {
+                                                                        console.log(userId);
+                                                                        console.log(newStatus);
+                                                                        $.ajax({
+                                                                            url: '${pageContext.request.contextPath}/dashboardReservationStatuschange',
+                                                                            type: 'POST',
+                                                                            data: {
+                                                                                resId: userId,
+                                                                                resStatus: newStatus
+                                                                            },
+                                                                            success: function (response) {
+                                                                                console.log("AJAX request successful. Page will reload.");
+                                                                                location.reload();
+                                                                            },
+                                                                            error: function (xhr, status, error) {
+                                                                                console.error('AJAX Error:', xhr.status, status, error);
+                                                                                // Optionally show an error message in the modal or elsewhere
+                                                                            }
+                                                                        });
+                                                                    }
+
+                                                                    document.addEventListener("DOMContentLoaded", function () {
+                                                                        document.querySelectorAll("[data-bs-target='#exampleModal']").forEach(button => {
+                                                                            button.addEventListener("click", function () {
+                                                                                let imageUrl = this.getAttribute("data-detail"); // Get image URL from data attribute
+                                                                                let modalImage = document.getElementById("modalServiceDetail");
+
+                                                                                if (imageUrl) {
+                                                                                    modalImage.src = imageUrl;
+                                                                                    modalImage.style.display = "block"; // Show image
+                                                                                } else {
+                                                                                    modalImage.style.display = "none"; // Hide if no image
+                                                                                }
+                                                                            });
+                                                                        });
+                                                                    });
+        </script>
     </body>
 </html>

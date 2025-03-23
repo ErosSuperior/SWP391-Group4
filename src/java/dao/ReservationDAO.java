@@ -721,4 +721,21 @@ public class ReservationDAO extends DBContext {
         return 0; // Return 0 if no payments found or an error occurs
     }
 
+    public int countSuccessRes() {
+        String sql = "SELECT COUNT(*) AS success_count FROM reservation WHERE reservation_status IN (2, 3)";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("success_count");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0; // Return 0 if no matching reservations or an error occurs
+    }
+    
+    
+
+    
 }

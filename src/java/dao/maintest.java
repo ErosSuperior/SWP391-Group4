@@ -38,8 +38,12 @@ public class maintest {
         ShopCartDAO scd = new ShopCartDAO();
         FeedbackDAO fbd = new FeedbackDAO();
         
-        int aa = reservationDAO.calculateNetRevenue();
-        System.out.println(aa);
+//        int aa = reservationDAO.calculateNetRevenue();
+//        System.out.println(aa);
+        int bcc = userDAO.countUser("", 3, -1);
+        reservationDAO.updateReservationStatus(1, 2);
+        System.out.println(bcc);
+        
 //        List<Feedback> f = fbd.getAllServiceFeedback(0, 10, "", 1, -1, -1, "feedback_id", "ASC");
 //        
 //        

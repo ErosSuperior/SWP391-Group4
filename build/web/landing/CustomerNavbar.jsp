@@ -86,9 +86,17 @@
                     <a href="${pageContext.request.contextPath}/customer/customerlistService">Services</a><span class="sub-menu-item"></span>
                 </li>
 
-                <c:if test="${sessionScope.account.role_id <= 3}">
+                <c:if test="${sessionScope.account.role_id == 3}">
                     <li> <a href="${pageContext.request.contextPath}/nav/dashboard" class="sub-menu-item">Admin</a></li>
                 </c:if>
+                    
+                    <c:if test="${sessionScope.account.role_id == 2}">
+                    <li> <a href="${pageContext.request.contextPath}/ManagerDashboardController" class="sub-menu-item">Admin</a></li>
+                </c:if>
+                    <c:if test="${sessionScope.account.role_id == 1}">
+                    <li> <a href="${pageContext.request.contextPath}/nav/dashboard" class="sub-menu-item">Admin</a></li>
+                </c:if>
+                    
 
             </ul><!--end navigation menu-->
         </div><!--end navigation-->

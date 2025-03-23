@@ -39,12 +39,12 @@
         <!-- Loader -->
 
         <div class="page-wrapper doctris-theme toggled">
-            <jsp:include page="../MarketingSidebar.jsp"/>
+            <jsp:include page="../AdminSidebar.jsp"/>
             <!-- sidebar-wrapper  -->
 
             <!-- Start Page Content -->
             <main class="page-content bg-light">
-                <jsp:include page="../MarketingNavbar.jsp"/>
+                <jsp:include page="../AdminNavbar.jsp"/>
 
                 <div class="container-fluid">
                     <div class="layout-specing">
