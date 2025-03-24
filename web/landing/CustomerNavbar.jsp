@@ -30,13 +30,13 @@
 
                     <!-- Dropdown button with user image -->
                     <button type="button" class="btn btn-pills btn-soft-primary dropdown-toggle p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img src="${userImage}" class="avatar avatar-ex-small rounded-circle" alt="">
+                        <img src="${account.user_image}" class="avatar avatar-ex-small rounded-circle" alt="">
                     </button>
 
                     <!-- Dropdown Menu -->
                     <div class="dropdown-menu dd-menu dropdown-menu-end bg-white shadow border-0 mt-3 py-3" style="min-width: 200px;">
                         <a class="dropdown-item d-flex align-items-center text-dark" href="#">
-                            <img src="${userImage}" class="avatar avatar-md-sm rounded-circle border shadow" alt="">
+                            <img src="${account.user_image}" class="avatar avatar-md-sm rounded-circle border shadow" alt="">
                             <div class="flex-1 ms-2">
                                 <span class="d-block mb-1">${not empty sessionScope.account ? sessionScope.account.user_fullname : "Guest User"}</span>
                                 <c:if test="${empty sessionScope.account}">
@@ -44,7 +44,7 @@
                                 </c:if>
                             </div>
                         </a>
-                        <a class="dropdown-item text-dark" href="${pageContext.request.contextPath}/myReservationController">
+                        <a class="dropdown-item text-dark" href="${pageContext.request.contextPath}/userprofile">
                             <span class="mb-0 d-inline-block me-1"><i class="uil uil-setting align-middle h6"></i></span> Profile Settings
                         </a>
                         <div class="dropdown-divider border-top"></div>

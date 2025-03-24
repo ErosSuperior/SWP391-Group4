@@ -12,7 +12,7 @@ import java.util.List;
 import model.User;
 import utl.*;
 
-public class UserDAO {
+public class UserDAO extends DBContext {
 
     // Phương thức kiểm tra tài khoản đã tồn tại hay chưa
     public User checkAccountExit(String username) {
@@ -534,5 +534,109 @@ public class UserDAO {
             }
         }
         return users;
+    }
+
+    private Connection connection; // Tạo đối tượng connection
+
+    public UserDAO() {
+        try {
+            this.connection = getConnection(); // Khởi tạo kết nối
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.connection = null; // Set to null if connection fails
+        }
+    }
+
+    public boolean updatePassword(String hashedpass, int user_id, String oldpass) { // Hàm update passs
+        String sql = "UPDATE users\n"
+                + "SET\n"
+                + "user_password = ?\n"
+                + "WHERE user_id = ? AND user_password = ? ;"; // Câu lệnh update password
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, hashedpass); // Set giá trị cho dấu "?"
+            st.setInt(2, user_id);
+            st.setString(3, oldpass);
+
+            return st.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public boolean updateProfile(String name,String gender,String phone,String address, String image, String email) {
+        String sql = "UPDATE `users`\n"
+                + "SET\n"
+                + "`user_fullname` = ?,\n"
+                + "`user_gender` = ?,\n"
+                + "`user_address` = ?,\n"
+                + "`user_phone` = ?,\n"
+                + "`user_image` = ?\n"
+                + "WHERE `user_email` = ?;"; // Câu lệnh update password
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, name); // Set giá trị cho dấu "?"
+            st.setString(2, gender); // Set giá trị cho dấu "?"
+            st.setString(3, address); // Set giá trị cho dấu "?"
+            st.setString(4, phone); // Set giá trị cho dấu "?"
+            st.setString(5, image); // Set giá trị cho dấu "?"
+            st.setString(6, email);
+
+            return st.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public User getUserDetail(int user_id) {
+        // Hàm lấy thông tin chi tiết của một user dựa trên user_id
+
+        String sql = "SELECT `users`.`user_id`,\n"
+                + "    `users`.`user_fullname`,\n"
+                + "    `users`.`user_gender`,\n"
+                + "    `users`.`user_address`,\n"
+                + "    `users`.`user_password`,\n"
+                + "    `users`.`user_email`,\n"
+                + "    `users`.`user_phone`,\n"
+                + "    `users`.`role_id`,\n"
+                + "    `users`.`user_status`,\n"
+                + "    `users`.`user_image`\n"
+                + "FROM `users`\n"
+                + "WHERE user_id = ? ";
+
+        try {
+            // Tạo PreparedStatement để tránh SQL Injection
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, user_id); // Gán giá trị user_id vào truy vấn SQL
+
+            ResultSet rs = st.executeQuery(); // Thực thi truy vấn
+
+            if (rs.next()) {
+                // Nếu có dữ liệu, tạo đối tượng User từ kết quả truy vấn
+                User c = new User(
+                        rs.getInt("user_id"),
+                        rs.getString("user_fullname"),
+                        rs.getBoolean("user_gender"),
+                        rs.getString("user_address"),
+                        rs.getString("user_password"),
+                        rs.getString("user_email"),
+                        rs.getString("user_phone"),
+                        rs.getInt("role_id"),
+                        rs.getBoolean("user_status"),
+                        rs.getString("user_image")
+                );
+                return c; // Trả về đối tượng User chứa thông tin user
+            }
+        } catch (SQLException e) {
+            System.out.println(e); // Bắt lỗi SQL và in ra console
+        }
+
+        return null; // Trả về null nếu không tìm thấy user hoặc có lỗi xảy ra
     }
 }

@@ -43,11 +43,19 @@
                         <li><a href="${pageContext.request.contextPath}/adminsettinglist">Settings</a></li>
                         <li><a href="${pageContext.request.contextPath}/admin/categoryList">Category Management</a></li>
                         <li><a href="${pageContext.request.contextPath}/admin/roleList">Role Management</a></li>
-                        
+                    </ul>
+                </div>
+            </li>            
+            </c:if>
+            <li class="sidebar-dropdown">
+                <a href="javascript:void(0)"><i class="uil uil-sign-in-alt me-2 d-inline-block"></i>Authentication</a>
+                <div class="sidebar-submenu">
+                    <ul>
+                        <li><a href="login.html">Profile Setting</a></li>
+                        <li><a href="signup.html">Logout</a></li>
                     </ul>
                 </div>
             </li>
-            </c:if>
             <li><a href="${pageContext.request.contextPath}/home"><i class="uil uil-window me-2 d-inline-block"></i>Home page</a></li>
         </ul>
         <!-- sidebar-menu  -->
