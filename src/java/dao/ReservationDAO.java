@@ -604,7 +604,8 @@ public class ReservationDAO extends DBContext {
         StringBuilder sql = new StringBuilder(
                 "SELECT reservation_id, user_id, total_price, note, reservation_status, payment_status, created_date, "
                 + "receiver_address, receiver_number, receiver_email, receiver_name "
-                + "FROM reservation WHERE 1=1"
+                + "FROM reservation WHERE 1=1  "
+                        + "AND reservation_status != 0 "
         );
 
         if (search != null && !search.isEmpty()) {
