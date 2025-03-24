@@ -649,7 +649,7 @@ public class ReservationDAO extends DBContext {
                             rs.getString("note"),
                             rs.getInt("reservation_status"),
                             rs.getInt("payment_status"),
-                            rs.getTimestamp("created_date"),
+                            rs.getDate("created_date"),
                             rs.getString("receiver_address"),
                             rs.getString("receiver_number"),
                             rs.getString("receiver_email"),
@@ -666,7 +666,8 @@ public class ReservationDAO extends DBContext {
 
     // Hàm đếm tổng số Reservation theo điều kiện tìm kiếm
     public int countAllReservations(String search, int status, int paymentStatus) {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM reservation WHERE 1=1");
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM reservation WHERE 1=1 "
+                + "AND reservation_status != 0 ");
 
         if (search != null && !search.isEmpty()) {
             sql.append(" AND (receiver_name LIKE ? OR reservation_id = ?)");
