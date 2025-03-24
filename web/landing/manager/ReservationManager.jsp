@@ -50,9 +50,11 @@
                                                     <label>Status</label>
                                                     <select name="status" class="form-control">
                                                         <option value="-1" ${status == -1 ? 'selected' : ''}>All</option>
-                                                        <option value="0" ${status == 0 ? 'selected' : ''}>Pending</option>
-                                                        <option value="1" ${status == 1 ? 'selected' : ''}>Confirmed</option>
-                                                        <option value="2" ${status == 2 ? 'selected' : ''}>Cancelled</option>
+                                                        <option value="1" ${status == 1 ? 'selected' : ''}>Not Yet</option>
+                                                        <option value="2" ${status == 2 ? 'selected' : ''}>Confirmed (Not Operated)</option>
+                                                        <option value="3" ${status == 3 ? 'selected' : ''}>Confirmed (Operated)</option>
+                                                        <option value="4" ${status == 4 ? 'selected' : ''}>Cancelled</option>
+                                                        <option value="5" ${status == 5 ? 'selected' : ''}>Operating</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -95,11 +97,23 @@
                                                         <td>${r.total_price}</td>
                                                         <td>${r.receiver_name}</td>
                                                         <td>
+
                                                             <c:choose>
-                                                                <c:when test="${r.status == 0}">Pending</c:when>
-                                                                <c:when test="${r.status == 1}">Confirmed</c:when>
-                                                                <c:when test="${r.status == 2}">Cancelled</c:when>
-                                                                <c:otherwise>Unknown</c:otherwise>
+                                                                <c:when test="${r.status == '1'}">
+                                                                    <span class="badge bg-soft-danger">Not Yet</span> 
+                                                                </c:when>
+                                                                <c:when test="${r.status == '2'}">
+                                                                    <span class="badge bg-soft-success">Confirmed </span>  <span class="badge bg-soft-danger">Not Operated</span>
+                                                                </c:when>
+                                                                <c:when test="${r.status == '4'}">
+                                                                    <span class="badge bg-soft-danger">Cancelled</span> 
+                                                                </c:when>
+                                                                <c:when test="${r.status == '5'}">
+                                                                    <span class="badge bg-soft-danger">Operating</span> 
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <span class="badge bg-soft-success">Confirmed </span> <span class="badge bg-soft-success">Operated</span>
+                                                                </c:otherwise>
                                                             </c:choose>
                                                         </td>
                                                         <td>

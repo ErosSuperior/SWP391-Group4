@@ -469,7 +469,7 @@ public class ReservationDAO extends DBContext {
             e.printStackTrace(); // Print error details for debugging
         }
     }
-    
+
     public void updateReservationPaymentStatus(int reservation_id, int status) {
         String sql = "UPDATE reservation SET payment_status = ? WHERE reservation_id = ?;";
 
@@ -604,7 +604,8 @@ public class ReservationDAO extends DBContext {
         StringBuilder sql = new StringBuilder(
                 "SELECT reservation_id, user_id, total_price, note, reservation_status, payment_status, created_date, "
                 + "receiver_address, receiver_number, receiver_email, receiver_name "
-                + "FROM reservation WHERE 1=1"
+                + "FROM reservation WHERE 1=1  "
+                        + "AND reservation_status != 0 "
         );
 
         if (search != null && !search.isEmpty()) {
@@ -648,7 +649,7 @@ public class ReservationDAO extends DBContext {
                             rs.getString("note"),
                             rs.getInt("reservation_status"),
                             rs.getInt("payment_status"),
-                            rs.getTimestamp("created_date"),
+                            rs.getDate("created_date"),
                             rs.getString("receiver_address"),
                             rs.getString("receiver_number"),
                             rs.getString("receiver_email"),
@@ -665,7 +666,8 @@ public class ReservationDAO extends DBContext {
 
     // Hàm đếm tổng số Reservation theo điều kiện tìm kiếm
     public int countAllReservations(String search, int status, int paymentStatus) {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM reservation WHERE 1=1");
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM reservation WHERE 1=1 "
+                + "AND reservation_status != 0 ");
 
         if (search != null && !search.isEmpty()) {
             sql.append(" AND (receiver_name LIKE ? OR reservation_id = ?)");
@@ -706,4 +708,36 @@ public class ReservationDAO extends DBContext {
         }
         return 0;
     }
+
+    public int calculateNetRevenue() {
+        String sql = "SELECT SUM(total_price) AS net_revenue FROM reservation WHERE payment_status = 1";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("net_revenue");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0; // Return 0 if no payments found or an error occurs
+    }
+
+    public int countSuccessRes() {
+        String sql = "SELECT COUNT(*) AS success_count FROM reservation WHERE reservation_status IN (2, 3)";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("success_count");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0; // Return 0 if no matching reservations or an error occurs
+    }
+    
+    
+
+    
 }

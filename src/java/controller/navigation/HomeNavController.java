@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author thang
  */
-@WebServlet(name = "HomeNavController", urlPatterns = {"/nav/homepage", "/nav/dashboard", "/nav/success", "/nav/error"})
+@WebServlet(name = "HomeNavController", urlPatterns = {"/nav/homepage", "/nav/dashboard", "/nav/success", "/nav/error", "/nav/managerdashboard"})
 public class HomeNavController extends HttpServlet {
 
     /**
@@ -70,6 +70,9 @@ public class HomeNavController extends HttpServlet {
                 break;
             case "/nav/error":
                 request.getRequestDispatcher("/landing/Error.jsp").forward(request, response);
+                break;
+            case "/nav/managerdashboard":
+                request.getRequestDispatcher("/landing/manager/ManagerDashboard.jsp").forward(request, response);
                 break;
         }
     }

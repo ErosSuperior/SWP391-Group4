@@ -149,6 +149,35 @@ public class CustomerServiceController extends HttpServlet {
         request.setAttribute("relatedServices", allServiceByCategory);
         request.setAttribute("staffList", userDao.getAllStaffNotBusy());
         request.setAttribute("serviceId", serviceId);
+        
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+        String service_id = request.getParameter("serviceId");
+        if (account == null) {
+            // Redirect to login page if not logged in
+            request.setAttribute("loggedin", "no");
+
+        }
+        if (account != null) {
+            boolean check = reservationDao.hasReservationWithService(account.getUser_id(), serviceIdParam);
+
+            if (check) {
+                request.setAttribute("purchased", "purchased");
+            }
+        }
+
+        String pageNoParam = request.getParameter("pageNo");
+        int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
+        int pageSize = 4;
+        String nameOrId = request.getParameter("nameOrId");
+        SearchResponse<Feedback> searchResponse = feedbackInit.getServiceFeedback(pageNo, pageSize, nameOrId, serviceId);
+
+        request.setAttribute("allfeedback", searchResponse.getContent());
+        request.setAttribute("totalElements", searchResponse.getTotalElements());
+        request.setAttribute("pageNo", pageNo);
+        request.setAttribute("pageSize", pageSize);
+
+        request.setAttribute("service_id", service_id);
 
         request.getRequestDispatcher("/landing/customer/ServiceDetail.jsp").forward(request, response);
     }
@@ -253,7 +282,7 @@ public class CustomerServiceController extends HttpServlet {
     }
 
     private void handleUpdateFeedbackRating(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int serviceId = Integer.parseInt(request.getParameter("service_id"));
+        int serviceId = Integer.parseInt(request.getParameter("serviceId"));
         String rating = request.getParameter("rateStar");
         String message = request.getParameter("message");
         HttpSession session = request.getSession();
@@ -267,7 +296,7 @@ public class CustomerServiceController extends HttpServlet {
 
             int addcheck = feedbackDao.addFeedback(account.getUser_id(), serviceId, message, account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
 
-            handleServiceFeedback(request, response);
+            handleServiceDetail(request, response);
 
         } else if (!rating.equals("-1") && message.isEmpty()) {
 
@@ -288,7 +317,7 @@ public class CustomerServiceController extends HttpServlet {
 
                 feedbackDao.addFeedback(account.getUser_id(), serviceId, "I have paid for the service(default comment)", account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
 
-                handleServiceFeedback(request, response);
+                handleServiceDetail(request, response);
                 return;
             }
 
@@ -298,7 +327,7 @@ public class CustomerServiceController extends HttpServlet {
 
             feedbackDao.addFeedback(account.getUser_id(), serviceId, "I have paid for the service(default comment)", account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
 
-            handleServiceFeedback(request, response);
+            handleServiceDetail(request, response);
         } else {
             int rate = Integer.parseInt(rating);
 
@@ -317,7 +346,7 @@ public class CustomerServiceController extends HttpServlet {
 
                 feedbackDao.addFeedback(account.getUser_id(), serviceId, message, account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
 
-                handleServiceFeedback(request, response);
+                handleServiceDetail(request, response);
                 return;
             }
 
@@ -327,7 +356,7 @@ public class CustomerServiceController extends HttpServlet {
 
             feedbackDao.addFeedback(account.getUser_id(), serviceId, message, account.getUser_fullname(), account.isUser_gender(), account.getUser_email(), account.getUser_phone(), rate);
 
-            handleServiceFeedback(request, response);
+            handleServiceDetail(request, response);
         }
 
     }
