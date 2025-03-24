@@ -422,14 +422,17 @@
         <script src="<%= request.getContextPath() %>/assets/js/app.js"></script>
 
         <script>
-            // Get today's date in YYYY-MM-DD format
-            let today = new Date().toISOString().split('T')[0];
+            // Get tomorrow's date in YYYY-MM-DD format
+            let tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            let formattedTomorrow = tomorrow.toISOString().split('T')[0];
 
-            // Set the min and default value to today
+            // Set the min and default value to tomorrow
             let dateInput = document.getElementById('dateInput');
-            dateInput.setAttribute('min', today);
-            dateInput.value = today;
+            dateInput.setAttribute('min', formattedTomorrow);
+            dateInput.value = formattedTomorrow;
         </script>
+
         <script>
             document.querySelector("select[name='selected_staff']").addEventListener("change", function () {
                 let selectedId = this.value;
