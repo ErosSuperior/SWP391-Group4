@@ -4,6 +4,8 @@
  */
 package controller.manager;
 
+import SendEmail.SendEmailRegister;
+import SendEmail.SendEmail;
 import dao.ReservationDAO;
 import dao.UserDAO;
 import init.ReservationInit;
@@ -18,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Reservation;
 import model.SearchResponse;
+import model.User;
 
 /**
  *
@@ -73,19 +76,18 @@ public class ManagerDashboardController extends HttpServlet {
             case "/ManagerDashboardController":
                 try {
                 handleManagerDashboard(request, response);
-                    } catch (Exception ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(ManagerDashboardController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            }
             break;
-            case "/dashboardReservationStatuschange":
-            {
+            case "/dashboardReservationStatuschange": {
                 try {
                     handleChangeStatusReservation(request, response);
                 } catch (Exception ex) {
                     Logger.getLogger(ManagerDashboardController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-                break;
+            break;
 
         }
 
@@ -104,15 +106,14 @@ public class ManagerDashboardController extends HttpServlet {
             throws ServletException, IOException {
         String url = request.getServletPath();
         switch (url) {
-            case "/dashboardReservationStatuschange":
-            {
+            case "/dashboardReservationStatuschange": {
                 try {
                     handleChangeStatusReservation(request, response);
                 } catch (Exception ex) {
                     Logger.getLogger(ManagerDashboardController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-                break;
+            break;
 
         }
     }
@@ -153,19 +154,35 @@ public class ManagerDashboardController extends HttpServlet {
         String newStatus = request.getParameter("resStatus");
         System.out.println(reservationId);
         System.out.println(newStatus);
-        try{
+        try {
             int oldStatus = resDao.checkReservationStatus(Integer.parseInt(reservationId));
-            if(oldStatus==1){
+            if (oldStatus == 1) {
+                SendEmail sm = new SendEmail();
+                int curuser = resDao.getUserIdOnReservationId(Integer.parseInt(reservationId));
+                User current = uDao.getUserDetail(curuser);
+                String text = "<div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>"
+                        + "<h2 style='color: #007bff;'>Reservation Confirmation</h2>"
+                        + "<p>Hello <strong>" + current.getUser_fullname() + "</strong>,</p>"
+                        + "<p>Your reservation number <strong>" + reservationId + "</strong> has been confirmed. "
+                        + "Please continue with your payment to finalize the process.</p>"
+                        + "<p>Thank you for choosing us.</p>"
+                        + "<hr style='border: 1px solid #007bff;'>"
+                        + "<p style='font-size: 0.9em; color: #666;'>This is an automated message, please do not reply.</p>"
+                        + "</div>";
+
+                boolean emailSent = sm.sendEmail(current, text);
                 resDao.updateReservationStatus(Integer.parseInt(reservationId), Integer.parseInt(newStatus));
+
                 handleManagerDashboard(request, response);
-            }else{
+            } else {
                 handleManagerDashboard(request, response);
                 response.getWriter().write("notchanged");
             }
-        }catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             response.getWriter().write("error");
         }
     }
+
     /**
      * Returns a short description of the servlet.
      *

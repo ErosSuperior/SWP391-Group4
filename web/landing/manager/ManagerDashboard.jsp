@@ -166,7 +166,7 @@
                                                     <th class="border-bottom p-3" style="min-width: 180px;">Note
                                                     </th>
                                                     <th class="border-bottom p-3" style="min-width: 150px;">
-                                                        Invoicer
+                                                        Created Date
                                                     </th>
                                                     <th class="border-bottom p-3">Total Price</th>
                                                     <th class="border-bottom p-3">Status</th>
@@ -186,7 +186,7 @@
                                                                 </div>
                                                             </a>
                                                         </td>
-                                                        <td class="p-3">${d.receiver_name}</td>
+                                                        <td class="p-3">${d.created_date}</td>
                                                         <td class="p-3">${d.total_price}</td>
 
                                                         <td class="p-3">

@@ -91,10 +91,8 @@ public class SendEmail {
             mess.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
 
             //set email subject
-            mess.setSubject("User Email Verification");
-            String text = "";
-            text = text1;
-            mess.setText(text);
+            mess.setSubject("Children Care System Notification");
+            mess.setContent(text1, "text/html; charset=utf-8");
             //send the message
             Transport.send(mess);
             test = true;

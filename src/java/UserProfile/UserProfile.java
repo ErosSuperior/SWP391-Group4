@@ -97,7 +97,7 @@ public class UserProfile extends HttpServlet {
 // Kiểm tra quyền của tài khoản
         if (account.getRole_id() != 4) {
             // Nếu tài khoản KHÔNG phải khách hàng (role_id khác 4), chuyển hướng đến trang hồ sơ nhân viên
-            request.getRequestDispatcher("landing/manager/EmployeeProfile.jsp").forward(request, response);
+            request.getRequestDispatcher("landing/CustomerProfile.jsp").forward(request, response);
         } else {
             // Nếu tài khoản là khách hàng (role_id = 4), chuyển hướng đến trang hồ sơ khách hàng
             request.getRequestDispatcher("landing/CustomerProfile.jsp").forward(request, response);

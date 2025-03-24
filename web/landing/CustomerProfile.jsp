@@ -1,7 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Children Care - Doctor Appointment Booking System</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Premium Bootstrap 4 Landing Page Template" />
@@ -41,23 +44,9 @@
         <section class="bg-dashboard">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-xl-4 col-lg-4 col-md-5 col-12">
-                        <div class="bg-white rounded shadow overflow-hidden">
-                            <div class="card border-0">
-                                <img src="${pageContext.request.contextPath}/assets/images/doctors/profile-bg.jpg" class="img-fluid" alt="">
-                            </div>
-
-                            <div class="text-center avatar-profile margin-nagative mt-n5 position-relative pb-4 border-bottom">
-                                <img src="${user.user_image}" class="rounded-circle shadow-md avatar avatar-md-md" alt="">
-                                <h5 class="mt-3 mb-1">${user.user_fullname}</h5>
-                            </div>
-
-                            <ul class="list-unstyled sidebar-nav mb-0">
-                                <li class="navbar-item"><a style="cursor: pointer;" class="navbar-link"><i class="ri-user-settings-line align-middle navbar-icon"></i> Profile Settings</a></li>
-                                <li class="navbar-item"><a style="cursor: pointer;" id="passwordLink" class="navbar-link"><i class="ri-device-recover-line align-middle navbar-icon"></i>  Password</a></li>
-                            </ul>
-                        </div>
-                    </div><!--end col-->
+                    <div class="col-xl-3 col-lg-4 col-md-5 col-12">
+                        <jsp:include page="ProfileSidebar.jsp"/>
+                    </div>
 
                     <div class="col-xl-8 col-lg-8 col-md-7 mt-4 pt-2 mt-sm-0 pt-sm-0">
                         <div class="rounded shadow mt-0">

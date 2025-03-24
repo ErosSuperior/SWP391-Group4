@@ -737,7 +737,22 @@ public class ReservationDAO extends DBContext {
         return 0; // Return 0 if no matching reservations or an error occurs
     }
     
-    
+    public int getUserIdOnReservationId(int reservation_id) {
+        String sql = "SELECT user_id FROM reservation WHERE reservation_id = ?";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, reservation_id); // Set the value for the placeholder "?"
+
+            ResultSet rs = st.executeQuery(); // Execute the query
+            if (rs.next()) {
+                return rs.getInt("user_id"); // Retrieve the count from the result set
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Print the exception for debugging
+        }
+        return -1;
+    }
 
     
 }

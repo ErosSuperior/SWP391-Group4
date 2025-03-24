@@ -27,6 +27,7 @@
 
     <ul class="list-unstyled sidebar-nav mb-0">
         <li class="navbar-item"><a href="doctor-dashboard.html" class="navbar-link"><i class="ri-airplay-line align-middle navbar-icon"></i> Dashboard</a></li>
+        <li class="navbar-item"><a href="${pageContext.request.contextPath}/userprofile" class="navbar-link"><i class="ri-user-line align-middle navbar-icon"></i> Profile</a></li>
         <li class="navbar-item"><a href="${pageContext.request.contextPath}/customer/myreservationlist" class="navbar-link"><i class="ri-pages-line align-middle navbar-icon"></i> Your Reservations</a></li>
         
         
