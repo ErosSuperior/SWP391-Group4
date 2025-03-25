@@ -20,6 +20,7 @@ public class Reservation {
     private Date created_date;
     private int detail_id;
     private int service_id;
+    private String service_title;
     private float price;
     private int quantity;
     private int category;
@@ -238,4 +239,13 @@ public class Reservation {
         this.receiver_name = receiver_name;
     }
 
+    public String getService_title() {
+        return service_title;
+    }
+
+    public void setService_title(String service_title) {
+        this.service_title = service_title;
+    }
+
+    
 }

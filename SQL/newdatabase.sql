@@ -5,7 +5,8 @@ USE Test123;
 -- Tạo bảng role và thêm dữ liệu
 CREATE TABLE role (
     role_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    role_name VARCHAR(255) DEFAULT NULL
+    role_name VARCHAR(255) DEFAULT NULL,
+    status int default 1
 );
 INSERT INTO role (role_name) VALUES ('Admin'), ('Manager'), ('Staff'), ('Custommer');
 
@@ -36,6 +37,7 @@ INSERT INTO users (user_fullname, user_gender, user_address, user_password, user
 CREATE TABLE category (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(255),
+    status int default 1,
     icon TEXT
 );
 INSERT INTO category (category_name, icon) VALUES

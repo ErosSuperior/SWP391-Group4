@@ -90,11 +90,11 @@
                     <li> <a href="${pageContext.request.contextPath}/nav/dashboard" class="sub-menu-item">Admin</a></li>
                 </c:if>
                     
-                    <c:if test="${sessionScope.account.role_id == 2}">
+                <c:if test="${sessionScope.account.role_id == 2}">
                     <li> <a href="${pageContext.request.contextPath}/ManagerDashboardController" class="sub-menu-item">Admin</a></li>
                 </c:if>
                     <c:if test="${sessionScope.account.role_id == 1}">
-                    <li> <a href="${pageContext.request.contextPath}/nav/dashboard" class="sub-menu-item">Admin</a></li>
+                    <li> <a href="${pageContext.request.contextPath}/admindashboard" class="sub-menu-item">Admin</a></li>
                 </c:if>
                     
 

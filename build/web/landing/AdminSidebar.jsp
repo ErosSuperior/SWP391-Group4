@@ -42,7 +42,7 @@
             </c:if>
             
             <c:if test="${sessionScope.account.role_id == 1}">
-            <li><a href="${pageContext.request.contextPath}/nav/dashboard"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>    
+            <li><a href="${pageContext.request.contextPath}/admindashboard"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>    
             <li><a href="${pageContext.request.contextPath}/admin/adminList"><i class="uil uil-apps me-2 d-inline-block"></i>User Management</a></li>
             <li class="sidebar-dropdown">
                 <a href="javascript:void(0)"><i class="uil uil-user me-2 d-inline-block"></i>Settings</a>

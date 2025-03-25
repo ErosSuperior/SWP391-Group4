@@ -605,7 +605,7 @@ public class ReservationDAO extends DBContext {
                 "SELECT reservation_id, user_id, total_price, note, reservation_status, payment_status, created_date, "
                 + "receiver_address, receiver_number, receiver_email, receiver_name "
                 + "FROM reservation WHERE 1=1  "
-                        + "AND reservation_status != 0 "
+                + "AND reservation_status != 0 "
         );
 
         if (search != null && !search.isEmpty()) {
@@ -736,7 +736,7 @@ public class ReservationDAO extends DBContext {
         }
         return 0; // Return 0 if no matching reservations or an error occurs
     }
-    
+
     public int getUserIdOnReservationId(int reservation_id) {
         String sql = "SELECT user_id FROM reservation WHERE reservation_id = ?";
 
@@ -754,5 +754,56 @@ public class ReservationDAO extends DBContext {
         return -1;
     }
 
-    
+    public List<Reservation> getReservationDetailofStaff(int offset, int limit, String nameOrId, int staff_id, String sortBy, String sortDir) {
+        List<Reservation> reservations = new ArrayList<>();
+        StringBuilder query = new StringBuilder("SELECT r.*, rd.*, s.* "
+                + "FROM reservation_detail rd "
+                + "LEFT JOIN reservation r ON r.reservation_id = rd.reservation_id "
+                + "LEFT JOIN service s ON s.service_id = rd.service_id "
+                + "WHERE 1=1 "
+                + "AND slot IS NULL "
+                + "AND reservation_status = 2 "
+                + "AND staff_id = ?");
+
+        if (nameOrId != null && !nameOrId.isEmpty()) {
+            query.append(" AND (note LIKE ? OR reservation_id = ?)");
+        }
+
+        query.append(" ORDER BY ").append(sortBy).append(" ").append(sortDir.equalsIgnoreCase("ASC") ? "ASC" : "DESC");
+        query.append(" LIMIT ? OFFSET ?");
+
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return reservations; // Return empty list if connection failed
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
+            int index = 1;
+
+            preparedStatement.setInt(index++, staff_id);
+
+            if (nameOrId != null && !nameOrId.isEmpty()) {
+                preparedStatement.setString(index++, "%" + nameOrId + "%");
+                preparedStatement.setString(index++, nameOrId);
+            }
+
+            preparedStatement.setInt(index++, limit);
+            preparedStatement.setInt(index++, offset);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Reservation s = new Reservation();
+                s.setDetail_id(rs.getInt("reservation_detail_id"));
+                s.setService_id(rs.getInt("service_id"));
+                s.setStatus(rs.getInt("reservation_status"));
+                s.setSlot(rs.getInt("slot"));
+                s.setService_title(rs.getString("service_title"));
+                s.setBegin_time(rs.getDate("begin_time"));
+                reservations.add(s);
+            }
+        } catch (Exception e) {
+        }
+        return reservations;
+    }
+
 }
