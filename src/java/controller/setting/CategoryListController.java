@@ -37,9 +37,12 @@ public class CategoryListController extends HttpServlet {
                     Logger.getLogger(CategoryListController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            case "/admin/addcategory" -> request.getRequestDispatcher("/landing/CategoryDetail.jsp").forward(request, response);
-            case "/admin/editcategory" -> handleEditCategoryForm(request, response);
-            case "/admin/deletecategory" -> handleDeleteCategory(request, response);
+            case "/admin/addcategory" ->
+                request.getRequestDispatcher("/landing/CategoryDetail.jsp").forward(request, response);
+            case "/admin/editcategory" ->
+                handleEditCategoryForm(request, response);
+            case "/admin/deletecategory" ->
+                handleDeleteCategory(request, response);
         }
     }
 
@@ -68,7 +71,7 @@ public class CategoryListController extends HttpServlet {
         String pageNoParam = request.getParameter("pageNo");
         String nameOrId = request.getParameter("nameOrId");
         int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
-        int pageSize = 5;
+        int pageSize = 3;
 
         SearchResponse<Category> searchResponse = categoryInit.getCategory(pageNo, pageSize, nameOrId);
 
@@ -100,15 +103,12 @@ public class CategoryListController extends HttpServlet {
 
     private void handleDeleteCategory(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String categoryIdParam = request.getParameter("categoryId");
-        if (categoryIdParam != null && !categoryIdParam.isEmpty()) {
-            try {
-                int categoryId = Integer.parseInt(categoryIdParam);
-                categoryDAO.deleteCategory(categoryId);
-                response.setStatus(HttpServletResponse.SC_OK);
-            } catch (NumberFormatException e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid category ID");
-            }
+        String categoryId = request.getParameter("categoryId");
+        String status = request.getParameter("status");
+        if (categoryId != null && !categoryId.isEmpty() && status != null && !status.isEmpty()) {
+
+            categoryDAO.updateStatusCategory(categoryId, status);
+            response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Category ID is required");
         }

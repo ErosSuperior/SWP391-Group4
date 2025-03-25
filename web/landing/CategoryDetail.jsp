@@ -39,11 +39,11 @@
                                 <div class="card border-0 p-4 rounded shadow">
                                     <form class="mt-4" action="${pageContext.request.contextPath}/admin/managecategory" method="post" onsubmit="return validateForm()">
                                         <div class="row">
-                                            <c:if test="${not empty category.categoryId}">
+                                            <c:if test="${not empty category.category_id}">
                                                 <div class="col-md-4">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="categoryId">Category ID</label>
-                                                        <input name="categoryId" id="categoryId" type="text" value="${category.categoryId}" class="form-control" readonly>
+                                                        <input name="categoryId" id="categoryId" type="text" value="${category.category_id}" class="form-control" readonly>
                                                     </div>
                                                 </div>
                                             </c:if>
@@ -51,26 +51,26 @@
                                             <div class="col-md-4">
                                                 <div class="mb-3">
                                                     <label class="form-label">Category Name<span style="color: red">*</span></label>
-                                                    <input name="categoryName" id="categoryName" type="text" value="${category.categoryName}" class="form-control" required>
+                                                    <input name="categoryName" id="categoryName" type="text" value="${category.category_name}" class="form-control" required>
                                                 </div>
                                             </div>
 
                                             <div class="col-md-5">
                                                 <div class="mb-3 d-flex align-items-center">
-                                                    <div class="flex-grow-1">
+                                                    <div class="flex-grow-1" >
                                                         <label class="form-label">Icon</label>
-                                                        <input name="icon" id="icon" class="form-control" type="text" value="${category.icon}" placeholder="Enter icon URL">
+                                                        <input name="icon" id="icon" class="form-control" type="text" value="${category.category_icon}" placeholder="Enter icon URL">
                                                     </div>
-                                                    <button type="button" class="btn btn-primary" onclick="openImage()" style="margin-left: 15px">View</button>
+                                                    <button  type="button" class="btn btn-primary" onclick="openImage()" style="margin-left: 25px; margin-top: 30px;">View</button>
                                                 </div>
                                             </div>
 
                                             <div class="col-md-12">
                                                 <br>
-                                                <c:if test="${not empty category.categoryId}">
+                                                <c:if test="${not empty category.category_id}">
                                                     <button type="submit" value="edit" name="submit" class="btn btn-primary" style="display: inline-block; width: auto; padding: 0.25rem 0.5rem; font-size: 0.875rem; margin: 10px;">Update</button>
                                                 </c:if>
-                                                <c:if test="${empty category.categoryId}">
+                                                <c:if test="${empty category.category_id}">
                                                     <button type="submit" value="add" name="submit" class="btn btn-primary" style="display: inline-block; width: auto; padding: 0.25rem 0.5rem; font-size: 0.875rem; margin: 10px;">Add</button>
                                                 </c:if>
                                                 <button type="button" style="display: inline-block; width: auto; padding: 0.25rem 0.5rem; font-size: 0.875rem; margin: 10px;" onclick="window.location.href = '${pageContext.request.contextPath}/admin/categoryList'" class="btn btn-primary">Cancel</button>

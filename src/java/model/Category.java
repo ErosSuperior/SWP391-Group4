@@ -9,14 +9,16 @@ public class Category {
     private int category_id;
     private String category_name;
     private String category_icon;
+    private int category_status;
 
     public Category() {
     }
 
-    public Category(int category_id, String category_name, String category_icon) {
+    public Category(int category_id, String category_name, String category_icon, int category_status) {
         this.category_id = category_id;
         this.category_name = category_name;
         this.category_icon = category_icon;
+        this.category_status = category_status;
     }
 
     public int getCategory_id() {
@@ -42,6 +44,14 @@ public class Category {
     public void setCategory_icon(String category_icon) {
         this.category_icon = category_icon;
     }
-    
+
+    public int getCategory_status() {
+        return category_status;
+    }
+
+    public void setCategory_status(int category_status) {
+        this.category_status = category_status;
+    }
+
     
 }

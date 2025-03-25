@@ -21,7 +21,7 @@ public class RoleDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                userRole role = new userRole(rs.getInt(1), rs.getString(2));
+                userRole role = new userRole(rs.getInt(1), rs.getString(2), rs.getInt(3));
                 list.add(role);
             }
             rs.close();
@@ -67,7 +67,7 @@ public class RoleDAO {
 
             rs = ps.executeQuery();
             while (rs.next()) {
-                userRole role = new userRole(rs.getInt("role_id"), rs.getString("role_name"));
+                userRole role = new userRole(rs.getInt("role_id"), rs.getString("role_name"), rs.getInt("status"));
                 roles.add(role);
             }
         } catch (SQLException ex) {
@@ -75,9 +75,15 @@ public class RoleDAO {
             throw ex;
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -118,9 +124,15 @@ public class RoleDAO {
             throw ex;
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -141,15 +153,21 @@ public class RoleDAO {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                return new userRole(rs.getInt("role_id"), rs.getString("role_name"));
+                return new userRole(rs.getInt("role_id"), rs.getString("role_name"), rs.getInt("status"));
             }
         } catch (Exception ex) {
             Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -171,8 +189,12 @@ public class RoleDAO {
             Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -194,8 +216,12 @@ public class RoleDAO {
             Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -203,21 +229,29 @@ public class RoleDAO {
     }
 
     // Phương thức xóa vai trò
-    public void deleteRole(int roleId) {
+    public void updateStautsRole(String roleId, String status) {
         Connection conn = null;
         PreparedStatement ps = null;
-        String sql = "DELETE FROM role WHERE role_id = ?";
+        String sql = "UPDATE `role`\n"
+                + "SET\n"
+                + "`status` = ?\n"
+                + "WHERE `role_id` = ?;";
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
-            ps.setInt(1, roleId);
+            ps.setString(1,status );
+            ps.setString(2, roleId);
             ps.executeUpdate();
         } catch (Exception ex) {
             Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE, null, e);
             }

@@ -12,13 +12,15 @@ package model;
 public class userRole {
     private int role_id;
     private String role_name;
+    private int status;
 
     public userRole() {
     }
 
-    public userRole(int role_id, String role_name) {
+    public userRole(int role_id, String role_name, int status) {
         this.role_id = role_id;
         this.role_name = role_name;
+        this.status = status;
     }
 
     public int getRole_id() {
@@ -36,4 +38,14 @@ public class userRole {
     public void setRole_name(String role_name) {
         this.role_name = role_name;
     }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    
 }

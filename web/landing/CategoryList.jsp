@@ -77,28 +77,51 @@
                                                         <th class="border-bottom p-3" style="min-width: 50px;">ID</th>
                                                         <th class="border-bottom p-3" style="min-width: 180px;">Name</th>
                                                         <th class="border-bottom p-3">Icon</th>
+                                                        <th class="border-bottom p-3">Status</th>
                                                         <th class="border-bottom p-3" style="min-width: 150px;">Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <c:forEach items="${requestScope.allCategories}" var="category">
+                                                    <c:forEach items="${allCategories}" var="category">
                                                         <tr>
-                                                            <th class="p-3">${category.categoryId}</th>
-                                                            <td class="p-3">${category.categoryName}</td>
+                                                            <th class="p-3">${category.category_id}</th>
+                                                            <td class="p-3">${category.category_name}</td>
                                                             <td class="p-3">
-                                                                <img src="${category.icon}" class="avatar avatar-md-sm rounded-circle shadow" alt="Icon" style="max-width: 50px;">
+                                                                <img src="${category.category_icon}" class="avatar avatar-md-sm rounded-circle shadow" alt="Icon" style="max-width: 50px;">
+                                                            </td>
+                                                            <td>
+                                                                <c:choose>
+                                                                    <c:when test="${category.category_status == 1}">
+                                                                        <div class="badge bg-soft-success rounded px-3 py-1">Active</div>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <div class="badge bg-soft-danger rounded px-3 py-1">Inactive</div>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </td>
                                                             <td class="p-3">
-                                                                <a href="${pageContext.request.contextPath}/admin/editcategory?categoryId=${category.categoryId}"
+                                                                <a href="${pageContext.request.contextPath}/admin/editcategory?categoryId=${category.category_id}"
                                                                    class="btn btn-icon btn-pills btn-soft-primary" title="Edit">
                                                                     <i class="uil uil-pen"></i>
                                                                 </a>
-                                                                <button class="btn btn-icon btn-pills btn-soft-danger"
-                                                                        data-category-id="${category.categoryId}"
-                                                                        onclick="showConfirmationModal(${category.categoryId})"
-                                                                        type="button" title="Delete">
-                                                                    <i class="uil uil-trash-alt"></i>
-                                                                </button>
+                                                                <c:choose>
+                                                                    <c:when test="${category.category_status == 1}">
+                                                                        <button class="btn btn-icon btn-pills btn-soft-danger"
+                                                                                data-category-id="${category.category_id}"
+                                                                                onclick="showConfirmationModal(${category.category_id}, 0)"
+                                                                                type="button" title="Deactivate">
+                                                                            <i class="uil uil-ban"></i>
+                                                                        </button>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <button class="btn btn-icon btn-pills btn-soft-success"
+                                                                                data-category-id="${category.category_id}"
+                                                                                onclick="showConfirmationModal(${category.category_id}, 1)"
+                                                                                type="button" title="Activate">
+                                                                            <i class="uil uil-check-circle"></i>
+                                                                        </button>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -135,24 +158,27 @@
             </main>
         </div>
 
-        <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog">
+        <!-- Modal Xác nhận -->
+
+        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h5>
+                        <h5 class="modal-title" id="confirmationModalLabel"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete this category?
+                        <p id="confirmationModalMessage"></p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button id="confirmAction" type="button" class="btn btn-primary">Confirm</button>
+                        <button type="button" class="btn btn-danger" id="confirmActionButton"></button>
                     </div>
                 </div>
             </div>
         </div>
+
+
 
         <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/simplebar.min.js"></script>
@@ -162,34 +188,53 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            let currentCategoryId;
+                                                                                    let currentCategoryId;
+                                                                                    let currentStatus;
 
-            function showConfirmationModal(categoryId) {
-                currentCategoryId = categoryId;
-                $('#confirmationModal').modal('show');
-            }
+                                                                                    function showConfirmationModal(categoryId, status) {
+                                                                                        currentCategoryId = categoryId;
+                                                                                        currentStatus = status;
 
-            $('#confirmAction').click(function () {
-                deleteCategory(currentCategoryId);
-                $('#confirmationModal').modal('hide');
-            });
+                                                                                        let modalTitle = document.getElementById("confirmationModalLabel");
+                                                                                        let modalMessage = document.getElementById("confirmationModalMessage");
+                                                                                        let confirmButton = document.getElementById("confirmActionButton");
 
-            function deleteCategory(categoryId) {
-                $.ajax({
-                    url: '${pageContext.request.contextPath}/admin/deletecategory',
-                    type: 'GET',
-                    data: {
-                        categoryId: categoryId
-                    },
-                    success: function (response) {
-                        console.log("Category deleted successfully. Page will reload.");
-                        location.reload();
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX Error:', xhr.status, status, error);
-                    }
-                });
-            }
+                                                                                        if (status === 0) {
+                                                                                            modalTitle.innerText = "Confirm Deactivation";
+                                                                                            modalMessage.innerText = "Are you sure you want to deactivate this category?";
+                                                                                            confirmButton.innerText = "Deactive";
+                                                                                            confirmButton.className = "btn btn-danger";
+                                                                                        } else {
+                                                                                            modalTitle.innerText = "Confirm Activation";
+                                                                                            modalMessage.innerText = "Are you sure you want to activate this category?";
+                                                                                            confirmButton.innerText = "Activate";
+                                                                                            confirmButton.className = "btn btn-success";
+                                                                                        }
+
+                                                                                        $('#confirmationModal').modal('show');
+                                                                                    }
+
+                                                                                    $('#confirmActionButton').click(function () {
+                                                                                        changeStatusCategory(currentCategoryId, currentStatus);
+                                                                                        $('#confirmationModal').modal('hide');
+                                                                                    });
+
+                                                                                    function changeStatusCategory(categoryId, currentStatus) {
+                                                                                        $.ajax({
+                                                                                            url: '${pageContext.request.contextPath}/admin/deletecategory',
+                                                                                            type: 'GET',
+                                                                                            data: {
+                                                                                                categoryId: categoryId,
+                                                                                                status: currentStatus
+                                                                                            },
+                                                                                            success: function () {
+                                                                                                location.reload();
+                                                                                            },
+                                                                                            error: function (xhr, status, error) {
+                                                                                                console.error('AJAX Error:', xhr.status, status, error);
+                                                                                            }
+                                                                                        });
+                                                                                    }
         </script>
     </body>
 </html>

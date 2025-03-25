@@ -29,16 +29,23 @@ public class CategoryDAO {
                 return new Category(
                         rs.getInt("category_id"),
                         rs.getString("category_name"),
-                        rs.getString("icon")
+                        rs.getString("icon"),
+                        rs.getInt("status")
                 );
             }
         } catch (Exception ex) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -61,8 +68,12 @@ public class CategoryDAO {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -85,8 +96,12 @@ public class CategoryDAO {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -94,21 +109,30 @@ public class CategoryDAO {
     }
 
     // Phương thức xóa danh mục
-    public void deleteCategory(int categoryId) {
+    public void updateStatusCategory(String categoryId, String status) {
         Connection conn = null;
         PreparedStatement ps = null;
-        String sql = "DELETE FROM category WHERE category_id = ?";
+
+        String sql = "UPDATE `category`\n"
+                + "SET\n"
+                + "`status` = ?\n"
+                + "WHERE `category_id` = ?;";
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
-            ps.setInt(1, categoryId);
+            ps.setString(1, status);
+            ps.setString(2, categoryId);
             ps.executeUpdate();
         } catch (Exception ex) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -151,7 +175,8 @@ public class CategoryDAO {
                 Category category = new Category(
                         rs.getInt("category_id"),
                         rs.getString("category_name"),
-                        rs.getString("icon")
+                        rs.getString("icon"),
+                        rs.getInt("status")
                 );
                 categories.add(category);
             }
@@ -159,9 +184,15 @@ public class CategoryDAO {
             ex.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -201,9 +232,15 @@ public class CategoryDAO {
             ex.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -226,7 +263,8 @@ public class CategoryDAO {
                 Category category = new Category(
                         rs.getInt("category_id"),
                         rs.getString("category_name"),
-                        rs.getString("icon")
+                        rs.getString("icon"),
+                        rs.getInt("status")
                 );
                 categories.add(category);
             }
@@ -234,9 +272,15 @@ public class CategoryDAO {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -260,16 +304,23 @@ public class CategoryDAO {
                 return new Category(
                         rs.getInt("category_id"),
                         rs.getString("category_name"),
-                        rs.getString("icon")
+                        rs.getString("icon"),
+                        rs.getInt("status")
                 );
             }
         } catch (Exception ex) {
             Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 Logger.getLogger(CategoryDAO.class.getName()).log(Level.SEVERE, null, e);
             }

@@ -330,9 +330,11 @@ public class CustomerBlogDAO extends DBContext {
         List<Category> list = new ArrayList<>();
 
         // Câu lệnh SQL để lấy tất cả danh mục từ bảng 'category'
-        String sql = "SELECT `category`.`category_id`,\n"
+        String sql = "SELECT \n"
+                + "    `category`.`category_id`,\n"
                 + "    `category`.`category_name`,\n"
-                + "    `category`.`icon` as `category_icon`\n"
+                + "    `category`.`icon` AS `category_icon`,\n"
+                + "    `category`.`status`\n"
                 + "FROM `category`;";
 
         try {
@@ -348,7 +350,8 @@ public class CustomerBlogDAO extends DBContext {
                 Category c = new Category(
                         rs.getInt("category_id"), // Lấy ID danh mục
                         rs.getString("category_name"), // Lấy tên danh mục
-                        rs.getString("category_icon") // Lấy biểu tượng danh mục
+                        rs.getString("category_icon"), // Lấy biểu tượng danh mục
+                        rs.getInt("status")
                 );
 
                 // Thêm đối tượng Category vào danh sách

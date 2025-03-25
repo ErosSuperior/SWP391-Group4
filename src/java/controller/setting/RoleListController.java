@@ -37,9 +37,12 @@ public class RoleListController extends HttpServlet {
                     Logger.getLogger(RoleListController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            case "/admin/addRole" -> request.getRequestDispatcher("/landing/RoleDetail.jsp").forward(request, response);
-            case "/admin/editRole" -> handleEditRoleForm(request, response);
-            case "/admin/deleteRole" -> handleDeleteRole(request, response);
+            case "/admin/addRole" ->
+                request.getRequestDispatcher("/landing/RoleDetail.jsp").forward(request, response);
+            case "/admin/editRole" ->
+                handleEditRoleForm(request, response);
+            case "/admin/deleteRole" ->
+                handleDeleteRole(request, response);
         }
     }
 
@@ -68,7 +71,7 @@ public class RoleListController extends HttpServlet {
         String pageNoParam = request.getParameter("pageNo");
         String nameOrId = request.getParameter("nameOrId");
         int pageNo = (pageNoParam != null && !pageNoParam.isEmpty()) ? Integer.parseInt(pageNoParam) : 0;
-        int pageSize = 5;
+        int pageSize = 2;
 
         SearchResponse<userRole> searchResponse = roleInit.getRoles(pageNo, pageSize, nameOrId);
 
@@ -100,15 +103,11 @@ public class RoleListController extends HttpServlet {
 
     private void handleDeleteRole(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String roleIdParam = request.getParameter("roleId");
-        if (roleIdParam != null && !roleIdParam.isEmpty()) {
-            try {
-                int roleId = Integer.parseInt(roleIdParam);
-                roleDAO.deleteRole(roleId);
-                response.setStatus(HttpServletResponse.SC_OK);
-            } catch (NumberFormatException e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid role ID");
-            }
+        String roleId = request.getParameter("roleId");
+        String status = request.getParameter("status");
+        if (roleId != null && !roleId.isEmpty()) {
+            roleDAO.updateStautsRole(roleId,status);
+            response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Role ID is required");
         }
