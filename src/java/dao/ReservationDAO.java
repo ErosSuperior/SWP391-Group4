@@ -838,7 +838,7 @@ public class ReservationDAO extends DBContext {
                 + "AND payment_status = 1 "
                 + "AND staff_id = ?");
         if (nameOrId != null && !nameOrId.isEmpty()) {
-            query.append(" AND (r.note LIKE ? OR r.reservation_id = ?)");
+            query.append(" AND (r.note LIKE ? OR rd.reservation_detail_id = ?)");
         }
 
         if (connection == null) {
@@ -916,4 +916,38 @@ public class ReservationDAO extends DBContext {
         }
         return null; // Return null if not found or error occurs
     }
+
+    public boolean updateChild(int reservationDetailId, int childrenId) {
+        String sql = "UPDATE reservation_detail SET children_id = ? WHERE reservation_detail_id = ?";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, childrenId);
+            st.setInt(2, reservationDetailId);
+
+            int rowsUpdated = st.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public int countChildrenNotNull(int reservationDetailId) {
+        String sql = "SELECT COUNT(*) FROM reservation_detail WHERE reservation_id = ? AND children_id IS NULL";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, reservationDetailId);
+
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }

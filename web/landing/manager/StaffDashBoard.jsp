@@ -149,16 +149,18 @@
                                                         <td class="p-3">
                                                             <c:choose>
                                                                 <c:when test="${d.slot == '0' && d.children_id == '0'}">
-                                                                    
-                                                                    <button type="button" class="btn btn-icon btn-pills btn-soft-primary view-invoice-btn" onclick="openCustomModal('${d.detail_id}')"><i class="uil uil-clipboard-notes icons"></i></button>
+
+                                                                    <button type="button" class="btn btn-icon btn-pills btn-soft-primary view-invoice-btn" onclick="openCustomModal2('${d.detail_id}')"><i class="uil uil-clipboard-notes icons"></i></button>
                                                                     </c:when>
                                                                     <c:when test="${d.slot != '0' && d.children_id == '0'}">
-                                                                    
-                                                                    
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                    </c:otherwise>
-                                                                </c:choose>
+                                                                    <button type="button" class="btn btn-icon btn-pills btn-soft-success" onclick="openCustomModal1('${d.detail_id}')">
+                                                                        <i class="uil uil-check-circle"></i>
+                                                                    </button>
+
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
@@ -206,23 +208,24 @@
             </main>
             <!--End page-content" -->
         </div>
-        <!-- Modal for confirmation -->
-        <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
-             aria-hidden="true">
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmationModalLabel">Confirm/Cancel Reservation</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                    <div class="modal-header border-bottom p-3">
+                        <h5 class="modal-title" id="myModalLabel">Service Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to confirm/cancel the order?
+                        You have successfully operated the service for the customer?
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button id="confirmAction" type="button" class="btn btn-primary">Confirm</button>
-                    </div>
+                    <form action="${pageContext.request.contextPath}/confirmservice" method="get">
+                        <input type="text" id="detailIdInputc" name="detail_id">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -236,7 +239,7 @@
                     </div>
                     <form action="${pageContext.request.contextPath}/scheduleslot" method="get">
                         <div class="modal-body">
-                            <input type="hidden" id="detailIdInput" name="detail_id" value="" />
+                            <input type="text" id="detailIdInputs" name="detail_id" value="" />
                             <label for="slotDropdown" class="form-label">Select a Slot:</label>
                             <select id="slotDropdown" class="form-select" name="slot" onchange="displaySlotTime()">
                                 <option value="1">Slot 1</option>
@@ -275,60 +278,10 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+        
         <script>
-                                let currentUserId, currentStatus;
-
-                                function showConfirmationModal(userId, newStatus) {
-                                    currentUserId = userId;
-                                    currentStatus = newStatus;
-                                    $('#confirmationModal').modal('show');
-                                }
-
-                                $('#confirmAction').click(function () {
-                                    updateStatus(currentUserId, currentStatus);
-                                    $('#confirmationModal').modal('hide'); // Hide modal after confirmation
-                                });
-
-                                function updateStatus(userId, newStatus) {
-                                    console.log(userId);
-                                    console.log(newStatus);
-                                    $.ajax({
-                                        url: '${pageContext.request.contextPath}/dashboardReservationStatuschange',
-                                        type: 'POST',
-                                        data: {
-                                            resId: userId,
-                                            resStatus: newStatus
-                                        },
-                                        success: function (response) {
-                                            console.log("AJAX request successful. Page will reload.");
-                                            location.reload();
-                                        },
-                                        error: function (xhr, status, error) {
-                                            console.error('AJAX Error:', xhr.status, status, error);
-                                            // Optionally show an error message in the modal or elsewhere
-                                        }
-                                    });
-                                }
-
-                                document.addEventListener("DOMContentLoaded", function () {
-                                    document.querySelectorAll("[data-bs-target='#exampleModal']").forEach(button => {
-                                        button.addEventListener("click", function () {
-                                            let imageUrl = this.getAttribute("data-detail"); // Get image URL from data attribute
-                                            let modalImage = document.getElementById("modalServiceDetail");
-
-                                            if (imageUrl) {
-                                                modalImage.src = imageUrl;
-                                                modalImage.style.display = "block"; // Show image
-                                            } else {
-                                                modalImage.style.display = "none"; // Hide if no image
-                                            }
-                                        });
-                                    });
-                                });
-        </script>
-        <script>
-            function openCustomModal(detailId) {
-                document.getElementById('detailIdInput').value = detailId;
+            function openCustomModal2(detailId) {
+                document.getElementById('detailIdInputs').value = detailId;
                 var customModal = new bootstrap.Modal(document.getElementById('customModal'));
                 customModal.show();
             }
@@ -344,6 +297,15 @@
                 };
                 const selectedSlot = document.getElementById('slotDropdown').value;
                 document.getElementById('slotTime').textContent = 'Time: ' + slotTimes[selectedSlot];
+            }
+        </script>
+        <script>
+            function openCustomModal1(detailId) {
+                // Set the detail_id in the hidden input
+                document.getElementById('detailIdInputc').value = detailId;
+                // Show the modal
+                var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+                myModal.show();
             }
         </script>
 

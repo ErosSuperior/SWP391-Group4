@@ -23,7 +23,7 @@ import model.User;
  *
  * @author ADMIN
  */
-@WebServlet(name = "StaffDashboardController", urlPatterns = {"/StaffDashboardController", "/scheduleslot"})
+@WebServlet(name = "StaffDashboardController", urlPatterns = {"/StaffDashboardController", "/scheduleslot", "/confirmservice"})
 public class StaffDashboardController extends HttpServlet {
 
     ReservationDAO resDao = new ReservationDAO();
@@ -75,6 +75,9 @@ public class StaffDashboardController extends HttpServlet {
                 break;
             case "/scheduleslot":
                 handleScheduleSlot(request, response);
+                break;
+            case "/confirmservice":
+                handleServiceCompleted(request, response);
                 break;
         }
     }
@@ -197,6 +200,32 @@ public class StaffDashboardController extends HttpServlet {
         }
     }
 
+    private void handleServiceCompleted(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String detail_idparam = request.getParameter("detail_id");
+        
+        try{
+            int detail_id = Integer.parseInt(detail_idparam);
+            boolean check = resDao.updateChild(detail_id, 1);
+            if(check){
+                int reservation_id = resDao.getReservationIdByDetailId(detail_id);
+                System.out.println(reservation_id);
+                int countservicecompleted = resDao.countChildrenNotNull(reservation_id);
+                System.out.println(countservicecompleted);
+                if(countservicecompleted == 0){
+                    resDao.updateReservationStatus(reservation_id, 3);
+                    handleListReservationStaff(request, response);
+                }else{
+                    handleListReservationStaff(request, response);
+                }
+            }else{
+                handleListReservationStaff(request, response);
+            }
+            handleListReservationStaff(request, response);
+        }catch(NumberFormatException e){
+            handleListReservationStaff(request, response);
+        }
+    }
     @Override
     public String getServletInfo() {
         return "Short description";
