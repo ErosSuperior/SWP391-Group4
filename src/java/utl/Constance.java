@@ -17,7 +17,7 @@ public class Constance {
     final public static String SERVERNAME = "localhost";
     final public static String DATABASENAME = "test123";
     final public static String USER_ACCOUNT_DATABASE = "root";
-    final public static String USER_PASS_DATABASE = "123456";
+    final public static String USER_PASS_DATABASE = "1234";
 
     /**
      * setup gửi gmail

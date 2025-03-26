@@ -45,4 +45,11 @@ public class ReservationInit {
     public Reservation getReservationById(int reservationId) {
         return reservationDao.getReservationById(reservationId);
     }
+    
+     public SearchResponse<Reservation> getReservationDetailOnStaff(int pageNo, int pageSize, String nameOrId, int staff_id, String sortBy, String sortDir) {
+        int offset = pageNo * pageSize;
+        List<Reservation> users = reservationDao.getReservationDetailofStaff(offset, pageSize, nameOrId, staff_id, sortBy, sortDir);
+        int totalElements = reservationDao.countReservationDetailofStaff(nameOrId, staff_id);
+        return new SearchResponse<>(totalElements, users, pageNo, pageSize);
+    }
 }

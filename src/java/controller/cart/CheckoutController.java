@@ -94,7 +94,6 @@ public class CheckoutController extends HttpServlet {
         String phone = request.getParameter("phone"); // Lấy dữ liệu từ JSP gửi xuống 
         String email = request.getParameter("email"); // Lấy dữ liệu từ JSP gửi xuống 
         String address = request.getParameter("address"); // Lấy dữ liệu từ JSP gửi xuống 
-        String paymentMethod = request.getParameter("paymentMethod"); // Lấy dữ liệu từ JSP gửi xuống 
         String total = request.getParameter("total"); // Lấy dữ liệu từ JSP gửi xuống 
         String note = request.getParameter("note"); // Lấy dữ liệu từ JSP gửi xuống 
 
@@ -117,8 +116,6 @@ public class CheckoutController extends HttpServlet {
             return; // Ngăn chặn hành động 
         }
         
-        if (paymentMethod.equalsIgnoreCase("cod")) { // Nếu ko có service hết hạn và phương thức thanh toán COD
-
             boolean result = d.checkoutService(total, note, name, phone, email, address, user_id); // Gọi hàm để cập nhật thông tin cho kahcs hàng
 
             if (result) { // Kiểm tra xem cập nhật thành công hay k 
@@ -126,9 +123,6 @@ public class CheckoutController extends HttpServlet {
             } else {
                 response.sendRedirect(request.getContextPath() + "/error"); // Không chuyển đến trang lỗi
             }
-        } else {
-// Phương thức thanh toán ONL
-        }
     }
 
     /**

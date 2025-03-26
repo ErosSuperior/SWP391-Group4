@@ -174,7 +174,7 @@ public class UserDAO extends DBContext {
 
     public List<User> getAllStaffNotBusy() {
         List<User> staffList = new ArrayList<>();
-        String query = "SELECT * FROM users WHERE role_id = 2 AND user_status != 3";
+        String query = "SELECT * FROM users WHERE role_id = 3 AND user_status != 3";
 
         try {
 

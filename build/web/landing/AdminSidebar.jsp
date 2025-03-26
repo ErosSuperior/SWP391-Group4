@@ -16,7 +16,7 @@
         <ul class="sidebar-menu pt-3">
             
             <c:if test="${sessionScope.account.role_id == 3}">
-            <li><a href="${pageContext.request.contextPath}/nav/dashboard"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
+            <li><a href="${pageContext.request.contextPath}/StaffDashboardController"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>
             </c:if>
             
             <c:if test="${sessionScope.account.role_id == 2}">

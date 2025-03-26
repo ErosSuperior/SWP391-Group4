@@ -30,107 +30,108 @@
         <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/slick.css"/>
         <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/slick-theme.css"/>
 
+        <style>
+            .slider {
+                max-width: 80%;
+                margin: auto;
+                padding: 20px;
+            }
+
+            .slick-slider {
+                width: 100%;
+            }
+
+            .slider-item {
+                position: relative;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .slider-image {
+                width: 100%;
+                height: 700px;
+                object-fit: cover;
+                border-radius: 10px;
+            }
+
+            .slider-overlay {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+                text-align: center;
+                background: rgba(0, 0, 0, 0.6);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+            }
+
+            .slider-title {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .slider-note {
+                font-size: 16px;
+                opacity: 0.9;
+            }
+            .slick-prev.slick-arrow,
+            .slick-next.slick-arrow {
+                position: absolute;
+                z-index: 100;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0.8;
+                transition: opacity 0.3s ease, transform 0.2s ease;
+            }
+
+
+            .slick-prev::before,
+            .slick-next::before {
+                font-size: 30px;
+                font-weight: bold;
+                color: white;
+            }
+
+            .slick-prev {
+                left: 10px;
+            }
+
+            .slick-next {
+                right: 10px;
+            }
+
+            .blog-title {
+                text-align: center;
+                font-size: 2.5rem;
+                font-weight: bold;
+                margin-bottom: 30px;
+                color: #007bff;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+            }
+            .card {
+                transition: 0.3s;
+                border-radius: 10px;
+            }
+            .card:hover {
+                transform: scale(1.05);
+                box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            }
+            .card img {
+                border-radius: 10px 10px 0 0;
+                height: 200px;
+                object-fit: cover;
+            }
+        </style>
     </head>
 
-    <style>
-        .slider {
-            max-width: 80%;
-            margin: auto;
-            padding: 20px;
-        }
 
-        .slick-slider {
-            width: 100%;
-        }
-
-        .slider-item {
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .slider-image {
-            width: 100%;
-            height: 700px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .slider-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .slider-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .slider-note {
-            font-size: 16px;
-            opacity: 0.9;
-        }
-        .slick-prev.slick-arrow,
-        .slick-next.slick-arrow {
-            position: absolute;
-            z-index: 100;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0.8;
-            transition: opacity 0.3s ease, transform 0.2s ease;
-        }
-
-
-        .slick-prev::before,
-        .slick-next::before {
-            font-size: 30px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .slick-prev {
-            left: 10px;
-        }
-
-        .slick-next {
-            right: 10px;
-        }
-
-        .blog-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 30px;
-            color: #007bff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .card {
-            transition: 0.3s;
-            border-radius: 10px;
-        }
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        .card img {
-            border-radius: 10px 10px 0 0;
-            height: 200px;
-            object-fit: cover;
-        }
-    </style>
     <body>
         <!-- Loader -->
         <div id="preloader">
@@ -329,12 +330,12 @@
         <!-- Main Js -->
         <script src="<%= request.getContextPath() %>/assets/js/app.js"></script>
         <script>
-                                        $('.slick-slider').slick({
-                                            infinite: true,
-                                            speed: 1000,
-                                            autoplay: true,
-                                            autoplaySpeed: 1000,
-                                        });
+            $('.slick-slider').slick({
+                infinite: true,
+                speed: 1000,
+                autoplay: true,
+                autoplaySpeed: 1000,
+            });
         </script>
     </body>
 </html>

@@ -754,19 +754,37 @@ public class ReservationDAO extends DBContext {
         return -1;
     }
 
+    public int getReservationCountHandledByStaff(int staff_id) {
+        String sql = "SELECT COUNT(*) AS reservation_count FROM reservation_detail WHERE staff_id = ? AND children_id IS NOT NULL";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, staff_id); // Set the value for the placeholder "?"
+
+            ResultSet rs = st.executeQuery(); // Execute the query
+            if (rs.next()) {
+                return rs.getInt("reservation_count"); // Retrieve the count from the result set
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Print the exception for debugging
+        }
+        return 0;
+    }
+
     public List<Reservation> getReservationDetailofStaff(int offset, int limit, String nameOrId, int staff_id, String sortBy, String sortDir) {
         List<Reservation> reservations = new ArrayList<>();
-        StringBuilder query = new StringBuilder("SELECT r.*, rd.*, s.* "
+        StringBuilder query = new StringBuilder("SELECT r.reservation_id, r.reservation_status, r.payment_status, r.note, rd.reservation_detail_id, rd.slot, rd.staff_id, rd.begin_time, rd.children_id, s.service_title, s.service_id "
                 + "FROM reservation_detail rd "
                 + "LEFT JOIN reservation r ON r.reservation_id = rd.reservation_id "
                 + "LEFT JOIN service s ON s.service_id = rd.service_id "
                 + "WHERE 1=1 "
-                + "AND slot IS NULL "
+                + "AND children_id IS NULL "
+                + "AND payment_status = 1 "
                 + "AND reservation_status = 2 "
-                + "AND staff_id = ?");
+                + "AND staff_id = ? ");
 
         if (nameOrId != null && !nameOrId.isEmpty()) {
-            query.append(" AND (note LIKE ? OR reservation_id = ?)");
+            query.append(" AND (r.note LIKE ? OR rd.reservation_detail_id = ?)");
         }
 
         query.append(" ORDER BY ").append(sortBy).append(" ").append(sortDir.equalsIgnoreCase("ASC") ? "ASC" : "DESC");
@@ -799,6 +817,8 @@ public class ReservationDAO extends DBContext {
                 s.setSlot(rs.getInt("slot"));
                 s.setService_title(rs.getString("service_title"));
                 s.setBegin_time(rs.getDate("begin_time"));
+                s.setChildren_id(rs.getInt("children_id"));
+                s.setNote(rs.getString("note"));
                 reservations.add(s);
             }
         } catch (Exception e) {
@@ -806,4 +826,94 @@ public class ReservationDAO extends DBContext {
         return reservations;
     }
 
+    public int countReservationDetailofStaff(String nameOrId, int staff_id) {
+        int count = 0;
+        StringBuilder query = new StringBuilder("SELECT COUNT(*) "
+                + "FROM reservation_detail rd "
+                + "LEFT JOIN reservation r ON r.reservation_id = rd.reservation_id "
+                + "LEFT JOIN service s ON s.service_id = rd.service_id "
+                + "WHERE 1=1 "
+                + "AND children_id IS NULL "
+                + "AND reservation_status = 2 "
+                + "AND payment_status = 1 "
+                + "AND staff_id = ?");
+        if (nameOrId != null && !nameOrId.isEmpty()) {
+            query.append(" AND (r.note LIKE ? OR r.reservation_id = ?)");
+        }
+
+        if (connection == null) {
+            System.err.println("Database connection is not available.");
+            return 0; // Return empty list if connection failed
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query.toString())) {
+            int index = 1;
+            preparedStatement.setInt(index++, staff_id);
+            if (nameOrId != null && !nameOrId.isEmpty()) {
+                preparedStatement.setString(index++, "%" + nameOrId + "%");
+                preparedStatement.setString(index++, nameOrId);
+            }
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return count;
+    }
+
+    public boolean updateSlot(int reservationDetailId, int slot) {
+        String sql = "UPDATE reservation_detail SET slot = ? WHERE reservation_detail_id = ?";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, slot);
+            st.setInt(2, reservationDetailId);
+
+            int rowsUpdated = st.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public int getReservationIdByDetailId(int reservationDetailId) {
+        String sql = "SELECT reservation_id FROM reservation_detail WHERE reservation_detail_id = ?";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, reservationDetailId);
+
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("reservation_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Return -1 if not found or error occurs
+    }
+
+    public String getServiceTitleByDetailId(int reservationDetailId) {
+        String sql = "SELECT s.service_title "
+                + "FROM service s "
+                + "JOIN reservation_detail rd ON s.service_id = rd.service_id "
+                + "WHERE rd.reservation_detail_id = ?";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, reservationDetailId);
+
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getString("service_title");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if not found or error occurs
+    }
 }

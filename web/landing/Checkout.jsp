@@ -148,16 +148,7 @@ m<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                                 <h5 class="mb-3 mt-4 pt-4 border-top">Payment</h5>
 
                                 <div class="my-3">
-                                    <div class="form-check">
-                                        <input id="cod" name="paymentMethod" type="radio" value="cod" class="form-check-input"
-                                               checked required>
-                                        <label class="form-check-label" for="cod">Cash on Delivery</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input id="onl" name="paymentMethod" type="radio" value="onl" class="form-check-input"
-                                               required>
-                                        <label class="form-check-label" for="onl">Digital payment</label>
-                                    </div>
+                                    
                                 </div>
                                 <button class="w-100 btn btn-primary" type="submit">Continue to checkout</button>
                             </form>

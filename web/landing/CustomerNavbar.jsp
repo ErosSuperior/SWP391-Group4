@@ -87,7 +87,7 @@
                 </li>
 
                 <c:if test="${sessionScope.account.role_id == 3}">
-                    <li> <a href="${pageContext.request.contextPath}/nav/dashboard" class="sub-menu-item">Admin</a></li>
+                    <li> <a href="${pageContext.request.contextPath}/StaffDashboardController" class="sub-menu-item">Admin</a></li>
                 </c:if>
                     
                 <c:if test="${sessionScope.account.role_id == 2}">
