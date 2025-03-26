@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import model.User;
 import model.UserRegister;
 
-@WebServlet(name="RegisterServlet", urlPatterns = {"/register"})
+@WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
 public class RegisterServlet extends HttpServlet {
 
     @Override
@@ -23,26 +23,76 @@ public class RegisterServlet extends HttpServlet {
         // Hiển thị trang đăng ký
         request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Lấy thông tin đăng ký từ form
+        // Lấy thông tin từ form
         String username = request.getParameter("username");
-        // Giả sử form gửi về "true" hoặc "false" cho giới tính (nếu dùng radio button, hãy chuyển đổi phù hợp)
-        String genderParam = request.getParameter("gender");  
-        boolean gender = Boolean.parseBoolean(genderParam);
+        String genderParam = request.getParameter("gender");
+        boolean gender = (genderParam != null) && Boolean.parseBoolean(genderParam);
         String address = request.getParameter("address");
         String useremail = request.getParameter("useremail");
         String phone = request.getParameter("phone");
         String password = request.getParameter("password");
         String repeatpassword = request.getParameter("repeatpassword");
 
-        // Khởi tạo đối tượng gửi email và lấy mã xác minh ngẫu nhiên (ví dụ 6 ký tự/digits)
+        // Định dạng regex
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        String phoneRegex = "^[0-9]{10,11}$";
+        String passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$";
+
+        // Kiểm tra dữ liệu hợp lệ
+        if (!Pattern.matches(emailRegex, useremail)) {
+            request.setAttribute("r", "❌ Invalid email format! Please use a valid email address (example: user@example.com)");
+            request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
+            return;
+        }
+
+        if (username.length() < 3) {
+            request.setAttribute("r", "❌ Full name must be at least 3 characters! Please enter your full name.");
+            request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
+            return;
+        }
+
+        if (address.length() < 5) {
+            request.setAttribute("r", "❌ Address must be at least 5 characters! Please provide a complete address.");
+            request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
+            return;
+        }
+
+        if (!Pattern.matches(phoneRegex, phone)) {
+            request.setAttribute("r", "❌ Phone number must be 10-11 digits! Please enter a valid phone number without spaces or special characters.");
+            request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
+            return;
+        }
+
+        if (!Pattern.matches(passwordRegex, password)) {
+            request.setAttribute("r", "❌ Password must be at least 6 characters and contain both letters and numbers!\n" +
+                              "Example: Password123");
+            request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
+            return;
+        }
+
+        if (!password.equals(repeatpassword)) {
+            request.setAttribute("r", "❌ Passwords do not match! Please make sure both password fields are identical.");
+            request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
+            return;
+        }
+
+        // Kiểm tra email đã tồn tại chưa
+        UserDAO accountDao = new UserDAO();
+        User account = accountDao.checkAccountExit(useremail);
+        if (account != null) {
+            request.setAttribute("r", "❌ Account already exists! An account with this email address is already registered.\n" +
+                              "Please try logging in or use a different email address.");
+            request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
+            return;
+        }
+
+        // Nếu hợp lệ, tiếp tục gửi email xác nhận
         SendEmailRegister sm = new SendEmailRegister();
         String code = sm.getRandom();
-        
-        // Lưu các thông tin đăng ký vào session (sử dụng mã code làm "formid" để phân biệt nếu cần nhiều phiên đăng ký)
         HttpSession session = request.getSession();
         session.setAttribute("username" + code, username);
         session.setAttribute("gender" + code, gender);
@@ -52,36 +102,17 @@ public class RegisterServlet extends HttpServlet {
         session.setAttribute("password" + code, password);
         session.setAttribute("repeatpassword" + code, repeatpassword);
 
+        UserRegister userReg = new UserRegister(username, useremail, code);
+        String text = "Hello " + userReg.getName() + ", your verification code is: " + userReg.getCode();
 
-        UserDAO accountDao = new UserDAO();
-        // Kiểm tra xem tài khoản (dựa theo email) đã tồn tại chưa
-        User account = accountDao.checkAccountExit(useremail);
-        if (account != null) {
-            request.setAttribute("r", "Account already exists!");
-            request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
-            return;
-        } else if (!password.equals(repeatpassword)) {
-            request.setAttribute("r", "Password does not match repeat password!");
-            request.getRequestDispatcher("landing/signup.jsp").forward(request, response);
-            return;
+        boolean emailSent = sm.sendEmail(userReg, text);
+        if (emailSent) {
+            session.setAttribute("authcode" + code, userReg);
+            request.setAttribute("formid", code);
+            request.getRequestDispatcher("landing/verifyRegister.jsp").forward(request, response);
         } else {
-            // Tạo đối tượng UserRegister với tên, email và mã xác minh
-            UserRegister userReg = new UserRegister(username, useremail, code);
-            String text = "Hello " + userReg.getName() + ". You have successfully registered. Your verification code is: " 
-                    + userReg.getCode() + ". Please use this code to activate your account!";
-            
-            // Gửi email xác minh
-            boolean emailSent = sm.sendEmail(userReg, text);
-            if (emailSent) {
-                // Lưu đối tượng xác minh vào session
-                session.setAttribute("authcode" + code, userReg);
-                // Gửi mã formid (code) sang trang xác minh
-                request.setAttribute("formid", code);
-                request.getRequestDispatcher("landing/verifyRegister.jsp").forward(request, response);
-            } else {
-                try (PrintWriter out = response.getWriter()) {
-                    out.println("Failed to send verification email!");
-                }
+            try (PrintWriter out = response.getWriter()) {
+                out.println("Failed to send verification email!");
             }
         }
     }
