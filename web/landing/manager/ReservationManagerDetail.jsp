@@ -69,7 +69,7 @@
                                             <div class="col-md-4">
                                                 <div class="mb-3">
                                                     <label class="form-label">Status</label>
-                                                    <input name="status" type="text" value="${reservation.status == 0 ? 'Pending' : reservation.status == 1 ? 'Confirmed' : reservation.status == 2 ? 'Cancelled' : 'Unknown'}" class="form-control" readonly>
+                                                    <input name="status" type="text" value="${reservation.status == 0 ? 'Pending' : reservation.status == 1 ? 'Not Yet' : reservation.status == 2 ? 'Confirmed (Not Operated)' : reservation.status == 3 ? 'Confirmed (Operated)':reservation.status == 4 ? 'Cancelled':reservation.status == 5 ? 'Operating':'Unknown'}" class="form-control" readonly>
                                                 </div>
                                             </div>
 
@@ -104,4 +104,24 @@
                                             <div class="col-md-4">
                                                 <div class="mb-3">
                                                     <label class="form-label">Receiver Number</label>
-                                                    <input name="receiver_number" type="text
+                                                    <input name="receiver_number" type="text" value="${reservation.receiver_number}" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div> <!-- Đóng div.row -->
+                                    </form>
+                                </div> <!-- Đóng div.card -->
+                            </div> <!-- Đóng div.col-md-12 -->
+                        </div>
+                    </div>                     <!-- Đóng div.layout-specing -->
+            </main> <!-- Đóng main.page-content -->
+        </div> <!-- Đóng div.page-wrapper -->
+
+        <!-- Bootstrap -->
+        <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
+        <!-- Icons -->
+        <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
+        <!-- Main Js -->
+        <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
+
+    </body>
+</html>

@@ -232,7 +232,7 @@
                                     <p class="card-text text-muted">Tác giả: <strong>${b.authorName}</strong></p>
                                     <p class="card-text">${b.blogDetail}</p>
                                     <p class="text-muted"><small>Ngày đăng: ${b.blogCreatedDate}</small></p>
-                                    <a href="#" class="btn btn-primary">Đọc thêm</a>
+                                    <a href="${pageContext.request.contextPath}/blogdetail?blogId=${b.blogId}" class="btn btn-primary">Đọc thêm</a>
                                 </div>
                             </div>
                         </div>

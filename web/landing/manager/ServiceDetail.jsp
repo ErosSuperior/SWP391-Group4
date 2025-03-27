@@ -120,15 +120,15 @@
                                                             <div class="alert alert-danger" style="margin-top: 10px;">${error}</div>
                                                         </c:if>
                                                     </div>
-<!--                                                    <div class="col-md-4">
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Status</label>
-                                                            <select name="status" id="status" class="form-control">
-                                                                <option value="1" ${service.serviceStatus == 1 ? 'selected' : ''}>Active</option>
-                                                                <option value="0" ${service.serviceStatus == 0 ? 'selected' : ''}>Disabled</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>    -->
+                                                    <!--                                                    <div class="col-md-4">
+                                                                                                            <div class="mb-3">
+                                                                                                                <label class="form-label">Status</label>
+                                                                                                                <select name="status" id="status" class="form-control">
+                                                                                                                    <option value="1" ${service.serviceStatus == 1 ? 'selected' : ''}>Active</option>
+                                                                                                                    <option value="0" ${service.serviceStatus == 0 ? 'selected' : ''}>Disabled</option>
+                                                                                                                </select>
+                                                                                                            </div>
+                                                                                                        </div>    -->
                                                 </div>
                                             </form>
                                             </div>
@@ -141,24 +141,24 @@
                                             <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
                                             <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
                                             <script>
-                                                                                function openImage() {
-                                                                                    let imageUrl = document.getElementById('image').value;
-                                                                                    if (imageUrl) {
-                                                                                        window.open(imageUrl, '_blank');
-                                                                                    } else {
-                                                                                        alert("No image URL provided.");
-                                                                                    }
-                                                                                }
-                                                                                function validateForm() {
-                                                                                    let title = document.getElementById('title').value;
-                                                                                    let categoryId = document.getElementById('categoryId').value;
-                                                                                    let price = document.getElementById('price').value;
-                                                                                    if (!title || !categoryId || !price) {
-                                                                                        alert("Please fill in all required fields.");
-                                                                                        return false;
-                                                                                    }
-                                                                                    return true;
-                                                                                }
+                                                            function openImage() {
+                                                                let imageUrl = document.getElementById('image').value;
+                                                                if (imageUrl) {
+                                                                    window.open(imageUrl, '_blank');
+                                                                } else {
+                                                                    alert("No image URL provided.");
+                                                                }
+                                                            }
+                                                            function validateForm() {
+                                                                let title = document.getElementById('title').value;
+                                                                let categoryId = document.getElementById('categoryId').value;
+                                                                let price = document.getElementById('price').value;
+                                                                if (!title || !categoryId || !price) {
+                                                                    alert("Please fill in all required fields.");
+                                                                    return false;
+                                                                }
+                                                                return true;
+                                                            }
                                             </script>
                                             </main>
                                             </div>

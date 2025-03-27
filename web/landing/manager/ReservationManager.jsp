@@ -118,8 +118,8 @@
                                                         </td>
                                                         <td>
                                                             <c:choose>
-                                                                <c:when test="${r.payment_status == 0}">Unpaid</c:when>
-                                                                <c:when test="${r.payment_status == 1}">Paid</c:when>
+                                                                <c:when test="${r.payment_status == 0}"><span class="badge bg-soft-danger">Unpaid</span></c:when>
+                                                                <c:when test="${r.payment_status == 1}"><span class="badge bg-soft-success">Paid </span></c:when>
                                                                 <c:otherwise>Unknown</c:otherwise>
                                                             </c:choose>
                                                         </td>
