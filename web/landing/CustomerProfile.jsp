@@ -313,7 +313,13 @@
                     const oldPass = oldPassInput.value.trim();
                     const newPass = newPassInput.value.trim();
                     const confPass = confPassInput.value.trim();
-
+                    const hasSpace = /\s/;
+                    if (!oldPass || !newPass || !confPass || hasSpace.test(oldPass) || hasSpace.test(newPass) || hasSpace.test(confPass)) {
+                        errorMessage.innerText = "Invalid password! It cannot be empty or contain spaces.";
+                        errorMessage.style.display = "block";
+                        event.preventDefault();
+                        return;
+                    }
                     if (oldPass === "" || newPass === "" || confPass === "") {
                         errorMessage.innerText = "Invalid password! It cannot be empty or contain only spaces.";
                         errorMessage.style.display = "block";
