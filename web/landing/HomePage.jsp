@@ -253,7 +253,7 @@
                                     <h5 class="card-title">${service.serviceTitle}</h5>
                                     <p class="card-text">${service.serviceDetail}</p>
                                     <p><strong>Rate:</strong> ${service.serviceRateStar} ⭐</p>
-                                    <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}" class="btn btn-primary">View Service</a>
+                                    <a href="${pageContext.request.contextPath}customerdetailService?serviceId=${service.serviceId}" class="btn btn-primary">View Service</a>
                                 </div>
                             </div>
                         </div>
@@ -261,38 +261,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- Partners start -->
-        <section class="py-4 bg-light">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-2 col-md-2 col-6 text-center py-4">
-                        <img src="<%= request.getContextPath() %>/assets/images/client/amazon.png" class="avatar avatar-client" alt="">
-                    </div><!--end col-->
-
-                    <div class="col-lg-2 col-md-2 col-6 text-center py-4">
-                        <img src="<%= request.getContextPath() %>/assets/images/client/google.png" class="avatar avatar-client" alt="">
-                    </div><!--end col-->
-
-                    <div class="col-lg-2 col-md-2 col-6 text-center py-4">
-                        <img src="<%= request.getContextPath() %>/assets/images/client/lenovo.png" class="avatar avatar-client" alt="">
-                    </div><!--end col-->
-
-                    <div class="col-lg-2 col-md-2 col-6 text-center py-4">
-                        <img src="<%= request.getContextPath() %>/assets/images/client/paypal.png" class="avatar avatar-client" alt="">
-                    </div><!--end col-->
-
-                    <div class="col-lg-2 col-md-2 col-6 text-center py-4">
-                        <img src="<%= request.getContextPath() %>/assets/images/client/shopify.png" class="avatar avatar-client" alt="">
-                    </div><!--end col-->
-
-                    <div class="col-lg-2 col-md-2 col-6 text-center py-4">
-                        <img src="<%= request.getContextPath() %>/assets/images/client/spotify.png" class="avatar avatar-client" alt="">
-                    </div><!--end col-->
-                </div><!--end row-->
-            </div><!--end container-->
-        </section><!--end section-->
-        <!-- Partners End -->
 
         <!-- Start -->
         <jsp:include page="Footer.jsp"/>
