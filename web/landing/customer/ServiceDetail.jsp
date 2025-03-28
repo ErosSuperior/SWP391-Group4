@@ -70,7 +70,7 @@
                             <nav aria-label="breadcrumb" class="d-inline-block mt-3">
                                 <ul class="breadcrumb bg-light rounded mb-0 bg-transparent">
                                     <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/home">Home</a></li>
-                                    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/customer/customerlistService">Service List</a></li>
+                                    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/customerlistService">Service List</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Service Detail</li>
                                 </ul>
                             </nav>
@@ -203,12 +203,12 @@
                                 <div class="tiny-slide">
                                     <div class="card shop-list border-0">
                                         <div class="shop-image position-relative overflow-hidden">
-                                            <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}">
+                                            <a href="${pageContext.request.contextPath}/customerdetailService?serviceId=${service.serviceId}">
                                                 <img src="${service.serviceImage}" class="img-fluid" alt="${service.serviceTitle}">
                                             </a>
                                         </div>
                                         <div class="card-body content pt-4 p-2">
-                                            <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}" class="text-dark product-name h6">
+                                            <a href="${pageContext.request.contextPath}/customerdetailService?serviceId=${service.serviceId}" class="text-dark product-name h6">
                                                 ${service.serviceTitle}
                                             </a>
                                             <div class="d-flex justify-content-between mt-1">
@@ -237,7 +237,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-lg-7">
                         <!-- Feedback List & Pagination (GET) -->
-                        <form action="${pageContext.request.contextPath}/customer/customerdetailService" method="get">
+                        <form action="${pageContext.request.contextPath}/customerdetailService" method="get">
                             <input type="hidden" name="serviceId" value="${serviceId}">
                             <h5 class="card-title mt-4 mb-0">Comments :</h5>
 

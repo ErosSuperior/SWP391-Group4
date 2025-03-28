@@ -30,13 +30,13 @@
 
                     <!-- Dropdown button with user image -->
                     <button type="button" class="btn btn-pills btn-soft-primary dropdown-toggle p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img src="${account.user_image}" class="avatar avatar-ex-small rounded-circle" alt="">
+                        <img src="${userImage}" class="avatar avatar-ex-small rounded-circle" alt="">
                     </button>
 
                     <!-- Dropdown Menu -->
                     <div class="dropdown-menu dd-menu dropdown-menu-end bg-white shadow border-0 mt-3 py-3" style="min-width: 200px;">
                         <a class="dropdown-item d-flex align-items-center text-dark" href="#">
-                            <img src="${account.user_image}" class="avatar avatar-md-sm rounded-circle border shadow" alt="">
+                            <img src="${userImage}" class="avatar avatar-md-sm rounded-circle border shadow" alt="">
                             <div class="flex-1 ms-2">
                                 <span class="d-block mb-1">${not empty sessionScope.account ? sessionScope.account.user_fullname : "Guest User"}</span>
                                 <c:if test="${empty sessionScope.account}">
@@ -83,7 +83,7 @@
                 </li>
 
                 <li class="has-submenu parent-menu-item">
-                    <a href="${pageContext.request.contextPath}/customer/customerlistService">Services</a><span class="sub-menu-item"></span>
+                    <a href="${pageContext.request.contextPath}/customerlistService">Services</a><span class="sub-menu-item"></span>
                 </li>
 
                 <c:if test="${sessionScope.account.role_id == 3}">

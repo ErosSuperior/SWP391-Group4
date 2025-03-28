@@ -67,7 +67,16 @@ public class ChangePasswordController extends HttpServlet {
                 request.getRequestDispatcher("landing/forgot-password.jsp").forward(request, response);
                 break;
             case "/resetpassword":
-                String emailparam = request.getParameter("email");
+                doPost(request,response);
+                break;
+
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String emailparam = request.getParameter("email");
                 UserDAO accountDao = new UserDAO();
                 User account = accountDao.checkAccountExit(emailparam);
                 if (account == null) {
@@ -97,14 +106,6 @@ public class ChangePasswordController extends HttpServlet {
                     request.setAttribute("errorMessage", "Failed to send the email. Please try again.");
                     request.getRequestDispatcher("landing/forgot-password.jsp").forward(request, response);
                 }
-                break;
-
-        }
     }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
+      
 }

@@ -26,7 +26,7 @@ import model.User;
  *
  * @author thang
  */
-@WebServlet(name = "CustomerServiceController", urlPatterns = {"/customer/customerlistService", "/customer/customerdetailService", "/customer/service/addToCart", "/customer/service/serviceFeedBack", "/customer/service/updateRating"})
+@WebServlet(name = "CustomerServiceController", urlPatterns = {"/customerlistService", "/customerdetailService", "/customer/service/addToCart", "/customer/service/serviceFeedBack", "/customer/service/updateRating"})
 public class CustomerServiceController extends HttpServlet {
 
     ServiceDAO serviceDAO = new ServiceDAO();
@@ -58,10 +58,10 @@ public class CustomerServiceController extends HttpServlet {
             throws ServletException, IOException {
         String url = request.getServletPath();
         switch (url) {
-            case "/customer/customerlistService":
+            case "/customerlistService":
                 handleServiceList(request, response);
                 break;
-            case "/customer/customerdetailService":
+            case "/customerdetailService":
                 handleServiceDetail(request, response);
                 break;
             case "/customer/service/addToCart":

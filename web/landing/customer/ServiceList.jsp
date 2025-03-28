@@ -92,7 +92,7 @@
                         <h5 class="mb-0">Browse Your Service</h5>
                     </div><!--end col-->
                 </div><!--end row-->
-                <form action="${pageContext.request.contextPath}/customer/customerlistService" method="get">
+                <form action="${pageContext.request.contextPath}/customerlistService" method="get">
                     <div class="col-md-4">
                         <div class="mt-3">
                             <label class="form-label">Search</label>
@@ -101,7 +101,7 @@
                                        placeholder="Search by name or ID" value="${param.nameOrId}">
                                 <button class="btn btn-primary" type="submit">Search</button>
                                 <button class="btn btn-primary ms-2" type="button"
-                                        onclick="window.location.href = '${pageContext.request.contextPath}/customer/customerlistService'">
+                                        onclick="window.location.href = '${pageContext.request.contextPath}/customerlistService'">
                                     <i class="uil uil-redo"></i>
                                 </button>
                             </div>
@@ -123,7 +123,7 @@
                             <div class="col-lg-3 col-md-6 col-12 mt-4 pt-2">
                                 <div class="card shop-list border-0">
                                     <div class="shop-image position-relative overflow-hidden rounded shadow">
-                                        <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}">
+                                        <a href="${pageContext.request.contextPath}/customerdetailService?serviceId=${service.serviceId}">
                                             <img src="${service.serviceImage}" class="img-fluid" alt="${service.serviceTitle}">
                                         </a>
                                         <ul class="list-unstyled shop-icons">
@@ -138,7 +138,7 @@
                                         </ul>                                
                                     </div>
                                     <div class="card-body content pt-4 p-2">
-                                        <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}" class="text-dark product-name h6">${service.serviceTitle}</a>
+                                        <a href="${pageContext.request.contextPath}/customerdetailService?serviceId=${service.serviceId}" class="text-dark product-name h6">${service.serviceTitle}</a>
                                         <div class="d-flex justify-content-between mt-1">
                                             <h6 class="text-muted small font-italic mb-0 mt-1">
                                                 <s class="text-danger">$${service.servicePrice}</s>  <!-- Strikethrough original price -->
@@ -252,7 +252,7 @@
                         <div class="slider-range-four">
                             <c:forEach var="cat" items="${category}">
                                 <div class="tiny-slide">
-                                    <a href="${pageContext.request.contextPath}/customer/customerlistService?categoryId=${cat.categoryId}" class="card pharpachy-categories border-0 rounded overflow-hidden">
+                                    <a href="${pageContext.request.contextPath}/customerlistService?categoryId=${cat.categoryId}" class="card pharpachy-categories border-0 rounded overflow-hidden">
                                         <img src="${cat.categoryIcon}" class="img-fluid" alt="${cat.categoryTitle}">
                                         <div class="category-title">
                                             <span class="text-dark title-white">
@@ -300,7 +300,7 @@
                                     <li><a href="javascript:void(0)" class="badge badge-pill badge-success">Popular</a></li>
                                 </ul>
                                 <div class="shop-image position-relative overflow-hidden rounded shadow">
-                                    <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}">
+                                    <a href="${pageContext.request.contextPath}/customerdetailService?serviceId=${service.serviceId}">
                                         <img src="<c:out value='${service.serviceImage}'/>" class="img-fluid" alt="">
                                     </a>
                                     <ul class="list-unstyled shop-icons">
@@ -315,7 +315,7 @@
                                     </ul>
                                 </div>
                                 <div class="card-body content pt-4 p-2">
-                                    <a href="${pageContext.request.contextPath}/customer/customerdetailService?serviceId=${service.serviceId}" class="text-dark product-name h6">
+                                    <a href="${pageContext.request.contextPath}/customerdetailService?serviceId=${service.serviceId}" class="text-dark product-name h6">
                                         <c:out value="${service.serviceTitle}" />
                                     </a>
                                     <div class="d-flex justify-content-between mt-1">
