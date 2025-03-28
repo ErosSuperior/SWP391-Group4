@@ -12,8 +12,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Setting;
+import model.User;
 
 @WebServlet(name = "SettingListController", urlPatterns = {"/adminsettinglist"})
 public class SettingListController extends HttpServlet {
@@ -56,6 +58,10 @@ public class SettingListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop further processing if user is not logged in
+        }
         SettingDAO d = new SettingDAO(); // Tạo đối tượng để sử dụng phương thức
         List<Setting> listsetting = d.getAllSetting(); // Lấy list setting
 
@@ -86,4 +92,15 @@ public class SettingListController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private User checkSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+
+        if (account == null || account.getRole_id() != 1) {
+            response.sendRedirect(request.getContextPath() + "/nav/error");
+            return null;  // Stop further processing
+        }
+
+        return account;
+    }
 }

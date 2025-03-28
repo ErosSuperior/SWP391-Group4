@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.SearchResponse;
 import dao.RoleDAO;
 import init.RoleInit;
+import jakarta.servlet.http.HttpSession;
+import model.User;
 import model.userRole;
 
 @WebServlet(name = "RoleListController", urlPatterns = {
@@ -28,6 +30,10 @@ public class RoleListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop further processing if user is not logged in
+        }
         String url = request.getServletPath();
         switch (url) {
             case "/admin/roleList" -> {
@@ -49,6 +55,10 @@ public class RoleListController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop further processing if user is not logged in
+        }
         String url = request.getServletPath();
         switch (url) {
             case "/admin/manageRole" -> {
@@ -146,5 +156,17 @@ public class RoleListController extends HttpServlet {
             request.setAttribute("message", "Invalid role ID");
             request.getRequestDispatcher("/landing/RoleDetail.jsp").forward(request, response);
         }
+    }
+    
+    private User checkSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+
+        if (account == null || account.getRole_id() != 1) {
+            response.sendRedirect(request.getContextPath() + "/nav/error");
+            return null;  // Stop further processing
+        }
+
+        return account;
     }
 }
