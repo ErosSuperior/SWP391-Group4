@@ -223,14 +223,18 @@ public class CustomerDAO extends DBContext {
         return false; // Nếu có lỗi hoặc không tìm thấy, trả về false
     }
 
-    public boolean deleteCustomer(String user_id) {
+    public boolean updateStatusCustomer(String user_id, String stauts) {
         // Hàm xóa khách hàng dựa trên user_id
 
-        String sql = "DELETE FROM users WHERE user_id = ?";
+        String sql = "UPDATE `users`\n"
+                + "SET\n"
+                + "`user_status` = ?\n"
+                + "WHERE `user_id` = ?;";
         // Câu truy vấn xóa người dùng có user_id tương ứng
 
         try (PreparedStatement st = connection.prepareStatement(sql)) {
-            st.setString(1, user_id); // Gán giá trị user_id vào câu truy vấn
+            st.setString(1, stauts); // Gán giá trị user_id vào câu truy vấn
+            st.setString(2, user_id);
 
             int rowsAffected = st.executeUpdate(); // Thực thi câu lệnh DELETE
             return rowsAffected > 0; // Nếu có ít nhất 1 dòng bị xóa, trả về true
@@ -366,7 +370,7 @@ public class CustomerDAO extends DBContext {
                 list.add(c);
             }
         } catch (SQLException e) {
-            System.out.println( e);
+            System.out.println(e);
         }
 
         return list;  // Trả về danh sách lịch sử chỉnh sửa của khách hàng

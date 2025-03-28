@@ -145,11 +145,8 @@ public class UserManagerController extends HttpServlet {
     private void updateStatus(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         try {
-            String userIdParam = request.getParameter("userId");
-            int userId = Integer.parseInt(userIdParam);
-
-            String statusParam = request.getParameter("status");
-            boolean status = "1".equals(statusParam); // Convert "1" to true, "0" to false
+            String userId = request.getParameter("userId");
+            String status = request.getParameter("status"); // Convert "1" to true, "0" to false
 
             userDao.deleteUser(userId, status); // This method actually updates status
             handleUserList(request, response);

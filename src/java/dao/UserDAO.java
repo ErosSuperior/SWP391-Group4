@@ -430,15 +430,15 @@ public class UserDAO extends DBContext {
         }
     }
 
-    public void deleteUser(int userId, boolean status) {
+    public void deleteUser(String userId, String status) {
         Connection conn = null;
         PreparedStatement ps = null;
         String sql = "UPDATE users SET user_status =? WHERE user_id = ?";
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(sql);
-            ps.setBoolean(1, status);
-            ps.setInt(2, userId);
+            ps.setString(1, status);
+            ps.setString(2, userId);
             ps.executeUpdate();
         } catch (Exception ex) {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -567,7 +567,7 @@ public class UserDAO extends DBContext {
         return false;
     }
 
-    public boolean updateProfile(String name,String gender,String phone,String address, String image, String email) {
+    public boolean updateProfile(String name, String gender, String phone, String address, String image, String email) {
         String sql = "UPDATE `users`\n"
                 + "SET\n"
                 + "`user_fullname` = ?,\n"

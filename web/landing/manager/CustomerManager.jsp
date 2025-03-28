@@ -142,7 +142,24 @@
                                                     </td>
                                                     <td class="text-end p-3">
                                                         <a href="customerdetail?user_id=${c.user_id}" class="btn btn-icon btn-pills btn-soft-primary"  style="margin-right: 10px;"><i class="uil uil-eye"></i></a>
-                                                        <a class="btn btn-icon btn-pills btn-soft-danger" data-bs-toggle="modal" onclick="deleteCustomer(${c.user_id});" data-bs-target="#cancelappointment" style="margin-right: 10px; "><i class="uil uil-times-circle"></i></a>
+                                                            <c:choose>
+                                                                <c:when test="${c.user_status == true}">
+                                                                <button class="btn btn-icon btn-pills btn-soft-danger"
+                                                                        data-category-id="${c.user_id}"
+                                                                        onclick="showConfirmationModal(${c.user_id}, 0)"
+                                                                        type="button" title="Deactivate">
+                                                                    <i class="uil uil-ban"></i>
+                                                                </button>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <button class="btn btn-icon btn-pills btn-soft-success"
+                                                                        data-category-id="${c.user_id}"
+                                                                        onclick="showConfirmationModal(${c.user_id}, 1)"
+                                                                        type="button" title="Activate">
+                                                                    <i class="uil uil-check-circle"></i>
+                                                                </button>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                     </td>
                                                 </tr>
                                             </c:forEach>
@@ -159,19 +176,16 @@
                                     <span class="text-muted me-3"></span>
                                     <ul class="pagination justify-content-center mb-0 mt-3 mt-sm-0">
                                         <c:if test="${totalPages > 1}">
-                                            <!-- Nút "Prev" -->
                                             <li class="page-item" style="${page == 1 ? 'display: none;' : ''}">
                                                 <a class="page-link" href="${baseURL}${baseURL.contains('?') ? '&' : '?'}page=${page - 1}" aria-label="Previous">Prev</a>
                                             </li>
 
-                                            <!-- Hiển thị danh sách số trang -->
                                             <c:forEach var="i" begin="1" end="${totalPages}">
                                                 <li class="page-item ${page == i ? 'active' : ''}">
                                                     <a class="page-link" href="${baseURL}${baseURL.contains('?') ? '&' : '?'}page=${i}">${i}</a>
                                                 </li>
                                             </c:forEach>
 
-                                            <!-- Nút "Next" -->
                                             <li class="page-item" style="${page == totalPages ? 'display: none;' : ''}">
                                                 <a class="page-link" href="${baseURL}${baseURL.contains('?') ? '&' : '?'}page=${page + 1}" aria-label="Next">Next</a>
                                             </li>
@@ -186,51 +200,6 @@
                 <!-- End -->
             </main>
             <!--End page-content" -->
-        </div>
-        <!-- page-wrapper -->
-
-        <!-- Offcanvas Start -->
-        <div class="offcanvas offcanvas-end bg-white shadow" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-            <div class="offcanvas-header p-4 border-bottom">
-                <h5 id="offcanvasRightLabel" class="mb-0">
-                    <img src="${pageContext.request.contextPath}/assets/images/logo-dark.png" height="24" class="light-version" alt="">
-                    <img src="${pageContext.request.contextPath}/assets/images/logo-light.png" height="24" class="dark-version" alt="">
-                </h5>
-                <button type="button" class="btn-close d-flex align-items-center text-dark" data-bs-dismiss="offcanvas" aria-label="Close"><i class="uil uil-times fs-4"></i></button>
-            </div>
-            <div class="offcanvas-body p-4 px-md-5">
-                <div class="row">
-                    <div class="col-12">
-                        <!-- Style switcher -->
-                        <div id="style-switcher">
-                            <div>
-                                <ul class="text-center list-unstyled mb-0">
-                                    <li class="d-grid"><a href="javascript:void(0)" class="rtl-version t-rtl-light" onclick="setTheme('style-rtl')"><img src="${pageContext.request.contextPath}/assets/images/layouts/light-dash-rtl.png" class="img-fluid rounded-md shadow-md d-block" alt=""><span class="text-muted mt-2 d-block">RTL Version</span></a></li>
-                                    <li class="d-grid"><a href="javascript:void(0)" class="ltr-version t-ltr-light" onclick="setTheme('style')"><img src="${pageContext.request.contextPath}/assets/images/layouts/light-dash.png" class="img-fluid rounded-md shadow-md d-block" alt=""><span class="text-muted mt-2 d-block">LTR Version</span></a></li>
-                                    <li class="d-grid"><a href="javascript:void(0)" class="dark-rtl-version t-rtl-dark" onclick="setTheme('style-dark-rtl')"><img src="${pageContext.request.contextPath}/assets/images/layouts/dark-dash-rtl.png" class="img-fluid rounded-md shadow-md d-block" alt=""><span class="text-muted mt-2 d-block">RTL Version</span></a></li>
-                                    <li class="d-grid"><a href="javascript:void(0)" class="dark-ltr-version t-ltr-dark" onclick="setTheme('style-dark')"><img src="${pageContext.request.contextPath}/assets/images/layouts/dark-dash.png" class="img-fluid rounded-md shadow-md d-block" alt=""><span class="text-muted mt-2 d-block">LTR Version</span></a></li>
-                                    <li class="d-grid"><a href="javascript:void(0)" class="dark-version t-dark mt-4" onclick="setTheme('style-dark')"><img src="${pageContext.request.contextPath}/assets/images/layouts/dark-dash.png" class="img-fluid rounded-md shadow-md d-block" alt=""><span class="text-muted mt-2 d-block">Dark Version</span></a></li>
-                                    <li class="d-grid"><a href="javascript:void(0)" class="light-version t-light mt-4" onclick="setTheme('style')"><img src="${pageContext.request.contextPath}/assets/images/layouts/light-dash.png" class="img-fluid rounded-md shadow-md d-block" alt=""><span class="text-muted mt-2 d-block">Light Version</span></a></li>
-                                    <li class="d-grid"><a href="${pageContext.request.contextPath}/landing/index.html" target="_blank" class="mt-4"><img src="${pageContext.request.contextPath}/assets/images/layouts/landing-light.png" class="img-fluid rounded-md shadow-md d-block" alt=""><span class="text-muted mt-2 d-block">Landing Demos</span></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- end Style switcher -->
-                    </div><!--end col-->
-                </div><!--end row-->
-            </div>
-
-            <div class="offcanvas-footer p-4 border-top text-center">
-                <ul class="list-unstyled social-icon mb-0">
-                    <li class="list-inline-item mb-0"><a href="https://1.envato.market/doctris-template" target="_blank" class="rounded"><i class="uil uil-shopping-cart align-middle" title="Buy Now"></i></a></li>
-                    <li class="list-inline-item mb-0"><a href="https://dribbble.com/shreethemes" target="_blank" class="rounded"><i class="uil uil-dribbble align-middle" title="dribbble"></i></a></li>
-                    <li class="list-inline-item mb-0"><a href="https://www.facebook.com/shreethemes" target="_blank" class="rounded"><i class="uil uil-facebook-f align-middle" title="facebook"></i></a></li>
-                    <li class="list-inline-item mb-0"><a href="https://www.instagram.com/shreethemes/" target="_blank" class="rounded"><i class="uil uil-instagram align-middle" title="instagram"></i></a></li>
-                    <li class="list-inline-item mb-0"><a href="https://twitter.com/shreethemes" target="_blank" class="rounded"><i class="uil uil-twitter align-middle" title="twitter"></i></a></li>
-                    <li class="list-inline-item mb-0"><a href="mailto:support@shreethemes.in" class="rounded"><i class="uil uil-envelope align-middle" title="email"></i></a></li>
-                    <li class="list-inline-item mb-0"><a href="${pageContext.request.contextPath}/${pageContext.request.contextPath}/${pageContext.request.contextPath}/index.html" target="_blank" class="rounded"><i class="uil uil-globe align-middle" title="website"></i></a></li>
-                </ul><!--end icon-->
-            </div>
         </div>
         <!-- Offcanvas End -->
 
@@ -293,40 +262,25 @@
             </div>
         </div>
         <!-- Add New Appointment End -->
-
-        <!-- Cancel Appointment Start -->
-        <div class="modal fade" id="cancelappointment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-body py-5">
-                        <div class="text-center">
-                            <div class="icon d-flex align-items-center justify-content-center bg-soft-danger rounded-circle mx-auto" style="height: 95px; width:95px;">
-                                <i class="uil uil-times-circle h1 mb-0"></i>
-                            </div>
-                            <form action="customeraction" method="POST">
-                                <div class="mt-4">
-                                    <h4>Delete Customer</h4>
-                                    <input type="hidden" name="service" value="del">
-                                    <input type="hidden" name="user_id" id="deleteuser_id">
-                                    <p class="para-desc mx-auto text-muted mb-0">Do you want to delete this Customer !</p>
-                                    <div class="mt-4">
-                                        <button type="button" class="btn btn-soft-success" data-bs-dismiss="modal">No</button> 
-                                        <button type="submit" class="btn btn-soft-danger">Yes</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmationModalLabel"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="confirmationModalMessage"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmActionButton"></button>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Cancel Appointment End -->
         <!-- Modal end -->
-        <script>
-            function deleteCustomer(user_id) {
-                document.getElementById("deleteuser_id").value = user_id;
-            }
-        </script>
 
         <!-- javascript -->
         <script src="${pageContext.request.contextPath}/assets/js/jquery.min.js"></script>
@@ -346,6 +300,55 @@
         <script src="${pageContext.request.contextPath}/assets/js/feather.min.js"></script>
         <!-- Main Js -->
         <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
+        <script>
+                                            let currentUserId;
+                                            let currentStatus;
 
+                                            function showConfirmationModal(userId, status) {
+                                                currentUserId = userId;
+                                                currentStatus = status;
+
+                                                let modalTitle = document.getElementById("confirmationModalLabel");
+                                                let modalMessage = document.getElementById("confirmationModalMessage");
+                                                let confirmButton = document.getElementById("confirmActionButton");
+
+                                                if (status === 0) {
+                                                    modalTitle.innerText = "Confirm Deactivation";
+                                                    modalMessage.innerText = "Are you sure you want to deactivate this user?";
+                                                    confirmButton.innerText = "Deactive";
+                                                    confirmButton.className = "btn btn-danger";
+                                                } else {
+                                                    modalTitle.innerText = "Confirm Activation";
+                                                    modalMessage.innerText = "Are you sure you want to activate this user?";
+                                                    confirmButton.innerText = "Activate";
+                                                    confirmButton.className = "btn btn-success";
+                                                }
+
+                                                $('#confirmationModal').modal('show');
+                                            }
+
+                                            $('#confirmActionButton').click(function () {
+                                                changeStatusUser(currentUserId, currentStatus);
+                                                $('#confirmationModal').modal('hide');
+                                            });
+
+                                            function changeStatusUser(userId, currentStatus) {
+                                                $.ajax({
+                                                    url: '${pageContext.request.contextPath}/customeraction',
+                                                    type: 'POST',
+                                                    data: {
+                                                        userId: userId,
+                                                        status: currentStatus,
+                                                        service: "del"
+                                                    },
+                                                    success: function () {
+                                                        location.reload();
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        console.error('AJAX Error:', xhr.status, status, error);
+                                                    }
+                                                });
+                                            }
+        </script>
     </body>
 </html>

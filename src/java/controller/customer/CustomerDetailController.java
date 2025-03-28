@@ -90,35 +90,35 @@ public class CustomerDetailController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Lấy thông tin từ request (các trường dữ liệu cần cập nhật)
+        User account = (User) request.getSession().getAttribute("account");
+
+        // Nếu chưa đăng nhập, chuyển hướng về trang chủ
+        if (account == null) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return; // Dừng việc thực hiện tiếp các lệnh bên dưới
+        }
+
+        // Khởi tạo đối tượng DAO để thao tác với cơ sở dữ liệu
+        CustomerDAO d = new CustomerDAO();
+
         String name = request.getParameter("name");       // Tên khách hàng
         String gender = request.getParameter("gender");   // Giới tính
         String phone = request.getParameter("phone");     // Số điện thoại
         String address = request.getParameter("address"); // Địa chỉ
         String user_id = request.getParameter("user_id"); // ID khách hàng
 
-// Khởi tạo đối tượng DAO để thao tác với cơ sở dữ liệu
-        CustomerDAO d = new CustomerDAO();
+        String status = request.getParameter("status");
 
-// Gọi phương thức cập nhật thông tin khách hàng trong cơ sở dữ liệu
-        boolean checkupdate = d.updateCustomer(user_id, name, gender, address, phone);
-
-// Kiểm tra phiên đăng nhập (xác định user đang thao tác)
-        User account = (User) request.getSession().getAttribute("account");
-
-// Nếu chưa đăng nhập, chuyển hướng về trang chủ
-        if (account == null) {
-            response.sendRedirect(request.getContextPath() + "/home");
-            return; // Dừng việc thực hiện tiếp các lệnh bên dưới
+        boolean checkstatus = false;
+        boolean checkupdate = false;
+        if (status != null && !status.isEmpty()) {
+            checkstatus = d.updateStatusCustomer(user_id, status);
+        } else {
+            checkupdate = d.updateCustomer(user_id, name, gender, address, phone);
         }
 
-// Nếu đã đăng nhập, tiếp tục lấy ID của người dùng hiện tại
-        int user_iD = account.getUser_id();
-
-// Cập nhật lịch sử chỉnh sửa thông tin khách hàng
-        boolean checkupdatehistory = d.updateHistory(user_id, name, gender, phone, address, user_iD);
-
-// Kiểm tra kết quả cập nhật, điều hướng trang phù hợp
-        if (checkupdate &&checkupdatehistory) {
+       // Kiểm tra kết quả cập nhật, điều hướng trang phù hợp
+        if (checkupdate || checkstatus) {
             response.sendRedirect("customerdetail?user_id=" + user_id); // Chuyển hướng về trang chi tiết khách hàng
         } else {
             response.sendRedirect("error"); // Chuyển hướng đến trang lỗi nếu cập nhật thất bại

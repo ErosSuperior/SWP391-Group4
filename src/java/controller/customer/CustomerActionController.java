@@ -82,7 +82,7 @@ public class CustomerActionController extends HttpServlet {
 
 // Kiểm tra loại dịch vụ mà người dùng yêu cầu
         if (service.equalsIgnoreCase("add")) { // Nếu yêu cầu là "add" (thêm khách hàng)
-            String image = ""; // Ảnh mặc định cho khách hàng mới
+            String image = "assets/images/avatars/3108.jpg"; // Ảnh mặc định cho khách hàng mới
             String password = UUID.randomUUID().toString().substring(0, 9); // Tạo mật khẩu ngẫu nhiên 9 ký tự
 
             // Kiểm tra xem email có tồn tại trong hệ thống không
@@ -112,10 +112,11 @@ public class CustomerActionController extends HttpServlet {
                 }
             }
         } else if (service.equalsIgnoreCase("del")) { // Nếu yêu cầu là "del" (xóa khách hàng)
-            String user_id = request.getParameter("user_id"); // Lấy user_id của khách hàng cần xóa
-
+            String user_id = request.getParameter("userId"); // Lấy user_id của khách hàng cần xóa
+            String status = request.getParameter("status");
+            
             // Thực hiện xóa khách hàng
-            boolean checkdel = d.deleteCustomer(user_id);
+            boolean checkdel = d.updateStatusCustomer(user_id,status);
 
             if (checkdel) {
                 // Nếu xóa thành công, chuyển hướng về trang danh sách khách hàng
