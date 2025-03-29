@@ -12,7 +12,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.UUID;
+import model.User;
 
 @WebServlet(name = "CustomerActionController", urlPatterns = {"/customeraction"})
 public class CustomerActionController extends HttpServlet {
@@ -55,6 +57,10 @@ public class CustomerActionController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop processing if user is not logged in or not admin
+        }
         request.getRequestDispatcher("landing/manager/AddCustomerManager.jsp").forward(request, response);
     }
 
@@ -69,6 +75,10 @@ public class CustomerActionController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop processing if user is not logged in or not admin
+        }
         // Lấy thông tin từ request do người dùng gửi lên
         String name = request.getParameter("name"); // Tên khách hàng
         String service = request.getParameter("service"); // Dịch vụ (thêm hoặc xóa khách hàng)
@@ -114,9 +124,9 @@ public class CustomerActionController extends HttpServlet {
         } else if (service.equalsIgnoreCase("del")) { // Nếu yêu cầu là "del" (xóa khách hàng)
             String user_id = request.getParameter("userId"); // Lấy user_id của khách hàng cần xóa
             String status = request.getParameter("status");
-            
+
             // Thực hiện xóa khách hàng
-            boolean checkdel = d.updateStatusCustomer(user_id,status);
+            boolean checkdel = d.updateStatusCustomer(user_id, status);
 
             if (checkdel) {
                 // Nếu xóa thành công, chuyển hướng về trang danh sách khách hàng
@@ -127,6 +137,17 @@ public class CustomerActionController extends HttpServlet {
             }
         }
 
+    }
+
+    private User checkSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+
+        if (account == null || account.getRole_id() != 2) { // Chỉ admin (role_id = 1) được truy cập
+            response.sendRedirect(request.getContextPath() + "/nav/error");
+            return null; // Stop further processing
+        }
+        return account;
     }
 
     /**

@@ -401,7 +401,7 @@ public class UserDAO extends DBContext {
         Connection conn = null;
         PreparedStatement ps = null;
         String sql = "UPDATE users SET user_fullname=?, user_gender=?, user_address=?, "
-                + "user_email=?, user_phone=?, role_id=?, user_status=?, user_image=? "
+                + "user_phone=?, role_id=?, user_status=?, user_image=? "
                 + "WHERE user_id=?";
         try {
             conn = new DBContext().getConnection();
@@ -409,12 +409,11 @@ public class UserDAO extends DBContext {
             ps.setString(1, fullname);
             ps.setBoolean(2, gender);
             ps.setString(3, address);
-            ps.setString(4, email);
-            ps.setString(5, phone);
-            ps.setInt(6, roleId);
-            ps.setBoolean(7, status);
-            ps.setString(8, image);
-            ps.setInt(9, userId);
+            ps.setString(4, phone);
+            ps.setInt(5, roleId);
+            ps.setBoolean(6, status);
+            ps.setString(7, image);
+            ps.setInt(8, userId);
 
             ps.executeUpdate();
         } catch (Exception ex) {
@@ -641,5 +640,26 @@ public class UserDAO extends DBContext {
         }
 
         return null; // Trả về null nếu không tìm thấy user hoặc có lỗi xảy ra
+    }
+
+    public int checkRoleStatus(int user_id) {
+        String sql = "SELECT r.status FROM users u "
+                + "LEFT JOIN role r ON r.role_id = u.role_id "
+                + "WHERE u.user_id = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, user_id);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("status");
+            }
+            // Trả về -1 nếu không có kết quả
+            return -1;
+        } catch (SQLException e) {
+            System.out.println(e);
+            // Trả về -2 nếu xảy ra lỗi SQL
+            return -2;
+        }
     }
 }

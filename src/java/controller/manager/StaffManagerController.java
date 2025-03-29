@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.UUID;
 import model.Category;
@@ -68,6 +69,10 @@ public class StaffManagerController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop processing if user is not logged in or not admin
+        }
         String url = request.getServletPath();
         switch (url) {
             case "/StaffList":
@@ -117,6 +122,10 @@ public class StaffManagerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User account = checkSession(request, response);
+        if (account == null) {
+            return; // Stop processing if user is not logged in or not admin
+        }
         String url = request.getServletPath();
         switch (url) {
             case "/StaffEdits":
@@ -323,23 +332,23 @@ public class StaffManagerController extends HttpServlet {
                 request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
             }
         } catch (NumberFormatException e) {
-                request.setAttribute("name", name);
-                request.setAttribute("email", email);
-                request.setAttribute("phone", phone);
-                request.setAttribute("address", address);
-                request.setAttribute("gender", genderparam);
-                request.setAttribute("staff_id", staff_id);
-                request.setAttribute("image", image);
-                List<Category> c = staffDao.getAllSpec(staff_id);
-                request.setAttribute("listspec", c);
-                List<Category> uc = staffDao.getUnassignedCategories(staff_id);
-                request.setAttribute("listnotspec", uc);
-                request.setAttribute("errormess", "Add Failed!");
-                request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("gender", genderparam);
+            request.setAttribute("staff_id", staff_id);
+            request.setAttribute("image", image);
+            List<Category> c = staffDao.getAllSpec(staff_id);
+            request.setAttribute("listspec", c);
+            List<Category> uc = staffDao.getUnassignedCategories(staff_id);
+            request.setAttribute("listnotspec", uc);
+            request.setAttribute("errormess", "Add Failed!");
+            request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
         }
     }
-    
-    private void handleDeleteSpec(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+
+    private void handleDeleteSpec(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String staff_id = request.getParameter("staff_id");
         String category_id = request.getParameter("category_id");
         String name = request.getParameter("name");
@@ -381,19 +390,30 @@ public class StaffManagerController extends HttpServlet {
                 request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
             }
         } catch (NumberFormatException e) {
-                request.setAttribute("name", name);
-                request.setAttribute("email", email);
-                request.setAttribute("phone", phone);
-                request.setAttribute("address", address);
-                request.setAttribute("gender", genderparam);
-                request.setAttribute("staff_id", staff_id);
-                request.setAttribute("image", image);
-                List<Category> c = staffDao.getAllSpec(staff_id);
-                request.setAttribute("listspec", c);
-                List<Category> uc = staffDao.getUnassignedCategories(staff_id);
-                request.setAttribute("listnotspec", uc);
-                request.setAttribute("errormess", "Delete Failed!");
-                request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("gender", genderparam);
+            request.setAttribute("staff_id", staff_id);
+            request.setAttribute("image", image);
+            List<Category> c = staffDao.getAllSpec(staff_id);
+            request.setAttribute("listspec", c);
+            List<Category> uc = staffDao.getUnassignedCategories(staff_id);
+            request.setAttribute("listnotspec", uc);
+            request.setAttribute("errormess", "Delete Failed!");
+            request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
         }
+    }
+
+    private User checkSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        User account = (User) session.getAttribute("account");
+
+        if (account == null || account.getRole_id() != 2) { // Chỉ admin (role_id = 1) được truy cập
+            response.sendRedirect(request.getContextPath() + "/nav/error");
+            return null; // Stop further processing
+        }
+        return account;
     }
 }

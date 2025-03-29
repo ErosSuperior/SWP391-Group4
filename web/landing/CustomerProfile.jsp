@@ -252,9 +252,9 @@
         <!-- Offcanvas End -->
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-
                 const previewImage = document.getElementById("previewImage");
                 const originalAvatar = previewImage.src;
+                const btnRemove = document.getElementById("btnRemove");
 
                 document.querySelectorAll("form").forEach(form => {
                     form.addEventListener("submit", function () {
@@ -277,7 +277,6 @@
                     }
                 });
 
-
                 document.getElementById("imageUpload").addEventListener("change", function (event) {
                     if (event.target.files.length > 0) {
                         const reader = new FileReader();
@@ -293,8 +292,7 @@
                     imageUpload.value = "";
                 });
 
-
-                document.querySelector("#passwordLink").addEventListener("click", function () {
+                document.querySelector("#passwordLink")?.addEventListener("click", function () {
                     const targetForm = document.querySelector("#address");
                     if (targetForm) {
                         const offset = 0;
@@ -314,19 +312,31 @@
                     const newPass = newPassInput.value.trim();
                     const confPass = confPassInput.value.trim();
                     const hasSpace = /\s/;
-                    if (!oldPass || !newPass || !confPass || hasSpace.test(oldPass) || hasSpace.test(newPass) || hasSpace.test(confPass)) {
-                        errorMessage.innerText = "Invalid password! It cannot be empty or contain spaces.";
-                        errorMessage.style.display = "block";
-                        event.preventDefault();
-                        return;
-                    }
-                    if (oldPass === "" || newPass === "" || confPass === "") {
-                        errorMessage.innerText = "Invalid password! It cannot be empty or contain only spaces.";
+
+                    // Kiểm tra cơ bản
+                    if (!oldPass || !newPass || !confPass) {
+                        errorMessage.innerText = "All password fields must be filled!";
                         errorMessage.style.display = "block";
                         event.preventDefault();
                         return;
                     }
 
+                    // Kiểm tra độ dài và dấu cách cho mật khẩu mới
+                    if (newPass.length <= 6) {
+                        errorMessage.innerText = "New password must be more than 6 characters!";
+                        errorMessage.style.display = "block";
+                        event.preventDefault();
+                        return;
+                    }
+
+                    if (hasSpace.test(newPass)) {
+                        errorMessage.innerText = "New password cannot contain spaces!";
+                        errorMessage.style.display = "block";
+                        event.preventDefault();
+                        return;
+                    }
+
+                    // Kiểm tra các điều kiện khác
                     if (newPass === oldPass) {
                         errorMessage.innerText = "New password must be different from the old password!";
                         errorMessage.style.display = "block";
@@ -340,10 +350,7 @@
                         event.preventDefault();
                         return;
                     }
-
                 });
-
-
             });
         </script>
         <script>
@@ -351,7 +358,6 @@
                 document.getElementById("email-warning").style.display = "block";
                 this.style.borderColor = "#ff9999";
             });
-
         </script>
         <!-- javascript -->
         <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>

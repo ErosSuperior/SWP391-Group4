@@ -10,16 +10,16 @@
             User account = (User) session.getAttribute("account");
             if (account != null) {
         %>
-            <img src="<%= account.getUser_image() != null ? account.getUser_image() : "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-image-icon-default-avatar-profile-icon-social-media-user-vector-image-209162840.jpg" %>" 
-                 class="rounded-circle shadow-md avatar avatar-md-md" alt="User Image">
-            <h5 class="mt-3 mb-1"><%= account.getUser_fullname() %></h5>
+        <img src="<%= account.getUser_image() != null ? account.getUser_image() : "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-image-icon-default-avatar-profile-icon-social-media-user-vector-image-209162840.jpg" %>" 
+             class="rounded-circle shadow-md avatar avatar-md-md" alt="User Image">
+        <h5 class="mt-3 mb-1"><%= account.getUser_fullname() %></h5>
         <%
             } else {
         %>
-            <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-image-icon-default-avatar-profile-icon-social-media-user-vector-image-209162840.jpg" 
-                 class="rounded-circle shadow-md avatar avatar-md-md" alt="Default User">
-            <h5 class="mt-3 mb-1">Guest</h5>
-            <p class="text-muted mb-0">Please log in</p>
+        <img src="https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-image-icon-default-avatar-profile-icon-social-media-user-vector-image-209162840.jpg" 
+             class="rounded-circle shadow-md avatar avatar-md-md" alt="Default User">
+        <h5 class="mt-3 mb-1">Guest</h5>
+        <p class="text-muted mb-0">Please log in</p>
         <%
             }
         %>
@@ -28,8 +28,9 @@
     <ul class="list-unstyled sidebar-nav mb-0">
         <li class="navbar-item"><a href="${pageContext.request.contextPath}/userprofile" class="navbar-link"><i class="ri-user-line align-middle navbar-icon"></i> Profile</a></li>
         <li class="navbar-item"><a href="${pageContext.request.contextPath}/customer/myreservationlist" class="navbar-link"><i class="ri-pages-line align-middle navbar-icon"></i> Your Reservations</a></li>
-        
-        
+        <li class="navbar-item"><a href="${pageContext.request.contextPath}/children/list" class="navbar-link"><i class="ri-pages-line align-middle navbar-icon"></i> Children Manager</a></li>
+
+
     </ul>
 </div>
 
@@ -43,4 +44,4 @@
 <!--                </div>
             </div>
     </div>-->
-                
+

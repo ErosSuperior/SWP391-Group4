@@ -1,4 +1,4 @@
-<%-- 
+<%--
     Document   : UserManagerDetail
     Created on : Mar 3, 2025, 10:23:57 AM
     Author     : Admin
@@ -64,7 +64,7 @@
                                             <div class="col-md-4">
                                                 <div class="mb-3">
                                                     <label class="form-label">Email<span style="color: red">*</span></label>
-                                                    <input name="email" id="email" type="email" value="${user.user_email}" class="form-control" required>
+                                                    <input name="email" id="email" type="email" value="${user.user_email}" class="form-control" ${not empty user.user_id ? 'readonly' : ''} required>
                                                 </div>
                                             </div>
 
@@ -143,7 +143,7 @@
                                                 <c:if test="${empty user.user_id}">
                                                     <button type="submit" value="add" name="submit" class="btn btn-primary" style="display: inline-block; width: auto; padding: 0.25rem 0.5rem; font-size: 0.875rem; margin: 10px;">Add</button>
                                                 </c:if>
-                                                <button type="button" style="display: inline-block; width: auto; padding: 0.25rem 0.5rem; font-size: 0.875rem;margin: 10px;" onclick="window.location.href = '${pageContext.request.contextPath}/admin/adminList'" class="btn btn-primary">Cancel</button>
+                                                <button type="button" style="display: inline-block; width: auto; padding: 0.25rem 0.5rem; font-size: 0.875rem; margin: 10px;" onclick="window.location.href = '${pageContext.request.contextPath}/admin/adminList'" class="btn btn-primary">Cancel</button>
                                                 <c:if test="${not empty message}">
                                                     <div class="alert alert-danger" style="margin-top: 10px;">${message}</div>
                                                 </c:if>
@@ -167,7 +167,8 @@
             function validateForm() {
                 var fullname = document.getElementById("fullname").value;
                 var email = document.getElementById("email").value;
-                
+                var password = document.getElementById("password");
+
                 if (fullname.trim() === "") {
                     alert("Full name is required");
                     return false;
@@ -176,9 +177,27 @@
                     alert("Email is required");
                     return false;
                 }
+
+                // Validate password only when in add mode (password field exists)
+                if (password) {
+                    var passValue = password.value;
+                    if (passValue.trim() === "") {
+                        alert("Password is required");
+                        return false;
+                    }
+                    if (passValue.length < 6) {
+                        alert("Password must be at least 6 characters long");
+                        return false;
+                    }
+                    if (passValue.includes(" ")) {
+                        alert("Password cannot contain spaces");
+                        return false;
+                    }
+                }
+
                 return true;
             }
-            
+
             function openImage() {
                 var imageUrl = document.getElementById("image").value;
                 if (imageUrl) {
