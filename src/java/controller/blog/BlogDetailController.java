@@ -73,7 +73,7 @@ public class BlogDetailController extends HttpServlet {
         List<Blog> list3post = d.get3RecentPost();
 
 // Lấy danh sách các danh mục bài viết
-        List<Category> listcategory = d.getAllCategory();
+        List<Category> listcategory = d.getActiveCategories();
 
 // Đưa dữ liệu vào request để truyền sang trang JSP
         request.setAttribute("listcategory", listcategory); // Gửi danh sách danh mục

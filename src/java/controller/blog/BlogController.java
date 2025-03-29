@@ -91,7 +91,7 @@ public class BlogController extends HttpServlet {
         List<Blog> list3post = d.get3RecentPost();
 
 // Lấy danh sách các danh mục
-        List<Category> listcategory = d.getAllCategory();
+        List<Category> listcategory = d.getActiveCategories();
 
 // Tính tổng số bài viết theo điều kiện tìm kiếm
         int totalBlogs = d.countTotalBlogs(search, category_id);

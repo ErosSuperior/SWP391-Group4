@@ -49,7 +49,7 @@ public class CustomerBlogDAO extends DBContext {
                 + "    users u ON b.user_id = u.user_id\n"
                 + "INNER JOIN \n"
                 + "    category c ON b.category_id = c.category_id\n"
-                + "WHERE b.view_able = 1 "); // Chỉ lấy blog có thể xem được
+                + "WHERE b.view_able = 1 AND c.status = 1"); // Chỉ lấy blog có thể xem được
 
         // Kiểm tra nếu có tìm kiếm theo tiêu đề
         if (search != null && !search.trim().isEmpty()) {
@@ -362,6 +362,30 @@ public class CustomerBlogDAO extends DBContext {
         }
 
         // Trả về danh sách danh mục đã lấy được
+        return list;
+    }
+
+    public List<Category> getActiveCategories() {
+        List<Category> list = new ArrayList<>();
+        String sql = "SELECT `category_id`, `category_name`, `icon` AS `category_icon`, `status` FROM `category` WHERE `status` = 1;";
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+
+            while (rs.next()) {
+                Category c = new Category(
+                        rs.getInt("category_id"),
+                        rs.getString("category_name"),
+                        rs.getString("category_icon"),
+                        rs.getInt("status")
+                );
+                list.add(c);
+            }
+        } catch (SQLException e) {
+            System.err.println(e);
+        }
+
         return list;
     }
 
