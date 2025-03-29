@@ -55,6 +55,7 @@
 
                             <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
                                 <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
+                                    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/customercontroller">Customers</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Add Customer</li>
                                 </ul>
                             </nav>

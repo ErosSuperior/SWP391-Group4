@@ -88,10 +88,6 @@
                                             <input type="text" name="nameOrId" class="form-control"
                                                    placeholder="Search by name or ID" value="${param.nameOrId}">
                                             <button class="btn btn-primary" type="submit">Search</button>
-                                            <button class="btn btn-primary ms-2" type="button"
-                                                    onclick="window.location.href = '${pageContext.request.contextPath}/manager/ServiceList'">
-                                                <i class="uil uil-redo"></i>
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -134,7 +130,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <c:forEach items="${requestScope.allblogs}" var="d">
+                                                <c:forEach items="${requestScope.allServices}" var="d">
                                                     <tr>
                                                         <th class="p-3">${d.serviceId}</th>
                                                         <td class="py-3">
@@ -150,7 +146,7 @@
 
                                                         <td class="p-3">
                                                             <c:choose>
-                                                                <c:when test="${d.serviceStatus == '1'}">
+                                                                <c:when test="${d.serviceStatus == 1}">
                                                                     <span
                                                                         class="badge bg-soft-success">Active</span>
                                                                 </c:when>

@@ -82,7 +82,7 @@ public class CustomerActionController extends HttpServlet {
 
 // Kiểm tra loại dịch vụ mà người dùng yêu cầu
         if (service.equalsIgnoreCase("add")) { // Nếu yêu cầu là "add" (thêm khách hàng)
-            String image = "assets/images/avatars/3108.jpg"; // Ảnh mặc định cho khách hàng mới
+            String image = "assets/images/defaultAvatar.png"; // Ảnh mặc định cho khách hàng mới
             String password = UUID.randomUUID().toString().substring(0, 9); // Tạo mật khẩu ngẫu nhiên 9 ký tự
 
             // Kiểm tra xem email có tồn tại trong hệ thống không
