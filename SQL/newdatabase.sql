@@ -25,6 +25,15 @@ CREATE TABLE users (
 	created_date datetime DEFAULT current_timestamp,
     FOREIGN KEY (role_id) REFERENCES role(role_id)
 );
+DELIMITER //
+CREATE TRIGGER before_insert_users
+BEFORE INSERT ON users
+FOR EACH ROW
+BEGIN
+    SET NEW.created_date = CONCAT(CURRENT_DATE, ' 00:00:00');
+END;
+//
+DELIMITER ;
 INSERT INTO users (user_fullname, user_gender, user_address, user_password, user_email, user_phone, role_id, user_status, user_image) VALUES
 ('Nguyen Van An', 1, '123 Le Loi, Hanoi', 'e26f7cd7501ceedc694e7ea7cb267041', 'an.nguyen@example.com', '0912345678', 1, 1, 'https://yt3.googleusercontent.com/c-Z7mIlntSpG6VyQ5ZqaPggqkZRhaySr-H5ZEazFN2iR1pP4eD1UGekwu0y--c4CSVhJJ1A4QT8=s900-c-k-c0x00ffffff-no-rj'),
 ('Tran Thi Bich', 0, '45 Tran Phu, HCMC', 'e26f7cd7501ceedc694e7ea7cb267041', 'bich.tran@example.com', '0987654321', 2, 1, 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2024/10/11/x/T/I/D/1728642676654.png'),
