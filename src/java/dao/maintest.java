@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import model.Service;
 import model.Blog;
+import model.Category;
 import model.Feedback;
 import model.Reservation;
 import model.ReservationDetail;

@@ -4,6 +4,7 @@
  */
 package controller.manager;
 
+import com.google.gson.Gson;
 import dao.StaffDAO;
 import init.StaffInit;
 import java.io.IOException;
@@ -13,6 +14,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.UUID;
+import model.Category;
 import model.SearchResponse;
 import model.User;
 
@@ -20,12 +24,12 @@ import model.User;
  *
  * @author ADMIN
  */
-@WebServlet(name = "StaffManagerController", urlPatterns = {"/StaffList","/StaffDetailAdd","/StaffEdits"})
+@WebServlet(name = "StaffManagerController", urlPatterns = {"/StaffList", "/StaffDetailAdd", "/StaffEdits", "/StaffDetailEdit", "/StaffListSpec", "/StaffAddSpec", "/StaffDelSpec"})
 public class StaffManagerController extends HttpServlet {
 
     StaffDAO staffDao = new StaffDAO();
     StaffInit staffInit = new StaffInit();
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -43,7 +47,7 @@ public class StaffManagerController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet StaffManagerController</title>");            
+            out.println("<title>Servlet StaffManagerController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet StaffManagerController at " + request.getContextPath() + "</h1>");
@@ -65,12 +69,39 @@ public class StaffManagerController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = request.getServletPath();
-        switch (url){
+        switch (url) {
             case "/StaffList":
-                handleStaffList(request,response);
+                handleStaffList(request, response);
                 break;
             case "/StaffDetailAdd":
                 request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+                break;
+            case "/StaffDetailEdit":
+                String staff_id = request.getParameter("staff_id");
+                String name = request.getParameter("name");
+                String email = request.getParameter("email");
+                String phone = request.getParameter("phone");
+                String address = request.getParameter("address");
+                String genderparam = request.getParameter("gender");
+                String image = request.getParameter("image");
+                request.setAttribute("name", name);
+                request.setAttribute("email", email);
+                request.setAttribute("phone", phone);
+                request.setAttribute("address", address);
+                request.setAttribute("gender", genderparam);
+                request.setAttribute("staff_id", staff_id);
+                request.setAttribute("image", image);
+                List<Category> c = staffDao.getAllSpec(staff_id);
+                request.setAttribute("listspec", c);
+                List<Category> uc = staffDao.getUnassignedCategories(staff_id);
+                request.setAttribute("listnotspec", uc);
+                request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+                break;
+            case "/StaffAddSpec":
+                handleAddSpec(request, response);
+                break;
+            case "/StaffDelSpec":
+                handleDeleteSpec(request, response);
                 break;
         }
     }
@@ -86,7 +117,16 @@ public class StaffManagerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String url = request.getServletPath();
+        switch (url) {
+            case "/StaffEdits":
+                String submit = request.getParameter("submit");
+                if ("add".equalsIgnoreCase(submit)) {
+                    handleAddStaff(request, response);
+                } else {
+                    handleEditStaff(request, response);
+                }
+        }
     }
 
     /**
@@ -119,6 +159,241 @@ public class StaffManagerController extends HttpServlet {
         request.setAttribute("pageSize", pageSize);
         request.getRequestDispatcher("/landing/manager/StaffList.jsp").forward(request, response);
     }
+
+    private void handleAddStaff(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
+        String address = request.getParameter("address");
+        String genderparam = request.getParameter("gender");
+        boolean gender;
+
+        if (genderparam.equalsIgnoreCase("1")) {
+            gender = true;
+        } else {
+            gender = false;
+        }
+
+        System.out.println(gender);
+        System.out.println(name);
+        System.out.println(email);
+        System.out.println(phone);
+        System.out.println(address);
+
+        if (staffDao.checkDuplicateEmail(0, email)) {
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("gender", genderparam);
+            request.setAttribute("errormess", "The email is already used!");
+            request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+            return;
+        }
+
+        if (staffDao.checkDuplicatePhone(0, phone)) {
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("gender", genderparam);
+            request.setAttribute("errormess", "The phone number is already used!");
+            request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+            return;
+        }
+
+        if (!isValidPhoneNumber(phone)) {
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("gender", genderparam);
+            request.setAttribute("errormess", "The phone number are written in the wrong format!");
+            request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("gender", genderparam);
+            request.setAttribute("errormess", "The email are written in the wrong format!");
+            request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+            return;
+        }
+
+        User newstaff = new User();
+        newstaff.setUser_fullname(name);
+        newstaff.setUser_email(email);
+        newstaff.setUser_phone(phone);
+        newstaff.setUser_address(address);
+        newstaff.setUser_gender(gender);
+        newstaff.setUser_password(UUID.randomUUID().toString().substring(0, 9));
+
+        boolean a = staffDao.addUser(newstaff);
+
+        if (a) {
+            handleStaffList(request, response);
+        } else {
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("gender", genderparam);
+            request.setAttribute("errormess", "Add Failed!");
+            request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+            return;
+        }
+    }
+
+    public boolean isValidPhoneNumber(String phone) {
+        return phone != null && phone.matches("^0\\d{9}$");
+    }
+
+    public boolean isValidEmail(String email) {
+        return email != null && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")
+                && !email.startsWith("@");
+    }
+
+    private void handleEditStaff(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
+        String address = request.getParameter("address");
+        String genderparam = request.getParameter("gender");
+        boolean gender;
+
+        if (genderparam.equalsIgnoreCase("1")) {
+            gender = true;
+        } else {
+            gender = false;
+        }
+
+        System.out.println(gender);
+        System.out.println(name);
+        System.out.println(email);
+        System.out.println(phone);
+        System.out.println(address);
+        System.out.println(genderparam);
+
+    }
+
+    private void handleAddSpec(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String staff_id = request.getParameter("staff_id");
+        String category_id = request.getParameter("category_id");
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
+        String address = request.getParameter("address");
+        String genderparam = request.getParameter("gender");
+        String image = request.getParameter("image");
+
+        try {
+            int staffid = Integer.parseInt(staff_id);
+            int categoryid = Integer.parseInt(category_id);
+            boolean check = staffDao.addSpecialization(staffid, categoryid);
+            if (check) {
+                request.setAttribute("name", name);
+                request.setAttribute("email", email);
+                request.setAttribute("phone", phone);
+                request.setAttribute("address", address);
+                request.setAttribute("gender", genderparam);
+                request.setAttribute("staff_id", staff_id);
+                request.setAttribute("image", image);
+                List<Category> c = staffDao.getAllSpec(staff_id);
+                request.setAttribute("listspec", c);
+                List<Category> uc = staffDao.getUnassignedCategories(staff_id);
+                request.setAttribute("listnotspec", uc);
+                request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+            } else {
+                request.setAttribute("name", name);
+                request.setAttribute("email", email);
+                request.setAttribute("phone", phone);
+                request.setAttribute("address", address);
+                request.setAttribute("gender", genderparam);
+                request.setAttribute("staff_id", staff_id);
+                request.setAttribute("image", image);
+                List<Category> c = staffDao.getAllSpec(staff_id);
+                request.setAttribute("listspec", c);
+                List<Category> uc = staffDao.getUnassignedCategories(staff_id);
+                request.setAttribute("listnotspec", uc);
+                request.setAttribute("errormess", "Add Failed!");
+                request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+            }
+        } catch (NumberFormatException e) {
+                request.setAttribute("name", name);
+                request.setAttribute("email", email);
+                request.setAttribute("phone", phone);
+                request.setAttribute("address", address);
+                request.setAttribute("gender", genderparam);
+                request.setAttribute("staff_id", staff_id);
+                request.setAttribute("image", image);
+                List<Category> c = staffDao.getAllSpec(staff_id);
+                request.setAttribute("listspec", c);
+                List<Category> uc = staffDao.getUnassignedCategories(staff_id);
+                request.setAttribute("listnotspec", uc);
+                request.setAttribute("errormess", "Add Failed!");
+                request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+        }
+    }
     
-    
+    private void handleDeleteSpec(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String staff_id = request.getParameter("staff_id");
+        String category_id = request.getParameter("category_id");
+        String name = request.getParameter("name");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
+        String address = request.getParameter("address");
+        String genderparam = request.getParameter("gender");
+        String image = request.getParameter("image");
+        try {
+            int staffid = Integer.parseInt(staff_id);
+            int categoryid = Integer.parseInt(category_id);
+            boolean check = staffDao.deleteSpecialization(staffid, categoryid);
+            if (check) {
+                request.setAttribute("name", name);
+                request.setAttribute("email", email);
+                request.setAttribute("phone", phone);
+                request.setAttribute("address", address);
+                request.setAttribute("gender", genderparam);
+                request.setAttribute("staff_id", staff_id);
+                request.setAttribute("image", image);
+                List<Category> c = staffDao.getAllSpec(staff_id);
+                request.setAttribute("listspec", c);
+                List<Category> uc = staffDao.getUnassignedCategories(staff_id);
+                request.setAttribute("listnotspec", uc);
+                request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+            } else {
+                request.setAttribute("name", name);
+                request.setAttribute("email", email);
+                request.setAttribute("phone", phone);
+                request.setAttribute("address", address);
+                request.setAttribute("gender", genderparam);
+                request.setAttribute("staff_id", staff_id);
+                request.setAttribute("image", image);
+                List<Category> c = staffDao.getAllSpec(staff_id);
+                request.setAttribute("listspec", c);
+                List<Category> uc = staffDao.getUnassignedCategories(staff_id);
+                request.setAttribute("listnotspec", uc);
+                request.setAttribute("errormess", "Delete Failed!");
+                request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+            }
+        } catch (NumberFormatException e) {
+                request.setAttribute("name", name);
+                request.setAttribute("email", email);
+                request.setAttribute("phone", phone);
+                request.setAttribute("address", address);
+                request.setAttribute("gender", genderparam);
+                request.setAttribute("staff_id", staff_id);
+                request.setAttribute("image", image);
+                List<Category> c = staffDao.getAllSpec(staff_id);
+                request.setAttribute("listspec", c);
+                List<Category> uc = staffDao.getUnassignedCategories(staff_id);
+                request.setAttribute("listnotspec", uc);
+                request.setAttribute("errormess", "Delete Failed!");
+                request.getRequestDispatcher("/landing/manager/StaffManagerDetail.jsp").forward(request, response);
+        }
+    }
 }

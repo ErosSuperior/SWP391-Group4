@@ -147,7 +147,7 @@ public class CustomerServiceController extends HttpServlet {
         request.setAttribute("cartmessage", cartmessage);
         request.setAttribute("highlightedService", highlightedService);
         request.setAttribute("relatedServices", allServiceByCategory);
-        request.setAttribute("staffList", userDao.getAllStaffNotBusy());
+        request.setAttribute("staffList", userDao.getAllStaffNotBusy(categoryOfService));
         request.setAttribute("serviceId", serviceId);
         
         HttpSession session = request.getSession();

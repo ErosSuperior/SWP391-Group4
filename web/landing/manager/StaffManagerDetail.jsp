@@ -47,7 +47,7 @@
                 <div class="container-fluid">
                     <div class="layout-specing">
                         <div class="d-md-flex justify-content-between">
-                            <h5 class="mb-0">Add New Staff</h5>
+                            <h5 class="mb-0">Staff Detail</h5>
 
                             <nav aria-label="breadcrumb" class="d-inline-block mt-4 mt-sm-0">
                                 <ul class="breadcrumb bg-transparent rounded mb-0 p-0">
@@ -60,100 +60,113 @@
                             <div class="col-lg-9 mt-4">
                                 <div class="card border-0 p-4 rounded shadow">
                                     <c:if test="${not empty staff_id}">
-                                    <div class="row align-items-center">
-                                        <div class="col-lg-2 col-md-4">
-                                            <img src="${pageContext.request.contextPath}/assets/images/doctors/01.jpg" class="avatar avatar-md-md rounded-pill shadow mx-auto d-block" alt="">
-                                        </div><!--end col-->
-                                        <div class="col-lg-5 col-md-8 text-center text-md-start mt-4 mt-sm-0">
-                                            <h5 class="">Staff Name</h5>
-                                        </div><!--end col-->
-                                    </div><!--end row-->
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-2 col-md-4">
+                                                <img src="${image}" class="avatar avatar-md-md rounded-pill shadow mx-auto d-block" alt="">
+                                            </div><!--end col-->
+                                            <div class="col-lg-5 col-md-8 text-center text-md-start mt-4 mt-sm-0">
+                                                <h5 class="">${name}</h5>
+                                            </div><!--end col-->
+                                        </div><!--end row-->
                                     </c:if>
-                                    <form class="mt-4" action="${pageContext.request.contextPath}/StaffEdits" method="get">
+                                    <form class="mt-4" action="${pageContext.request.contextPath}/StaffEdits" method="post">
                                         <div class="row">
                                             <div class="col-md-5">
                                                 <div class="mb-3">
                                                     <label class="form-label">First Name</label>
-                                                    <input name="name" id="name" type="text" class="form-control" placeholder="First Name :">
+                                                    <input name="name" id="name" type="text" class="form-control" placeholder="First Name :" value="${name}" required="">
                                                 </div>
                                             </div><!--end col-->
                                             <div class="col-md-5">
                                                 <div class="mb-3">
                                                     <label class="form-label">Email</label>
-                                                    <input name="email" id="email" type="email" class="form-control" placeholder="Email :">
+                                                    <c:if test="${empty staff_id}">
+                                                        <input name="email" id="email" type="email" class="form-control" placeholder="Email :" value="${email}" required="">
+                                                    </c:if>
+                                                    <c:if test="${not empty staff_id}">
+                                                        <input name="email" id="email" type="email" class="form-control" placeholder="Email :" value="${email}" readonly="" required="">
+                                                    </c:if>
                                                 </div> 
                                             </div><!--end col-->
-            
+
                                             <div class="col-md-5">
                                                 <div class="mb-3">
                                                     <label class="form-label">Phone no</label>
-                                                    <input name="phone" id="number" type="number" class="form-control" placeholder="Phone :">
+                                                    <c:if test="${empty staff_id}">
+                                                        <input name="phone" id="number" type="number" class="form-control" placeholder="Phone :" value="${phone}" required="">
+                                                    </c:if>
+                                                    <c:if test="${not empty staff_id}">
+                                                        <input name="phone" id="number" type="number" class="form-control" placeholder="Phone :" value="${phone}" readonly="" required="">
+                                                    </c:if>
                                                 </div>                                                                               
                                             </div><!--end col-->
-                                            
+
                                             <div class="col-md-5">
                                                 <div class="mb-3">
                                                     <label class="form-label">Address</label>
-                                                    <input name="address" id="address" type="text" class="form-control" placeholder="Address :">
+                                                    <input name="address" id="address" type="text" class="form-control" placeholder="Address :" value="${address}" required="">
                                                 </div>
                                             </div><!--end col-->
-            
+
                                             <div class="col-md-5">
                                                 <div class="mb-3">
                                                     <label class="form-label">Gender</label>
                                                     <select class="form-control gender-name select2input" name="gender">
-                                                        <option value="1">Male</option>
-                                                        <option value="0">Female</option>
+                                                        <option value="1" ${gender == '1' ? 'selected' : ''}>Male</option>
+                                                        <option value="0" ${gender == '0' ? 'selected' : ''}>Female</option>
                                                     </select>
                                                 </div>
                                             </div><!--end col-->
-                                            
+
+                                            <c:if test="${not empty errormess}">
+                                                <p class="text-danger">${errormess}</p>
+                                            </c:if>
+
+
                                             <c:if test="${empty staff_id}">
                                                 <div class="col-md-12">
-                                                <button type="submit" class="btn btn-primary col-md-3" style=" margin-left: 0px">Add Customer</button>
-                                                <button type="button" onclick="window.location.href = '${pageContext.request.contextPath}/StaffList'" class="btn btn-primary col-md-2" style=" margin-left: 10px">Cancel</button>
+                                                    <button type="submit" name="submit" value="add" class="btn btn-primary col-md-3" style=" margin-left: 0px">Add Staff</button>
+                                                    <button type="button" onclick="window.location.href = '${pageContext.request.contextPath}/StaffList'" class="btn btn-primary col-md-2" style=" margin-left: 10px">Cancel</button>
                                                 </div>
                                             </c:if>
-                                            
-                                            <c:if test="${not empty staff_id}">
-                                            <div class="col-md-4">
-                                                <div class="table-responsive shadow rounded">
-                                                    <table class="table table-center bg-white mb-0">
-                                                        <thead>
-                                                            <tr>
-                                                                <th class="border-bottom p-3" style="min-width: 50px;">Specialization</th>
-                                                                <th class="border-bottom p-3" style="min-width: 150px;">
-                                                                    <button class="btn btn-icon btn-pills btn-soft-success" type="button">
-                                                                        <i class="uil uil-plus-circle"></i>
-                                                                    </button>
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th class="p-3">Nurturing</th>
-                                                                <td class="p-3">
-                                                                    <button class="btn btn-icon btn-pills btn-soft-danger" type="button">
-                                                                        <i class="uil uil-times-circle"></i>
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="p-3">Health checking</th>
-                                                                <td class="p-3">    
-                                                                    <button class="btn btn-icon btn-pills btn-soft-danger" type="button">
-                                                                        <i class="uil uil-times-circle"></i>
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            </c:if>
-                                            
+
                                         </div><!--end row-->
                                     </form>
+                                    <div class="row">
+                                        <c:if test="${not empty staff_id}">
+                                            <div class="col-md-12">
+                                                <div class="col-md-6">
+                                                    <div class="table-responsive shadow rounded">
+                                                        <table class="table table-center bg-white mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="border-bottom p-3" style="min-width: 50px;">Specialization</th>
+                                                                    <th class="border-bottom p-3" style="min-width: 150px;">
+                                                                        <button class="btn btn-icon btn-pills btn-soft-success" onclick="openConfirmationModal()">
+                                                                            <i class="uil uil-plus-circle"></i>
+                                                                        </button>
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <c:forEach items="${listspec}" var="d">
+                                                                    <tr>
+                                                                        <th class="p-3">${d.category_name}</th>
+                                                                        <td class="p-3">
+                                                                            <a href="${pageContext.request.contextPath}/StaffDelSpec?category_id=${d.category_id}&staff_id=${staff_id}&name=${name}&email=${email}&phone=${phone}&address=${address}&gender=${gender}&image=${image}" 
+                                                                               class="btn btn-icon btn-pills btn-soft-danger">
+                                                                                <i class="uil uil-times-circle"></i>
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                </c:forEach>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </c:if>
+                                    </div>
                                 </div>
                             </div><!--end col-->
                         </div><!--end row-->
@@ -162,27 +175,73 @@
 
             </main>
         </div>
-        
+
+        <!-- Modal for confirmation -->
         <!-- Modal for confirmation -->
         <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
              aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="confirmationModalLabel">Confirm Status Change</h5>
+                        <h5 class="modal-title" id="confirmationModalLabel">Confirm Add Specialization</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                     </div>
+                    <form action="${pageContext.request.contextPath}/StaffAddSpec" method="get">
+                        <div class="modal-body">
+                            <p>Are you sure you want to assign a category?</p>
+                            <input type="hidden" value="${staff_id}" name="staff_id">
+                            <input type="hidden" value="${name}" name="name">
+                            <input type="hidden" value="${email}" name="email">
+                            <input type="hidden" value="${address}" name="address">
+                            <input type="hidden" value="${phone}" name="phone">
+                            <input type="hidden" value="${image}" name="image">
+                            <c:choose>
+                                <c:when test="${empty listnotspec}">
+                                    <p>No Category Available</p>
+                                </c:when>
+                                <c:otherwise>
+                                    <select name="category_id" id="categoryDropdown" class="form-control">
+                                        <c:forEach var="category" items="${listnotspec}">
+                                            <option value="${category.category_id}">${category.category_name}</option>
+                                        </c:forEach>
+                                    </select>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+                            <c:if test="${not empty listnotspec}">
+                                <input type="submit" class="btn btn-primary" value="Confirm" name="submit">
+                            </c:if>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom p-3">
+                        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                     <div class="modal-body">
-                        Are you sure you want to change the status?
+                        <p>Are you sure to delete this Spec?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button id="confirmAction" type="button" class="btn btn-primary">Confirm</button>
+                        <a id="confirmDelete" class="btn btn-danger">Delete</a>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- javascript -->
         <script src="<%= request.getContextPath() %>/assets/js/bootstrap.bundle.min.js"></script>
         <!-- simplebar -->
@@ -194,60 +253,16 @@
         <!-- Pagination JS -->
         <script src="https://cdn.datatables.net/2.1.6/js/dataTables.js"></script>
         <script src="https://cdn.datatables.net/2.1.6/js/dataTables.bootstrap5.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-                                                                            let currentUserId, currentStatus;
-
-                                                                            function showConfirmationModal(userId, newStatus) {
-                                                                                currentUserId = userId;
-                                                                                currentStatus = newStatus;
-                                                                                $('#confirmationModal').modal('show');
+                                                                            function openConfirmationModal() {
+                                                                                var modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+                                                                                modal.show();
                                                                             }
-
-                                                                            $('#confirmAction').click(function () {
-                                                                                updateStatus(currentUserId, currentStatus);
-                                                                                $('#confirmationModal').modal('hide'); // Hide modal after confirmation
-                                                                            });
-
-                                                                            function updateStatus(userId, newStatus) {
-                                                                                console.log(userId);
-                                                                                console.log(newStatus);
-                                                                                $.ajax({
-                                                                                    url: '${pageContext.request.contextPath}/manager/managerupdatestatusBlog',
-                                                                                    type: 'POST',
-                                                                                    data: {
-                                                                                        blogId: userId,
-                                                                                        blogStatus: newStatus
-                                                                                    },
-                                                                                    success: function (response) {
-                                                                                        console.log("AJAX request successful. Page will reload.");
-                                                                                        location.reload();
-                                                                                    },
-                                                                                    error: function (xhr, status, error) {
-                                                                                        console.error('AJAX Error:', xhr.status, status, error);
-                                                                                        // Optionally show an error message in the modal or elsewhere
-                                                                                    }
-                                                                                });
-                                                                            }
-
-                                                                            document.addEventListener("DOMContentLoaded", function () {
-                                                                                document.querySelectorAll("[data-bs-target='#exampleModal']").forEach(button => {
-                                                                                    button.addEventListener("click", function () {
-                                                                                        let imageUrl = this.getAttribute("data-detail"); // Get image URL from data attribute
-                                                                                        let modalImage = document.getElementById("modalServiceDetail");
-
-                                                                                        if (imageUrl) {
-                                                                                            modalImage.src = imageUrl;
-                                                                                            modalImage.style.display = "block"; // Show image
-                                                                                        } else {
-                                                                                            modalImage.style.display = "none"; // Hide if no image
-                                                                                        }
-                                                                                    });
-                                                                                });
-                                                                            });
         </script>
+
     </body>
 </html>

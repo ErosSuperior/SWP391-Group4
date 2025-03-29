@@ -88,7 +88,7 @@
                                         <i class="uil uil-plus"></i>
                                     </button>   
                                 </div>
-
+                                         
                                 <!-- User List Table -->
                                 <div class="col-12 mt-4">
                                     <div class="table-responsive shadow rounded">
@@ -131,12 +131,12 @@
                                                                 </c:when>
                                                             </c:choose>
                                                         </td>
-                                                        <td class="p-3">${d.user_email    }</td>
+                                                        <td class="p-3">${d.user_email}</td>
                                                         <td class="p-3">${d.user_phone}</td>
 
                                                         <td class="p-3">
                                                             <c:choose>
-                                                                <c:when test="${d.user_status == '1'}">
+                                                                <c:when test="${d.user_status == true}">
                                                                     <span
                                                                         class="badge bg-soft-success">Active</span>
                                                                 </c:when>
@@ -147,32 +147,10 @@
                                                             </c:choose>
                                                         </td>
                                                         <td class="p-3">
-                                                            <a href="${pageContext.request.contextPath}/manager/managereditBlog?blog_id=${d.user_id}"
+                                                            <a href="${pageContext.request.contextPath}/StaffDetailEdit?staff_id=${d.user_id}&name=${d.user_fullname}&email=${d.user_email}&phone=${d.user_phone}&address=${d.user_address}&gender=${d.user_gender}&image=${d.user_image}"
                                                                class="btn btn-icon btn-pills btn-soft-primary">
-                                                                <i class="uil uil-pen"></i>
+                                                                <i class="uil uil-eye"></i>
                                                             </a>
-                                                            <c:choose>
-                                                                <c:when test="${d.user_status == '1'}">
-                                                                    <button
-                                                                        class="btn btn-icon btn-pills btn-soft-danger"
-                                                                        data-user-id="${d.user_id}"
-                                                                        data-new-status="0"
-                                                                        onclick="showConfirmationModal(${d.user_id}, 0)"
-                                                                        type="button">
-                                                                        <i class="uil uil-times-circle"></i>
-                                                                    </button>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <button
-                                                                        class="btn btn-icon btn-pills btn-soft-success"
-                                                                        data-user-id="${d.user_id}"
-                                                                        data-new-status="1"
-                                                                        onclick="showConfirmationModal(${d.user_id}, 1)"
-                                                                        type="button">
-                                                                        <i class="uil uil-check-circle"></i>
-                                                                    </button>
-                                                                </c:otherwise>
-                                                            </c:choose>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>

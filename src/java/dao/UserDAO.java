@@ -172,14 +172,17 @@ public class UserDAO extends DBContext {
         }
     }
 
-    public List<User> getAllStaffNotBusy() {
+    public List<User> getAllStaffNotBusy(int categoryId) {
         List<User> staffList = new ArrayList<>();
-        String query = "SELECT * FROM users WHERE role_id = 3 AND user_status != 3";
+        String query = "SELECT * FROM users u "
+                + "LEFT JOIN specialization s ON u.user_id = s.userid "
+                + " WHERE role_id = 3 AND user_status != 3 AND s.categoryid = ? ";
 
         try {
 
             Connection conn = new DBContext().getConnection();
             PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, categoryId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 User user = new User();
