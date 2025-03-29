@@ -22,14 +22,15 @@
             <c:if test="${sessionScope.account.role_id == 2}">
             <li><a href="${pageContext.request.contextPath}/ManagerDashboardController"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>    
                 
-            <li><a href="${pageContext.request.contextPath}/manager/managerlistBlog"><i class="uil uil-apps me-2 d-inline-block"></i>Post Management</a></li>
+            <li><a href="${pageContext.request.contextPath}/manager/managerlistBlog"><i class="uil uil-flip-h me-2 d-inline-block"></i>Post Management</a></li>
 
-            <li><a href="${pageContext.request.contextPath}/manager/sliders"><i class="uil uil-apps me-2 d-inline-block"></i>Slider Management</a></li>
+            <li><a href="${pageContext.request.contextPath}/manager/sliders"><i class="uil uil-file me-2 d-inline-block"></i>Slider Management</a></li>
 
             <li><a href="${pageContext.request.contextPath}/manager/ServiceList"><i class="uil uil-apps me-2 d-inline-block"></i>Service Management</a></li>
             
-            <li><a href="${pageContext.request.contextPath}/manager/feedbackList"><i class="uil uil-apps me-2 d-inline-block"></i>Feedback Management</a></li>
-            <li><a href="${pageContext.request.contextPath}/admin/reservationList"><i class="uil uil-apps me-2 d-inline-block"></i>Reservation Management</a></li>
+            <li><a href="${pageContext.request.contextPath}/manager/feedbackList"><i class="uil uil-comment me-2 d-inline-block"></i>Feedback Management</a></li>
+            <li><a href="${pageContext.request.contextPath}/admin/reservationList"><i class="uil uil-shopping-cart me-2 d-inline-block"></i>Reservation Management</a></li>
+            <li><a href="${pageContext.request.contextPath}/StaffList"><i class="uil uil-user-circle me-2 d-inline-block"></i>Staff Management</a></li>
             <li class="sidebar-dropdown">
                 <a href="javascript:void(0)"><i class="uil uil-user me-2 d-inline-block"></i>Customers Manager</a>
                 <div class="sidebar-submenu">
@@ -43,9 +44,9 @@
             
             <c:if test="${sessionScope.account.role_id == 1}">
             <li><a href="${pageContext.request.contextPath}/admindashboard"><i class="uil uil-dashboard me-2 d-inline-block"></i>Dashboard</a></li>    
-            <li><a href="${pageContext.request.contextPath}/admin/adminList"><i class="uil uil-apps me-2 d-inline-block"></i>User Management</a></li>
+            <li><a href="${pageContext.request.contextPath}/admin/adminList"><i class="uil uil-user me-2 d-inline-block"></i>User Management</a></li>
             <li class="sidebar-dropdown">
-                <a href="javascript:void(0)"><i class="uil uil-user me-2 d-inline-block"></i>Settings</a>
+                <a href="javascript:void(0)"><i class="uil uil-setting me-2 d-inline-block"></i>Settings</a>
                 <div class="sidebar-submenu">
                     <ul>
                         <li><a href="${pageContext.request.contextPath}/adminsettinglist">Settings</a></li>

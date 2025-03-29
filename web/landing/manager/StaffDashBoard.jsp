@@ -220,7 +220,7 @@
                         You have successfully operated the service for the customer?
                     </div>
                     <form action="${pageContext.request.contextPath}/confirmservice" method="get">
-                        <input type="text" id="detailIdInputc" name="detail_id">
+                        <input type="hidden" id="detailIdInputc" name="detail_id">
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Confirm</button>
@@ -239,15 +239,15 @@
                     </div>
                     <form action="${pageContext.request.contextPath}/scheduleslot" method="get">
                         <div class="modal-body">
-                            <input type="text" id="detailIdInputs" name="detail_id" value="" />
+                            <input type="hidden" id="detailIdInputs" name="detail_id" value="" />
                             <label for="slotDropdown" class="form-label">Select a Slot:</label>
                             <select id="slotDropdown" class="form-select" name="slot" onchange="displaySlotTime()">
-                                <option value="1">Slot 1</option>
-                                <option value="2">Slot 2</option>
-                                <option value="3">Slot 3</option>
-                                <option value="4">Slot 4</option>
-                                <option value="5">Slot 5</option>
-                                <option value="6">Slot 6</option>
+                                <option value="1">Slot 1 - 8:00 - 10:00</option>
+                                <option value="2">Slot 2 - 10:00 - 12:00</option>
+                                <option value="3">Slot 3 - 12:00 - 14:00</option>
+                                <option value="4">Slot 4 - 14:00 - 16:00</option>
+                                <option value="5">Slot 5 - 16:00 - 18:00</option>
+                                <option value="6">Slot 6 - 18:00 - 20:00</option>
                             </select>
                             <p id="slotTime" class="mt-3"></p>
                         </div>

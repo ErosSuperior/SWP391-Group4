@@ -187,7 +187,7 @@ public class BlogDAO extends DBContext {
 
     public List<Blog> getActiveCategory() {
         List<Blog> blogs = new ArrayList<>();
-        String query = "SELECT * FROM category WHERE 1=1 ORDER BY category_id DESC";
+        String query = "SELECT * FROM category WHERE 1=1 AND status = 1 ORDER BY category_id DESC";
 
         if (connection == null) {
             System.err.println("Database connection is not available.");
